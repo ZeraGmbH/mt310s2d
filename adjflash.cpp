@@ -1,0 +1,169 @@
+#include <QDataStream>
+#include <QBuffer>
+#include <syslog.h>
+#include <F24LC256.h>
+
+#include "mt310s2dglobal.h"
+#include "adjflash.h"
+
+
+cAdjFlash::cAdjFlash(QString devnode, quint8 dlevel, quint8 i2cadr)
+    :m_sDeviceNode(devnode), m_nDebugLevel(dlevel), m_nI2CAdr(i2cadr)
+{
+}
+
+
+bool cAdjFlash::exportAdjFlash()
+{
+    bool ret;
+    QByteArray ba;
+    QDataStream stream(&ba,QIODevice::ReadWrite);
+    stream.setVersion(QDataStream::Qt_5_4);
+
+    quint32 count = 0;
+    quint16 chksum = 0;
+
+    stream << count; // first we write place holders for count and chksum this is the same for each adjflash object
+    stream << chksum;
+
+    exportAdjData(stream);
+    setAdjChecksum(ba);
+    setI2CMux();
+    ret = writeFlash(ba);
+    return ret;
+}
+
+
+bool cAdjFlash::importAdjFlash()
+{
+    QByteArray ba;
+
+    setI2CMux();
+    if (readFlash(ba)) // if we could read data with correct chksum
+    {
+        QDataStream stream(&ba, QIODevice::ReadOnly);
+        stream.setVersion(QDataStream::Qt_5_4);
+
+        return importAdjData(stream);
+    }
+    else
+        return false;
+}
+
+
+bool cAdjFlash::exportAdjXML()
+{
+
+}
+
+
+bool cAdjFlash::importAdjXML()
+{
+
+}
+
+
+void cAdjFlash::setAdjChecksum(QByteArray &ba)
+{
+    quint16 chksum;
+
+    QBuffer mem(&ba);
+    mem.open(QIODevice::ReadWrite);
+    mem.seek(4); // positioning qbuffer to chksum
+
+    QByteArray ca(2, 0); // qbyte array mit 2 bytes
+    mem.write(ca); // 0 setzen der checksumme
+
+    chksum = qChecksum(ba.data(),ba.size()); // +crc-16
+    QDataStream castream( &ca, QIODevice::WriteOnly );
+    castream.setVersion(QDataStream::Qt_5_4);
+
+    castream << chksum;
+
+    mem.seek(4); // positioning qbuffer to chksum
+    mem.write(ca); // setting correct chksum now
+
+    mem.close(); // wird nicht mehr benötigt
+}
+
+
+bool cAdjFlash::writeFlash(QByteArray &ba)
+{
+    int count, written;
+
+    cF24LC256* Flash = new cF24LC256(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    count = ba.size();
+    written = Flash->WriteData(ba.data(),count,0);
+
+    if ( (count - written) > 0)
+    {
+         if DEBUG1 syslog(LOG_ERR,"error writing flashmemory\n");
+         return false; // fehler beim flash schreiben
+    }
+    else
+        return true;
+}
+
+
+quint16 cAdjFlash::getChecksum()
+{
+    return m_nChecksum;
+}
+
+
+bool cAdjFlash::readFlash(QByteArray &ba)
+{
+    cF24LC256* Flash = new cF24LC256(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+
+    // first we try to read 6 bytes hold length (quint32) and checksum (quint16)
+    if ( (6 - Flash->ReadData(ba.data(),6,0)) >0 )
+    {
+        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
+        delete Flash;
+        return(false); // read error
+    }
+
+    QDataStream bastream( &ba, QIODevice::ReadOnly );
+    bastream.setVersion(QDataStream::Qt_5_4);
+
+    quint32 count;
+
+    bastream >> count >> m_nChecksum;
+    if ( count > (quint32)Flash->size() )
+    {
+        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory, count > flash\n");
+        delete Flash;
+        return(false); // read error
+    }
+
+    if ( (count - Flash->ReadData(ba.data(),count,0)) >0 )
+    {
+        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
+        delete Flash;
+        return(false); // read error
+    }
+
+    QBuffer mem;
+    mem.setBuffer(&ba);
+    mem.open(QIODevice::ReadWrite);
+
+    mem.seek(4);
+
+    QByteArray ca(2, 0); // qbyte array mit 6 bytes
+    mem.write(ca); // 0 setzen der checksumme
+
+    quint16 chksum;
+
+    chksum = qChecksum(ba.data(),ba.size()); // +crc-16
+    QDataStream castream( &ca, QIODevice::WriteOnly );
+    castream.setVersion(QDataStream::Qt_5_4);
+
+    castream << chksum;
+
+    mem.seek(4); // positioning qbuffer to chksum
+    mem.write(ca); // setting correct chksum now
+
+    mem.close();
+
+    return (chksum == m_nChecksum); // we could read count bytes and the chksum is ok.
+}
