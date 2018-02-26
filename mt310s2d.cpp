@@ -349,7 +349,7 @@ void cMT310S2dServer::doSetupServer()
     m_sCtrlDeviceNode = m_pCtrlSettings->getDeviceNode(); // we try to open the ctrl device
     MTServer = this;
 
-    if (CtrlDevOpen() < 0)
+    if (false /*CtrlDevOpen() < 0*/)
     {
         m_nerror = ctrlDeviceError; // and finish if not possible
         emit abortInit();
@@ -389,6 +389,7 @@ void cMT310S2dServer::doSetupServer()
         myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
         m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
 
+        /*
         mySigAction.sa_handler = &SigHandler; // signal handler einrichten
         sigemptyset(&mySigAction.sa_mask);
         mySigAction. sa_flags = SA_RESTART;
@@ -396,6 +397,7 @@ void cMT310S2dServer::doSetupServer()
         sigaction(SIGIO, &mySigAction, NULL); // handler für sigio definieren
         enableClampInterrupt();
         SetFASync();
+        */
 
         // our resource mananager connection must be opened after configuration is done
         m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
