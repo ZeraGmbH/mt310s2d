@@ -223,6 +223,8 @@
                                     <xs:element name="m3" type="sensechanneltype"/>
                                     <xs:element name="m4" type="sensechanneltype"/>
                                     <xs:element name="m5" type="sensechanneltype"/>
+                                    <xs:element name="m6" type="sensechanneltype"/>
+                                    <xs:element name="m7" type="sensechanneltype"/>
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
