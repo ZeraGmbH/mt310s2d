@@ -37,7 +37,7 @@
         <device>
             <node>/dev/zFPGA1ctrl</node>
         </device>
-    </crtl>
+    </ctrl>
 </connectivity>
 	
 <resource>
