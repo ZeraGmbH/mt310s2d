@@ -15,7 +15,7 @@
 #include "mt310s2d.h"
 #include "adjustment.h"
 #include "justdata.h"
-#include "directjustdata.h"
+#include "mt310s2justdata.h"
 #include "sensesettings.h"
 #include "debugsettings.h"
 #include "i2csettings.h"
@@ -72,13 +72,15 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
 
     for (i = 0; i < 4; i++)
     {
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "250V",   "250V", true, 250.0, 4428004.0, 5313605.0, 1, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "10V",    "10V", true,  10.0, 4107062.0, 4928475.0, 2, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV" , "100mV", true,   0.1, 4227858.0, 5073430.0, 3, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "250V",   "250V", true, 250.0, 4428004.0, 5313605.0, 1, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "10V",    "10V", true,  10.0, 4107062.0, 4928475.0, 2, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV" , "100mV", true,   0.1, 4227858.0, 5073430.0, 3, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
 
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "HF250V",   "250V", false, 250.0, 1081.0, 1298.0, 1, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "HF10V",    "10V", false,  10.0, 1003.0, 1204.0, 2, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF100mV" , "100mV", false,   0.1, 1032.0, 1239.0, 3, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
+        /*
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "HF250V",   "250V", false, 250.0, 1081.0, 1298.0, 1, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "HF10V",    "10V", false,  10.0, 1003.0, 1204.0, 2, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF100mV" , "100mV", false,   0.1, 1032.0, 1239.0, 3, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        */
 
         m_ChannelList.at(i)->setRangeList(rngList);
     }
@@ -87,38 +89,40 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
 
     for (i = 4; i < 8; i++)
     {
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "10A",   "10A", true,  10.0, 3552341.0, 4262810.0,  4, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "5A",    "5A", true,   5.0, 3552341.0, 4262810.0,  5, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "2.5A",  "2.5A", true,   2.5, 4462739.0, 5355287.0,  6, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "1.0A",  "1.0A", true,   1.0, 3570192.0, 4284231.0,  7, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "500mA", "500mA", true,   0.5, 4462739.0, 5355287.0,  8, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "250mA", "250mA", true,  0.25, 4462739.0, 5355287.0,  9, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "100mA", "100mA", true,   0.1, 3570192.0, 4284231.0, 10, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mA",  "50mA", true,  0.05, 4462739.0, 5355287.0, 11, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "25mA",  "25mA", true, 0.025, 4462739.0, 5355287.0, 12, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "10A",   "10A", true,  10.0, 3552341.0, 4262810.0,  4, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "5A",    "5A", true,   5.0, 3552341.0, 4262810.0,  5, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "2.5A",  "2.5A", true,   2.5, 4462739.0, 5355287.0,  6, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "1.0A",  "1.0A", true,   1.0, 3570192.0, 4284231.0,  7, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "500mA", "500mA", true,   0.5, 4462739.0, 5355287.0,  8, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "250mA", "250mA", true,  0.25, 4462739.0, 5355287.0,  9, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "100mA", "100mA", true,   0.1, 3570192.0, 4284231.0, 10, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mA",  "50mA", true,  0.05, 4462739.0, 5355287.0, 11, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "25mA",  "25mA", true, 0.025, 4462739.0, 5355287.0, 12, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
 
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "10V",   "10V", true,  10.0, 4132497.0, 4958997.0, 13, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "5V",    "5V", true,   5.0, 4132497.0, 4958997.0, 14, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "2V",    "2V", true,   2.0, 4132497.0, 4958997.0, 15, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "1V",    "1V", true,   1.0, 4132497.0, 4958997.0, 16, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "500mV", "500mV", true,   0.5, 4462739.0, 5355287.0, 17, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "200mV", "200mV", true,   0.2, 3570192.0, 4284231.0, 18, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV", "100mV", true,   0.1, 4462739.0, 5355287.0, 19, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mV",  "50mV", true,  0.05, 4462739.0, 5355287.0, 20, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "20mV",  "20mV", true,  0.02, 4462739.0, 5355287.0, 21, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "10mV",  "10mV", true,  0.01, 4462739.0, 5355287.0, 22, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", true, 0.005, 4462739.0, 5355287.0, 23, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", true, 0.002, 3570192.0, 4284231.0, 24, SenseRange::Virt, new cDirectJustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "10V",   "10V", true,  10.0, 4132497.0, 4958997.0, 13, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "5V",    "5V", true,   5.0, 4132497.0, 4958997.0, 14, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "2V",    "2V", true,   2.0, 4132497.0, 4958997.0, 15, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "1V",    "1V", true,   1.0, 4132497.0, 4958997.0, 16, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "500mV", "500mV", true,   0.5, 4462739.0, 5355287.0, 17, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "200mV", "200mV", true,   0.2, 3570192.0, 4284231.0, 18, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV", "100mV", true,   0.1, 4462739.0, 5355287.0, 19, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mV",  "50mV", true,  0.05, 4462739.0, 5355287.0, 20, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "20mV",  "20mV", true,  0.02, 4462739.0, 5355287.0, 21, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "10mV",  "10mV", true,  0.01, 4462739.0, 5355287.0, 22, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", true, 0.005, 4462739.0, 5355287.0, 23, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", true, 0.002, 3570192.0, 4284231.0, 24, SenseRange::Virt, new cMT310S2JustData(m_pSCPIInterface)));
 
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF10A"  ,"10A"  , false, 10.0 ,782.0,  939.0, 25, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF5A"    ,"5A"  , false,  5.0 ,782.0,  939.0, 26, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF2.5A" ,"2.5A" , false, 2.5  ,983.0, 1180.0, 27, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF1.0A" ,"1.0A" , false, 1.0  ,786.0,  944.0, 28, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF500mA","500mA", false, 0.5  ,983.0, 1180.0, 29, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF250mA","250mA", false, 0.25 ,983.0, 1180.0, 30, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF100mA","100mA", false, 0.1  ,786.0,  944.0, 31, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF50mA" ,"50mA" , false, 0.05 ,983.0, 1180.0, 32, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF25mA" ,"25mA" , false, 0.025,983.0, 1180.0, 33, SenseRange::Phys, new cDirectJustData(m_pSCPIInterface)));
+        /*
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF10A"  ,"10A"  , false, 10.0 ,782.0,  939.0, 25, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF5A"    ,"5A"  , false,  5.0 ,782.0,  939.0, 26, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF2.5A" ,"2.5A" , false, 2.5  ,983.0, 1180.0, 27, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF1.0A" ,"1.0A" , false, 1.0  ,786.0,  944.0, 28, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF500mA","500mA", false, 0.5  ,983.0, 1180.0, 29, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF250mA","250mA", false, 0.25 ,983.0, 1180.0, 30, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF100mA","100mA", false, 0.1  ,786.0,  944.0, 31, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF50mA" ,"50mA" , false, 0.05 ,983.0, 1180.0, 32, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "HF25mA" ,"25mA" , false, 0.025,983.0, 1180.0, 33, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
+        */
 
         m_ChannelList.at(i)->setRangeList(rngList);
     }
@@ -165,6 +169,9 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes)
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE:CORRECTION").arg(leadingNodes),"INIT", SCPI::isCmd, m_pSCPIInterface, SenseSystem::initAdjData);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1SENSE:CORRECTION").arg(leadingNodes),"COMPUTE", SCPI::isCmd, m_pSCPIInterface, SenseSystem::computeAdjData);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -262,6 +269,11 @@ void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         break;
     case SenseSystem::initAdjData:
         protoCmd->m_sOutput = m_InitSenseAdjData(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
+        break;
+    case SenseSystem::computeAdjData:
+        protoCmd->m_sOutput = m_ComputeSenseAdjData(protoCmd->m_sInput);
         if (protoCmd->m_bwithOutput)
             emit cmdExecutionDone(protoCmd);
         break;
@@ -380,8 +392,8 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
 
         if (!done)
         {
-            cDirectJustData* dummy; // if we could not find the owner of that data
-            dummy = new cDirectJustData(m_pSCPIInterface);
+            cMT310S2JustData* dummy; // if we could not find the owner of that data
+            dummy = new cMT310S2JustData(m_pSCPIInterface);
             dummy->Deserialize(stream); // we read the data from stream to keep it in flow
             delete dummy;
         }
@@ -910,11 +922,28 @@ QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == "")))
+    // cmd.isCommand(0) is not correct but we leave it for compatibility
     {
         for (int i = 0; i < m_ChannelList.count(); i++)
             m_ChannelList.at(i)->initJustData();
 
+        return SCPI::scpiAnswer[SCPI::ack];
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSenseInterface::m_ComputeSenseAdjData(QString& sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == "")))
+    // cmd.isCommand(0) is not correct but we leave it for compatibility
+    {
+        for (int i = 0; i < m_ChannelList.count(); i++)
+        m_ChannelList.at(i)->computeJustData();
         return SCPI::scpiAnswer[SCPI::ack];
     }
     else

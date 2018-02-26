@@ -5,7 +5,7 @@
 #include <scpi.h>
 
 #include "scpiconnection.h"
-#include "directjustdata.h"
+#include "mt310s2justdata.h"
 
 namespace SenseRange
 {
@@ -27,7 +27,7 @@ enum Commands
 }
 
 class cATMEL;
-class cDirectJustData;
+class cMTJustData;
 class cSCPI;
 
 class cSenseRange:public cSCPIConnection
@@ -35,7 +35,7 @@ class cSenseRange:public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseRange(cSCPI* scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec, cDirectJustData* justdata);
+    cSenseRange(cSCPI* scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec, cMT310S2JustData* justdata);
     ~cSenseRange();
     virtual void initSCPIConnection(QString leadingNodes);
     quint8 getAdjustmentStatus();
@@ -43,11 +43,12 @@ public:
     QString& getName();
     double getUrvalue();
     quint8 getSelCode();
-    cDirectJustData* getJustData();
+    cMT310S2JustData* getJustData();
     bool getAvail();
     void setAvail(bool b);
 
     void initJustData();
+    void computeJustData();
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
@@ -70,7 +71,7 @@ protected:
     QString m_ReadRangeRejection(QString& sInput);
     QString m_ReadRangeOVRejection(QString& sInput);
 
-    cDirectJustData* m_pJustdata;
+    cMT310S2JustData* m_pJustdata;
 
 };
 

@@ -1,4 +1,4 @@
-// implemention cDirectJustData
+// implemention cMT310S2JustData
 
 #include <qdatastream.h>
 #include <scpi.h>
@@ -7,11 +7,11 @@
 #include "atmel.h"
 #include "justdata.h"
 #include "scpidelegate.h"
-#include "directjustdata.h"
+#include "mt310s2justdata.h"
 
 extern cATMEL* pAtmel;
 
-cDirectJustData::cDirectJustData(cSCPI *scpiinterface)
+cMT310S2JustData::cMT310S2JustData(cSCPI *scpiinterface)
 {
     m_pSCPIInterface = scpiinterface;
 
@@ -21,7 +21,7 @@ cDirectJustData::cDirectJustData(cSCPI *scpiinterface)
 }
 
 
-cDirectJustData::~cDirectJustData()
+cMT310S2JustData::~cMT310S2JustData()
 {
     delete m_pGainCorrection; 
     delete m_pPhaseCorrection;
@@ -29,7 +29,7 @@ cDirectJustData::~cDirectJustData()
 }
 
 
-void cDirectJustData::initSCPIConnection(QString leadingNodes)
+void cMT310S2JustData::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
@@ -51,6 +51,9 @@ void cDirectJustData::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "COMPUTE", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, DirectJustCompute);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "INIT", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, DirectJustInit);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     connect(m_pGainCorrection, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     m_pGainCorrection->initSCPIConnection(QString("%1CORRECTION:GAIN").arg(leadingNodes));
@@ -61,7 +64,7 @@ void cDirectJustData::initSCPIConnection(QString leadingNodes)
 }
 	    
 
-void cDirectJustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
+void cMT310S2JustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
@@ -80,6 +83,9 @@ void cDirectJustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case DirectJustCompute:
         protoCmd->m_sOutput = m_ComputeJustData(protoCmd->m_sInput);
         break;
+    case DirectJustInit:
+        protoCmd->m_sOutput = m_InitJustData(protoCmd->m_sInput);
+        break;
     }
 
     if (protoCmd->m_bwithOutput)
@@ -87,7 +93,7 @@ void cDirectJustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 }
 
 
-QString cDirectJustData::mReadGainCorrection(QString& sInput)
+QString cMT310S2JustData::mReadGainCorrection(QString& sInput)
 {
     bool ok;
     cSCPICommand cmd = sInput;
@@ -106,7 +112,7 @@ QString cDirectJustData::mReadGainCorrection(QString& sInput)
 }
 
 
-QString cDirectJustData::mReadPhaseCorrection(QString& sInput)
+QString cMT310S2JustData::mReadPhaseCorrection(QString& sInput)
 {
     bool ok;
     cSCPICommand cmd = sInput;
@@ -126,7 +132,7 @@ QString cDirectJustData::mReadPhaseCorrection(QString& sInput)
 }
 
 
-QString cDirectJustData::mReadOffsetCorrection(QString& sInput)
+QString cMT310S2JustData::mReadOffsetCorrection(QString& sInput)
 {
     bool ok;
     cSCPICommand cmd = sInput;
@@ -146,7 +152,7 @@ QString cDirectJustData::mReadOffsetCorrection(QString& sInput)
 }
 
 
-QString cDirectJustData::m_ReadStatus(QString& sInput)
+QString cMT310S2JustData::m_ReadStatus(QString& sInput)
 {
     cSCPICommand cmd = sInput;
 
@@ -159,7 +165,7 @@ QString cDirectJustData::m_ReadStatus(QString& sInput)
 }
 
 
-QString cDirectJustData::m_ComputeJustData(QString& sInput)
+QString cMT310S2JustData::m_ComputeJustData(QString& sInput)
 {
     cSCPICommand cmd = sInput;
 
@@ -186,25 +192,52 @@ QString cDirectJustData::m_ComputeJustData(QString& sInput)
 }
 
 
-double cDirectJustData::getGainCorrection(double par)
+QString cMT310S2JustData::m_InitJustData(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
+    {
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        {
+            if (enable)
+            {
+                m_pGainCorrection->initJustData(1.0);
+                m_pPhaseCorrection->initJustData(0.0);
+                m_pOffsetCorrection->initJustData(0.0);
+                return SCPI::scpiAnswer[SCPI::ack];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::erraut];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::errexec];
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+double cMT310S2JustData::getGainCorrection(double par)
 {
     return m_pGainCorrection->getCorrection(par);
 }
 
 
-double cDirectJustData::getPhaseCorrection(double par)
+double cMT310S2JustData::getPhaseCorrection(double par)
 {
     return m_pPhaseCorrection->getCorrection(par);
 }
 
 
-double cDirectJustData::getOffsetCorrection(double par)
+double cMT310S2JustData::getOffsetCorrection(double par)
 {
     return m_pOffsetCorrection->getCorrection(par);
 }
 
 
-void cDirectJustData::Serialize(QDataStream& qds)  // zum schreiben aller justagedaten in flashspeicher
+void cMT310S2JustData::Serialize(QDataStream& qds)  // zum schreiben aller justagedaten in flashspeicher
 {
     m_pGainCorrection->Serialize(qds); 
     m_pPhaseCorrection->Serialize(qds);
@@ -212,7 +245,7 @@ void cDirectJustData::Serialize(QDataStream& qds)  // zum schreiben aller justag
 }
  
 
-void cDirectJustData::Deserialize(QDataStream& qds) // zum lesen aller justagedaten aus flashspeicher
+void cMT310S2JustData::Deserialize(QDataStream& qds) // zum lesen aller justagedaten aus flashspeicher
 {
     m_pGainCorrection->Deserialize(qds); 
     m_pPhaseCorrection->Deserialize(qds);
@@ -220,14 +253,14 @@ void cDirectJustData::Deserialize(QDataStream& qds) // zum lesen aller justageda
 }
 
 
-quint8 cDirectJustData::getAdjustmentStatus()
+quint8 cMT310S2JustData::getAdjustmentStatus()
 {
     return m_pGainCorrection->getStatus() & m_pPhaseCorrection->getStatus() & m_pOffsetCorrection->getStatus();
 
 }
 
 
-void cDirectJustData::initJustData()
+void cMT310S2JustData::initJustData()
 {
     m_pGainCorrection->initJustData(1.0);
     m_pPhaseCorrection->initJustData(0.0);
@@ -235,7 +268,11 @@ void cDirectJustData::initJustData()
 }
 
 
-
-
+void cMT310S2JustData::computeJustData()
+{
+    m_pGainCorrection->cmpCoefficients();
+    m_pPhaseCorrection->cmpCoefficients();
+    m_pOffsetCorrection->cmpCoefficients();
+}
 
 

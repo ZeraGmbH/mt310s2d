@@ -228,6 +228,13 @@ void cSenseChannel::initJustData()
 }
 
 
+void cSenseChannel::computeJustData()
+{
+    for (int i = 0; i < m_RangeList.count(); i++)
+        m_RangeList.at(i)->computeJustData();
+}
+
+
 QString cSenseChannel::m_ReadAlias(QString &sInput)
 {
     cSCPICommand cmd = sInput;

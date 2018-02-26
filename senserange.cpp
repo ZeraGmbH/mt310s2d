@@ -2,12 +2,12 @@
 #include <scpicommand.h>
 
 #include "senserange.h"
-#include "directjustdata.h"
+#include "mt310s2justdata.h"
 #include "scpidelegate.h"
 #include "protonetcommand.h"
 
 
-cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec, cDirectJustData* justdata)
+cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec, cMT310S2JustData* justdata)
     :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_nSelCode(rselcode), m_nRSpec(rspec), m_pJustdata(justdata)
 {
     m_pSCPIInterface = scpiinterface;
@@ -75,7 +75,7 @@ quint8 cSenseRange::getSelCode()
 }
 
 
-cDirectJustData *cSenseRange::getJustData()
+cMT310S2JustData *cSenseRange::getJustData()
 {
     return m_pJustdata;
 }
@@ -96,6 +96,12 @@ void cSenseRange::setAvail(bool b)
 void cSenseRange::initJustData()
 {
     m_pJustdata->initJustData();
+}
+
+
+void cSenseRange::computeJustData()
+{
+    m_pJustdata->computeJustData();
 }
 
 

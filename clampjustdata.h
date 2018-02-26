@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "directjustdata.h"
+#include "mt310s2justdata.h"
 #include "senserange.h"
 
 // a clamp range consists of 2 stages . 1st the clamp itself and 2nd a voltage input range
@@ -13,7 +13,7 @@
 
 class cSCPI;
 
-class cClampJustData: public cDirectJustData
+class cClampJustData: public cMT310S2JustData
 {
     Q_OBJECT
 

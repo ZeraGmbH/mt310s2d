@@ -64,14 +64,14 @@ HEADERS	+= \
     scheadchannel.h \
     scheadsettings.h \
     scheadinterface.h \
-    directjustdata.h \
     clampjustdata.h \
     clamp.h \
     ctrlsettings.h \
     clampinterface.h \
     mt310s2d.h \
     mt310s2dglobal.h \
-    mt310s2dprotobufwrapper.h
+    mt310s2dprotobufwrapper.h \
+    mt310s2justdata.h
 
 SOURCES	+= \
 	main.cpp \
@@ -110,7 +110,6 @@ SOURCES	+= \
     scheadchannel.cpp \
     scheadsettings.cpp \
     scheadinterface.cpp \
-    directjustdata.cpp \
     clampjustdata.cpp \
     adjflash.cpp \
     clamp.cpp \
@@ -118,7 +117,8 @@ SOURCES	+= \
     ctrlsettings.cpp \
     clampinterface.cpp \
     mt310s2d.cpp \
-    mt310s2dprotobufwrapper.cpp
+    mt310s2dprotobufwrapper.cpp \
+    mt310s2justdata.cpp
 
 unix {
   UI_DIR = .ui

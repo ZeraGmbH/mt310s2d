@@ -27,6 +27,7 @@ enum Commands
     cmdChannelCat,
     cmdGroupCat,
     initAdjData,
+    computeAdjData,
     cmdStatAdjustment
 };
 
@@ -91,6 +92,7 @@ private:
     QString m_ReadSenseChannelCatalog(QString& sInput);
     QString m_ReadSenseGroupCatalog(QString& sInput);
     QString m_InitSenseAdjData(QString& sInput);
+    QString m_ComputeSenseAdjData(QString& sInput);
     QString m_ReadAdjStatus(QString& sInput);
 
     cNotificationString notifierSenseMMode;

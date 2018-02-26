@@ -28,7 +28,7 @@
 enum SenseRangeType {Volt, Ampere}; 
 
 // an jedem bereich "kleben" justagedaten !!!!!
-// physikalische bereiche sind tatsächlich vorhandene bereiche
+// physikalische bereiche sind tatsächlich vorhandene bereiche, die
 // logische bereiche sind bereiche die angewählt werden können, aber nur der anpassung der dynamik dienen ... es soll nach aussen nicht sichtbar werden dass bereiche "zwischengeschaltet" werden
 // linearisierungs bereiche sind gestrichen worden, weil eine ev. erforderliche linearisierung über eine korrekturkurve höherer ordnung realisiert werden kann"
 // virtuelle bereich dienen nur als anker für justagedaten, wenn z.b. der ad-wandler sep. justiert werden muss

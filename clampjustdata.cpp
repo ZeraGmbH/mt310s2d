@@ -4,7 +4,7 @@
 #include "justdata.h"
 
 cClampJustData::cClampJustData(cSCPI *scpiinterface, cSenseRange *cascadedRange)
-    :cDirectJustData(scpiinterface), m_pFirstStageRange(cascadedRange)
+    :cMT310S2JustData(scpiinterface), m_pFirstStageRange(cascadedRange)
 {   
 }
 
