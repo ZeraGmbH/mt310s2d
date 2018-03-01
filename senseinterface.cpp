@@ -68,10 +68,9 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
 
     QList<cSenseRange*> rngList;
 
-    rngList.clear();
-
     for (i = 0; i < 4; i++)
     {
+        rngList.clear();
         rngList.append(new cSenseRange(m_pSCPIInterface,  "250V",   "250V", true, 250.0, 4428004.0, 5313605.0, 1, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface,   "10V",    "10V", true,  10.0, 4107062.0, 4928475.0, 2, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface, "100mV" , "100mV", true,   0.1, 4227858.0, 5073430.0, 3, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
@@ -85,10 +84,9 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
-    rngList.clear();
-
     for (i = 4; i < 8; i++)
     {
+        rngList.clear();
         rngList.append(new cSenseRange(m_pSCPIInterface,   "10A",   "10A", true,  10.0, 3552341.0, 4262810.0,  4, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface,    "5A",    "5A", true,   5.0, 3552341.0, 4262810.0,  5, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface,  "2.5A",  "2.5A", true,   2.5, 4462739.0, 5355287.0,  6, SenseRange::Phys, new cMT310S2JustData(m_pSCPIInterface)));
