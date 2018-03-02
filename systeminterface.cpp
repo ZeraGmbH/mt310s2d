@@ -15,6 +15,7 @@ extern cATMEL* pAtmel;
 cSystemInterface::cSystemInterface(cMT310S2dServer *server)
     :m_pMyServer(server)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 

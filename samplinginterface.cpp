@@ -15,6 +15,8 @@ extern cATMEL* pAtmel;
 cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
     :m_pMyServer(server)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
+
     m_pllChannelList.append("0");
     m_pllChannelList.append("m0");
     m_pllChannelList.append("m1");

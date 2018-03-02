@@ -14,6 +14,8 @@
 cSourceInterface::cSourceInterface(cMT310S2dServer *server)
     :m_pMyServer(server)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
+
     QList<SourceSystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pSourceSettings->getChannelSettings();
 

@@ -10,6 +10,7 @@ extern cATMEL* pAtmel;
 cStatusInterface::cStatusInterface(cMT310S2dServer* server)
     :m_pMyServer(server)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 
