@@ -48,22 +48,22 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
     // for com5003 our sense had 3 voltage and 3 current measuring channels
     // for mt310 we need 4 voltage and 4 current measuring channels
     cSenseChannel* pChannel;
-    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(0), 0);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(0), 0);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(1), 1);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(1), 1);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(2), 2);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(2), 2);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(6), 6);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sVoltageChannelDescription,"V", channelSettings.at(6), 6);
     m_ChannelList.append(pChannel);
 
-    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(3), 3);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(3), 3);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(4), 4);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(4), 4);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(5), 5);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(5), 5);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(7), 7);
+    pChannel = new cSenseChannel(m_pSCPIInterface, SenseSystem::sCurrentChannelDescription,"A", channelSettings.at(7), 7);
     m_ChannelList.append(pChannel);
 
     QList<cSenseRange*> rngList;

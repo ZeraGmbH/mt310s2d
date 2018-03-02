@@ -13,9 +13,11 @@
 extern cATMEL* pAtmel;
 
 
-cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cChannelSettings *cSettings, quint8 nr)
+cSenseChannel::cSenseChannel(cSCPI* scpiinterface, QString description, QString unit, SenseSystem::cChannelSettings *cSettings, quint8 nr)
     :m_sDescription(description), m_sUnit(unit)
 {
+    m_pSCPIInterface = scpiinterface;
+
     m_sName = QString("m%1").arg(nr);
     m_sAlias[0] = cSettings->m_sAlias; // we set both alias same , 2nd alias is used for multiplexing
     m_sAlias[1] = m_sAlias[0]; // when we are in hf mode, we return the second alias as channel name

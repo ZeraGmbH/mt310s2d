@@ -40,7 +40,7 @@ class cSenseChannel : public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseChannel(QString description, QString unit, SenseSystem::cChannelSettings* cSettings, quint8 nr);
+    cSenseChannel(cSCPI* scpiinterface, QString description, QString unit, SenseSystem::cChannelSettings* cSettings, quint8 nr);
     ~cSenseChannel();
     virtual void initSCPIConnection(QString leadingNodes);
 
