@@ -145,10 +145,6 @@ private:
     QString m_sServerName;
     QString m_sServerVersion;
 
-    /**
-      @b A pointer to the server's scpi interface.
-      */
-    cSCPI *m_pSCPIInterface;
     QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
 
