@@ -116,6 +116,7 @@ bool cAdjFlash::readFlash(QByteArray &ba)
     cF24LC256* Flash = new cF24LC256(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
 
     // first we try to read 6 bytes hold length (quint32) and checksum (quint16)
+    ba.resize(6);
     if ( (6 - Flash->ReadData(ba.data(),6,0)) >0 )
     {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
