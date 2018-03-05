@@ -5,13 +5,15 @@
 #include <scpicommand.h>
 #include "scpiconnection.h"
 #include "frqinputsettings.h"
+#include "mt310s2d.h"
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
 
 
-cFPZInChannel::cFPZInChannel(QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)
-    :m_sDescription(description)
+cFPZInChannel::cFPZInChannel(cMT310S2dServer *server, QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)
+    :m_pMyServer(server), m_sDescription(description)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_sName = QString("fi%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_bAvail = cSettings->avail;

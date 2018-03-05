@@ -21,13 +21,14 @@ namespace FRQInputSystem
     class cChannelSettings;
 }
 
+class cMT310S2dServer;
 
 class cFPZInChannel : public cSCPIConnection
 {
     Q_OBJECT
 
 public:
-    cFPZInChannel(QString description, quint8 nr, FRQInputSystem::cChannelSettings* cSettings);
+    cFPZInChannel(cMT310S2dServer* server, QString description, quint8 nr, FRQInputSystem::cChannelSettings* cSettings);
     virtual void initSCPIConnection(QString leadingNodes);
 
     QString& getName();
@@ -39,6 +40,7 @@ protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
+    cMT310S2dServer* m_pMyServer;
     QString m_sName; // the channel's name
     QString m_sAlias;
     QString m_sDescription; // the channel's brief description
