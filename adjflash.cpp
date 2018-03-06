@@ -87,7 +87,7 @@ void cAdjFlash::setAdjCountChecksum(QByteArray &ba)
     QDataStream ca2stream( &ca, QIODevice::WriteOnly );
     ca2stream.setVersion(QDataStream::Qt_5_4);
 
-    castream << count << chksum;
+    ca2stream << count << chksum;
 
     mem.seek(0); // positioning qbuffer to chksum
     mem.write(ca); // setting correct chksum now
