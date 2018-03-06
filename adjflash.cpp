@@ -51,18 +51,6 @@ bool cAdjFlash::importAdjFlash()
 }
 
 
-bool cAdjFlash::exportAdjXML()
-{
-
-}
-
-
-bool cAdjFlash::importAdjXML()
-{
-
-}
-
-
 void cAdjFlash::setAdjCountChecksum(QByteArray &ba)
 {
     quint16 chksum;

@@ -12,8 +12,6 @@ public:
     cAdjFlash(QString devnode, quint8 dlevel, quint8 i2cadr);
     virtual bool exportAdjFlash();
     virtual bool importAdjFlash();
-    virtual bool exportAdjXML();
-    virtual bool importAdjXML();
 
     virtual quint8 getAdjustmentStatus() = 0;
     quint16 getChecksum();
