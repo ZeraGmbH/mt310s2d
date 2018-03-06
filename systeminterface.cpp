@@ -356,83 +356,89 @@ QString cSystemInterface::m_LoadEEProm(QString &sInput)
 
 QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
 {
-    QString s;
-    int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         if (m_pMyServer->m_pSenseInterface->exportAdjFlash())
-            ret = cmddone;
+            return SCPI::scpiAnswer[SCPI::ack];
         else
-            ret = cmdexecfault;
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
-    m_genAnswer(ret, s);
-    return s;
+
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
 QString cSystemInterface::m_AdjFlashRead(QString &sInput)
 {
-    QString s;
-    int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         if (m_pMyServer->m_pSenseInterface->importAdjFlash())
-            ret = cmddone;
+            return SCPI::scpiAnswer[SCPI::ack];
         else
-            ret = cmdexecfault;
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
-    m_genAnswer(ret, s);
-    return s;
+
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
 QString cSystemInterface::m_AdjXMLWrite(QString &sInput)
 {
-    QString s;
-    int ret = cmdfault;
-    cSCPICommand cmd = sInput;
-
-    if (cmd.isCommand(1))
-    {
-        QString filename = cmd.getParam(0);
-        if (m_pMyServer->m_pSenseInterface->exportAdjFlash())
-            ret = cmddone;
-        else
-            ret = cmdexecfault;
-    }
-    m_genAnswer(ret, s);
-    return s;
-}
-
-
-QString cSystemInterface::m_AdjXMLRead(QString &sInput)
-{
-    QString s;
-    int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
     if (cmd.isCommand(1))
     {
         bool enable = false;
-        pAtmel->getEEPROMAccessEnable(enable);
-        if (enable)
+        if ((pAtmel->getEEPROMAccessEnable(enable)) == cmddone)
         {
-            QString filename = cmd.getParam(0);
-            if (m_pMyServer->m_pSenseInterface->importAdjFlash())
-                ret = cmddone;
+            if (enable)
+            {
+                QString filename = cmd.getParam(0);
+                if (m_pMyServer->m_pSenseInterface->exportAdjXML(filename))
+                    return SCPI::scpiAnswer[SCPI::ack];
+                else
+                    return SCPI::scpiAnswer[SCPI::errexec];
+            }
             else
-                ret = cmdexecfault;
+                return SCPI::scpiAnswer[SCPI::erraut];
         }
         else
-            return SCPI::scpiAnswer[SCPI::erraut];
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
 
-    m_genAnswer(ret, s);
-    return s;
+    return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSystemInterface::m_AdjXMLRead(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(1))
+    {
+        bool enable = false;
+        if ((pAtmel->getEEPROMAccessEnable(enable)) == cmddone)
+        {
+            if (enable)
+            {
+                QString filename = cmd.getParam(0);
+                if (m_pMyServer->m_pSenseInterface->importAdjXML(filename))
+                    return SCPI::scpiAnswer[SCPI::ack];
+                else
+                    return SCPI::scpiAnswer[SCPI::errexec];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::erraut];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::errexec];
+    }
+
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
