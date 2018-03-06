@@ -145,6 +145,8 @@ bool cAdjFlash::readFlash(QByteArray &ba)
         return(false); // read error
     }
 
+    ba.resize(count);
+
     if ( (count - Flash->ReadData(ba.data(),count,0)) >0 )
     {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
@@ -160,19 +162,10 @@ bool cAdjFlash::readFlash(QByteArray &ba)
 
     QByteArray ca(2, 0); // qbyte array mit 6 bytes
     mem.write(ca); // 0 setzen der checksumme
+    mem.close();
 
     quint16 chksum;
-
     chksum = qChecksum(ba.data(),ba.size()); // +crc-16
-    QDataStream castream( &ca, QIODevice::WriteOnly );
-    castream.setVersion(QDataStream::Qt_5_4);
-
-    castream << chksum;
-
-    mem.seek(4); // positioning qbuffer to chksum
-    mem.write(ca); // setting correct chksum now
-
-    mem.close();
 
     return (chksum == m_nChecksum); // we could read count bytes and the chksum is ok.
 }
