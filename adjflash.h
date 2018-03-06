@@ -32,7 +32,7 @@ private:
     QString m_sDeviceNode;
     quint8 m_nI2CAdr;
 
-    void setAdjChecksum(QByteArray& ba);   
+    void setAdjCountChecksum(QByteArray& ba);
 };
 
 #endif // ADJFLASH_H

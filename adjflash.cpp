@@ -27,7 +27,7 @@ bool cAdjFlash::exportAdjFlash()
     stream << chksum;
 
     exportAdjData(stream);
-    setAdjChecksum(ba);
+    setAdjCountChecksum(ba);
     setI2CMux();
     ret = writeFlash(ba);
     return ret;
@@ -63,26 +63,34 @@ bool cAdjFlash::importAdjXML()
 }
 
 
-void cAdjFlash::setAdjChecksum(QByteArray &ba)
+void cAdjFlash::setAdjCountChecksum(QByteArray &ba)
 {
     quint16 chksum;
+    quint32 count;
 
-    QBuffer mem(&ba);
-    mem.open(QIODevice::ReadWrite);
-    mem.seek(4); // positioning qbuffer to chksum
+    chksum = 0;
+    count = ba.size();
 
-    QByteArray ca(2, 0); // qbyte array mit 2 bytes
-    mem.write(ca); // 0 setzen der checksumme
-
-    chksum = qChecksum(ba.data(),ba.size()); // +crc-16
+    QByteArray ca(6, 0); // qbyte array mit 6 bytes
     QDataStream castream( &ca, QIODevice::WriteOnly );
     castream.setVersion(QDataStream::Qt_5_4);
 
-    castream << chksum;
+    castream << count << chksum;
 
-    mem.seek(4); // positioning qbuffer to chksum
+    QBuffer mem(&ba);
+    mem.open(QIODevice::ReadWrite);
+    mem.seek(0); // positioning qbuffer to chksum
+    mem.write(ca); // we set count here  and chksum to 0
+
+    chksum = qChecksum(ba.data(),ba.size()); // +crc-16
+
+    QDataStream ca2stream( &ca, QIODevice::WriteOnly );
+    ca2stream.setVersion(QDataStream::Qt_5_4);
+
+    castream << count << chksum;
+
+    mem.seek(0); // positioning qbuffer to chksum
     mem.write(ca); // setting correct chksum now
-
     mem.close(); // wird nicht mehr benötigt
 }
 
