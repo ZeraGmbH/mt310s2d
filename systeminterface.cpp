@@ -392,25 +392,14 @@ QString cSystemInterface::m_AdjXMLWrite(QString &sInput)
 
     if (cmd.isCommand(1))
     {
-        bool enable = false;
-        if ((pAtmel->getEEPROMAccessEnable(enable)) == cmddone)
-        {
-            if (enable)
-            {
-                QString filename = cmd.getParam(0);
-                if (m_pMyServer->m_pSenseInterface->exportAdjXML(filename))
-                    return SCPI::scpiAnswer[SCPI::ack];
-                else
-                    return SCPI::scpiAnswer[SCPI::errexec];
-            }
-            else
-                return SCPI::scpiAnswer[SCPI::erraut];
-        }
+        QString filename = cmd.getParam(0);
+        if (m_pMyServer->m_pSenseInterface->exportAdjXML(filename))
+            return SCPI::scpiAnswer[SCPI::ack];
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
-
-    return SCPI::scpiAnswer[SCPI::nak];
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
