@@ -775,7 +775,7 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
 {
     cSenseChannel* pChannel;
     msgNrList.clear();
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < m_ChannelList.count(); i++)
     {
         pChannel = m_ChannelList.at(i);
         register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;%1;1;%2;%3;")
