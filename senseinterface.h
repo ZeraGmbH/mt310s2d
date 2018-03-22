@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QList>
 #include <QStateMachine>
+#include <QHash>
 #include <QState>
 #include <QFinalState>
 
@@ -33,15 +34,14 @@ enum Commands
 
 enum MMode
 {
-    modeAC,
-    modeHF,
-    modeAnz
+    modeAC = 1,
+    modeHF = 2,
+    modeADJ = 4
 };
 
-const QString sVoltageChannelDescription = "Measuring channel 0..480V 50Hz/150kHz";
-const QString sCurrentChannelDescription = "Measuring channel 0..160A 50Hz/150kHz";
-const QString sMeasuringModeDescription = "Measuring mode switch AC,HF";
-const QString sMMode[2] = {"AC", "HF"};
+const QString sVoltageChannelDescription = "Measuring channel 0..250V 50Hz/150kHz";
+const QString sCurrentChannelDescription = "Measuring channel 0..1000A 50Hz/150kHz";
+const QString sMeasuringModeDescription = "Measuring mode switch AC,HF,ADJ";
 }
 
 class cMT310S2dServer;
@@ -58,7 +58,7 @@ class cSenseInterface : public cResource, public cAdjFlash, public cAdjXML
 public:
     cSenseInterface(cMT310S2dServer *server);
     ~cSenseInterface();
-    virtual void initSCPIConnection(QString leadingNodes);
+    virtual void initSCPIConnection(QString leadingNoMModedes);
     cSenseChannel* getChannel(QString& name);
     cSenseRange* getRange(QString channelName, QString rangeName);
     virtual quint8 getAdjustmentStatus(); // we return 0 if adj. otherwise  1 +2 +4
@@ -81,13 +81,14 @@ private:
 
     QList<cSenseChannel*> m_ChannelList;
     QString m_sVersion;
-    quint8 m_nMMode;
+    QString m_sMMode;
+    QHash<QString,quint8> m_MModeHash;
 
     quint8 m_nVersionStatus;
     qint8 m_nSerialStatus;
 
     QString m_ReadVersion(QString& sInput);
-    void m_ReadWriteMModeVersion(cProtonetCommand* protoCmd);
+    void m_ReadWriteMMode(cProtonetCommand* protoCmd);
     QString m_ReadMModeCatalog(QString& sInput);
     QString m_ReadSenseChannelCatalog(QString& sInput);
     QString m_ReadSenseGroupCatalog(QString& sInput);
@@ -101,7 +102,7 @@ private:
     void setNotifierSenseMMode();
     void setNotifierSenseChannelCat();
 
-    void changeSenseMode();
+    bool setSenseMode(QString sMode);
 };
 
 #endif // SENSEINTERFACE_H
