@@ -33,7 +33,7 @@ enum MMode
 
 
 class cSCPIConnection;
-
+class cSenseInterface;
 
 class cSenseChannel : public cSCPIConnection
 {
@@ -69,7 +69,7 @@ protected slots:
 
 private:
     QString m_sName; // the channels name m0...
-    QString m_sAlias[2]; // the channel's alias name for example UL1 alternativ REF1
+    QString m_sAlias; // the channel's alias name for example UL1
     QString m_sDescription; // the channel's brief description
     QString m_sUnit; // the channel's measured unit
     quint8 m_nCtrlChannel; // where to control the channel

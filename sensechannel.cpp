@@ -7,6 +7,7 @@
 #include "senserange.h"
 #include "scpiconnection.h"
 #include "sensesettings.h"
+#include "senseinterface.h"
 #include "sensechannel.h"
 #include "protonetcommand.h"
 
@@ -19,13 +20,11 @@ cSenseChannel::cSenseChannel(cSCPI* scpiinterface, QString description, QString 
     m_pSCPIInterface = scpiinterface;
 
     m_sName = QString("m%1").arg(nr);
-    m_sAlias[0] = cSettings->m_sAlias; // we set both alias same , 2nd alias is used for multiplexing
-    m_sAlias[1] = m_sAlias[0]; // when we are in hf mode, we return the second alias as channel name
+    m_sAlias = cSettings->m_sAlias;
     m_nCtrlChannel = cSettings->m_nCtrlChannel;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_nOverloadBit = cSettings->m_nOverloadBit;
     m_bAvail = cSettings->avail;
-    m_nMMode = SenseChannel::modeAC; // the default
 }
 
 
@@ -141,6 +140,8 @@ void cSenseChannel::addRangeList(QList<cSenseRange *> &list)
         rng = list.at(i);
         m_RangeList.append(rng);
     }
+
+    setNotifierSenseChannelRangeCat();
 }
 
 
@@ -152,6 +153,8 @@ void cSenseChannel::removeRangeList(QList<cSenseRange *> &list)
         rng = list.at(i);
         m_RangeList.removeOne(rng);
     }
+
+    setNotifierSenseChannelRangeCat();
 }
 
 
@@ -186,10 +189,7 @@ QString &cSenseChannel::getName()
 
 QString &cSenseChannel::getAlias()
 {
-    if (m_nMMode == SenseChannel::modeAC)
-        return m_sAlias[0];
-    else
-        return m_sAlias[1];
+    return m_sAlias;
 }
 
 
@@ -214,6 +214,8 @@ void cSenseChannel::setUnit(QString &s)
 void cSenseChannel::setMMode(int m)
 {
     m_nMMode = m;
+    for (int i = 0; i < m_RangeList.count(); i++)
+        m_RangeList.at(i)->setMMode(m);
 }
 
 
@@ -324,31 +326,22 @@ QString cSenseChannel::m_StatusReset(QString &sInput)
 
 void cSenseChannel::setNotifierSenseChannelRange()
 {
-    quint8 mode, range;
+    quint8 rSelCode;
 
-    if ( pAtmel->readMeasMode(mode) == cmddone )
+    if ( pAtmel->readRange(m_nCtrlChannel, rSelCode) == cmddone )
     {
-        if (mode == SenseChannel::modeAC) // wir sind im normalberieb
+        int i;
+        for (i = 0; i < m_RangeList.count(); i++)
         {
-            if ( pAtmel->readRange(m_nCtrlChannel, range) == cmddone )
-            {
-                int i;
-                for (i = 0; i < m_RangeList.count(); i++)
-                    if (m_RangeList.at(i)->getSelCode() == range)
-                        break;
-                notifierSenseChannelRange = m_RangeList.at(i)->getName();
-            }
+            cSenseRange* range;
+            range = m_RangeList.at(i);
+            if ( (range->getSelCode() == rSelCode) && (range->isAvail()))
+                break;
         }
-        else
-        {
-            if (mode == 1)
-                notifierSenseChannelRange = "R0V";
-            else
-                notifierSenseChannelRange = "R10V";
-        }
+
+        if (i < m_RangeList.count())
+            notifierSenseChannelRange = m_RangeList.at(i)->getName();
     }
-    else
-        notifierSenseChannelRange = m_RangeList.at(0)->getName();
 }
 
 
@@ -375,7 +368,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                 for  (i = 0; i < anz; i++)
                     if (m_RangeList.at(i)->getName() == rng)
                         break;
-                if ( (i < anz) && (m_RangeList.at(i)->getAvail()) )
+                if ( (i < anz) && (m_RangeList.at(i)->isAvail()) )
                 {
                     // we know this range and it's available
                     if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
@@ -440,5 +433,5 @@ void cSenseChannel::setNotifierSenseChannelRangeCat()
         s += (m_RangeList.at(i)->getName() + ";");
     s += m_RangeList.at(i)->getName();
 
-    notifierSenseChannelRangeCat = s; // phs. or virt.
+    notifierSenseChannelRangeCat = s;
 }
