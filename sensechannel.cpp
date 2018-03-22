@@ -216,6 +216,9 @@ void cSenseChannel::setMMode(int m)
     m_nMMode = m;
     for (int i = 0; i < m_RangeList.count(); i++)
         m_RangeList.at(i)->setMMode(m);
+
+    notifierSenseChannelRangeCat.forceTrigger(); // better we would ask for changed avail ranges and then trigger !!!
+    // but we can do this later
 }
 
 
