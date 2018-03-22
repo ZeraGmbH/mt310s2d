@@ -22,21 +22,6 @@
 #define ERREXECString "errexec" // fehler bei der ausführung eines kommandos
 
 
-// mögliche messbereichtypen, werden genutzt rauszufinden ob eine vom messkanal geforderte eigenschaft verfügbar ist 
-// ein bereich kann u.U. mehrere 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
-enum SenseRangeType {Volt, Ampere}; 
-
-// an jedem bereich "kleben" justagedaten !!!!!
-// physikalische bereiche sind tatsächlich vorhandene bereiche, die
-// logische bereiche sind bereiche die angewählt werden können, aber nur der anpassung der dynamik dienen ... es soll nach aussen nicht sichtbar werden dass bereiche "zwischengeschaltet" werden
-// linearisierungs bereiche sind gestrichen worden, weil eine ev. erforderliche linearisierung über eine korrekturkurve höherer ordnung realisiert werden kann"
-// virtuelle bereich dienen nur als anker für justagedaten, wenn z.b. der ad-wandler sep. justiert werden muss
-// all diese bereich werden von den kommandos des leiterkartenservers unterstützt, eine ausnahme bildet das
-// kommando zur bereichanwahl, dieses lässt nur phys. bzw. log. bereiche zu
- 
-enum SenseRangeSpec {rngPhys, rngLog,  rngVirt};
-
 // mögliche statusbits eines messkanals (erweiterbar) werden bei justagedaten verwendet
 //----------------------------------------------------------------------------------------------------------------------
 enum SenseRangeStatus {RangeDefect = 1,  // 3 bits frei
