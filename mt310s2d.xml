@@ -65,28 +65,28 @@
         </m2>
         <m3>
             <alias1>IL1</alias1>
-            <ctrlchannel>4</ctrlchannel>
+            <ctrlchannel>5</ctrlchannel>
             <dspchannel>1</dspchannel>
             <overloadbit>0</overloadbit>
             <avail>true</avail>
         </m3>
         <m4>
             <alias1>IL2</alias1>
-            <ctrlchannel>5</ctrlchannel>
+            <ctrlchannel>6</ctrlchannel>
             <dspchannel>3</dspchannel>
             <overloadbit>1</overloadbit>
             <avail>true</avail>
         </m4>
         <m5>
             <alias1>IL3</alias1>
-            <ctrlchannel>6</ctrlchannel>
+            <ctrlchannel>7</ctrlchannel>
             <dspchannel>5</dspchannel>
             <overloadbit>2</overloadbit>
             <avail>true</avail>
         </m5>
         <m6>
             <alias1>UN</alias1>
-            <ctrlchannel>7</ctrlchannel>
+            <ctrlchannel>4</ctrlchannel>
             <dspchannel>6</dspchannel>
             <overloadbit>-1</overloadbit>
             <avail>true</avail>
