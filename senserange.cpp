@@ -7,8 +7,8 @@
 #include "protonetcommand.h"
 
 
-cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec, cMT310S2JustData* justdata)
-    :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_nSelCode(rselcode), m_nRSpec(rspec), m_pJustdata(justdata)
+cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 mmask, cMT310S2JustData* justdata)
+    :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_nSelCode(rselcode), m_nMMask(mmask), m_pJustdata(justdata)
 {
     m_pSCPIInterface = scpiinterface;
 }
@@ -81,15 +81,16 @@ cMT310S2JustData *cSenseRange::getJustData()
 }
 
 
-bool cSenseRange::getAvail()
+bool cSenseRange::isAvail()
 {
     return m_bAvail;
 }
 
 
-void cSenseRange::setAvail(bool b)
+void cSenseRange::setMMode(int m)
 {
-    m_bAvail = b;
+    m_nMMode = m;
+    m_bAvail = ((m_nMMask & m_nMMode) > 0);
 }
 
 
@@ -139,7 +140,7 @@ QString cSenseRange::m_ReadRangeType(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_nRSpec); // phs. or virt.
+        return QString("%1").arg(0); // prim. or sec. only dummy ....we will remove later
     else
         return SCPI::scpiAnswer[SCPI::nak];
 

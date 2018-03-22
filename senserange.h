@@ -11,8 +11,8 @@ namespace SenseRange
 {
 enum Type
 {
-    Phys, // we distinguish between physical
-    Virt  // and virtual ranges
+    Prim, // we distinguish between primary
+    Sec  // and secondary ranges
 };
 
 enum Commands
@@ -35,7 +35,7 @@ class cSenseRange:public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseRange(cSCPI* scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec, cMT310S2JustData* justdata);
+    cSenseRange(cSCPI* scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 mmask, cMT310S2JustData* justdata);
     ~cSenseRange();
     virtual void initSCPIConnection(QString leadingNodes);
     quint8 getAdjustmentStatus();
@@ -44,8 +44,8 @@ public:
     double getUrvalue();
     quint8 getSelCode();
     cMT310S2JustData* getJustData();
-    bool getAvail();
-    void setAvail(bool b);
+    bool isAvail();
+    void setMMode(int m);
 
     void initJustData();
     void computeJustData();
@@ -62,7 +62,8 @@ protected:
     double m_fRejection; // 100% rejection value
     double m_fOVRejection; // overload rejection value
     quint8 m_nSelCode; // selection code
-    quint8 m_nRSpec; // range spec (phys. or virt. range)
+    quint8 m_nMMask; // the possible measuring modes for this range
+    quint8 m_nMMode; // the actual measuring mode
 
     QString m_ReadRangeType(QString& sInput);
     QString m_ReadRangeAlias(QString& sInput);
