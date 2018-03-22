@@ -26,3 +26,9 @@ void cNotificationString::operator =(QString str)
     m_sValue = str;
 }
 
+
+void cNotificationString::forceTrigger()
+{
+    emit valueChanged();
+}
+

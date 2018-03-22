@@ -13,6 +13,7 @@ public:
     cNotificationString(QString str);
     QString getString();
     void operator = (QString str);
+    void forceTrigger();
 
 signals:
     void valueChanged();
