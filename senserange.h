@@ -35,7 +35,7 @@ class cSenseRange:public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseRange(cSCPI* scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 mmask, cMT310S2JustData* justdata);
+    cSenseRange(cSCPI* scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint16 mmask, cMT310S2JustData* justdata);
     ~cSenseRange();
     virtual void initSCPIConnection(QString leadingNodes);
     quint8 getAdjustmentStatus();
@@ -62,7 +62,7 @@ protected:
     double m_fRejection; // 100% rejection value
     double m_fOVRejection; // overload rejection value
     quint8 m_nSelCode; // selection code
-    quint8 m_nMMask; // the possible measuring modes for this range
+    quint16 m_nMMask; // the possible measuring modes for this range
     quint8 m_nMMode; // the actual measuring mode
 
     QString m_ReadRangeType(QString& sInput);

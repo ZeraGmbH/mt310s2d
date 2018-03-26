@@ -7,7 +7,7 @@
 #include "protonetcommand.h"
 
 
-cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 mmask, cMT310S2JustData* justdata)
+cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint16 mmask, cMT310S2JustData* justdata)
     :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_nSelCode(rselcode), m_nMMask(mmask), m_pJustdata(justdata)
 {
     m_pSCPIInterface = scpiinterface;
@@ -140,7 +140,7 @@ QString cSenseRange::m_ReadRangeType(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(0); // prim. or sec. only dummy ....we will remove later
+        return QString("%1").arg(m_nMMask); // we return mmode mask and sensortype here
     else
         return SCPI::scpiAnswer[SCPI::nak];
 
