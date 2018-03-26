@@ -32,11 +32,20 @@ enum Commands
     cmdStatAdjustment
 };
 
+
 enum MMode
 {
     modeAC = 1,
     modeHF = 2,
-    modeADJ = 4
+    modeDC = 4,
+    modeADJ = 8
+};
+
+
+enum SensorType
+{
+    Direct = 0x100,
+    Clamp = 0x200
 };
 
 const QString sVoltageChannelDescription = "Measuring channel 0..250V 50Hz/150kHz";
