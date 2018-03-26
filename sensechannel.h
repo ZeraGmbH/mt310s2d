@@ -23,12 +23,6 @@ enum Commands
     cmdRangeCat
 };
 
-enum MMode
-{
-    modeAC,
-    modeHF
-};
-
 }
 
 
