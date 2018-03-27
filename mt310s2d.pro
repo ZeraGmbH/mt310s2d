@@ -71,7 +71,10 @@ HEADERS	+= \
     mt310s2d.h \
     mt310s2dglobal.h \
     mt310s2dprotobufwrapper.h \
-    mt310s2justdata.h
+    mt310s2justdata.h \
+    hkeychannel.h \
+    hkeyinterface.h \
+    hkeysettings.h
 
 SOURCES	+= \
 	main.cpp \
@@ -118,7 +121,10 @@ SOURCES	+= \
     clampinterface.cpp \
     mt310s2d.cpp \
     mt310s2dprotobufwrapper.cpp \
-    mt310s2justdata.cpp
+    mt310s2justdata.cpp \
+    hkeysettings.cpp \
+    hkeyinterface.cpp \
+    hkeychannel.cpp
 
 unix {
   UI_DIR = .ui

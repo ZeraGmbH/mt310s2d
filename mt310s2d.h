@@ -17,6 +17,7 @@ class cSamplingInterface;
 class cSourceInterface;
 class cFRQInputInterface;
 class cSCHeadInterface;
+class cHKeyInterface;
 class cSystemInfo;
 class cAdjustment;
 class cAtmelWatcher;
@@ -39,6 +40,7 @@ public:
     cSourceInterface* m_pSourceInterface;
     cFRQInputInterface* m_pFRQInputInterface;
     cSCHeadInterface* m_pSCHeadInterface;
+    cHKeyInterface* m_pHKeyInterface;
     cSystemInfo* m_pSystemInfo;
     cAdjustment* m_pAdjHandler;
     cRMConnection* m_pRMConnection;
