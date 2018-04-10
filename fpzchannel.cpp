@@ -20,7 +20,8 @@ cFPZChannel::cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, S
     m_nDspChannel = cSettings->m_nDspChannel;
     m_nType = 0;
     m_fFormFactor = FPZChannel::FormFactor;
-    initNotifierConstant(); // we hold the constant as a notifier
+    initNotifier(notifierConstant); // we hold the constant as a notifier
+    initNotifier(notifierPowerType);
     m_bAvail = cSettings->avail;
 }
 
@@ -53,6 +54,9 @@ void cFPZChannel::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"CONSTANT", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, FPZChannel::cmdConstant);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"POWTYPE", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, FPZChannel::cmdPowtype);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
@@ -81,6 +85,9 @@ void cFPZChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case FPZChannel::cmdConstant:
         protoCmd->m_sOutput = m_ReadWriteConstant(protoCmd->m_sInput);
         break;
+    case FPZChannel::cmdPowtype:
+        protoCmd->m_sOutput = m_ReadWritePowerType(protoCmd->m_sInput);
+        break;
     }
 
     if (protoCmd->m_bwithOutput)
@@ -88,11 +95,10 @@ void cFPZChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 }
 
 
-void cFPZChannel::initNotifierConstant()
+void cFPZChannel::initNotifier(cNotificationString& notifier)
 {
-    notifierConstant = "0.0";
+    notifier = "0.0";
 }
-
 
 
 QString &cFPZChannel::getName()
@@ -204,6 +210,28 @@ QString cFPZChannel::m_ReadWriteConstant(QString &sInput)
         {
             QString constant = cmd.getParam(0);
             notifierConstant = constant;
+            return SCPI::scpiAnswer[SCPI::ack];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cFPZChannel::m_ReadWritePowerType(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+
+    {
+        emit notifier(&notifierPowerType);
+        return notifierPowerType.getString();
+    }
+    else
+        if (cmd.isCommand(1))
+        {
+            QString powertype = cmd.getParam(0);
+            notifierPowerType = powertype;
             return SCPI::scpiAnswer[SCPI::ack];
         }
         else

@@ -16,7 +16,8 @@ enum Commands
     cmdDspChannel,
     cmdStatus,
     cmdFormFactor,
-    cmdConstant
+    cmdConstant,
+    cmdPowtype
 };
 
 
@@ -56,6 +57,8 @@ private:
     bool m_bAvail; // is this channel available ?
 
     cNotificationString notifierConstant;
+    void initNotifier(cNotificationString& notifier);
+    cNotificationString notifierPowerType;
     void initNotifierConstant();
 
     QString m_ReadAlias(QString& sInput);
@@ -65,6 +68,7 @@ private:
     QString m_ReadChannelStatus(QString& sInput);
     QString m_ReadFFactor(QString& sInput);
     QString m_ReadWriteConstant(QString& sInput);
+    QString m_ReadWritePowerType(QString& sInput);
 };
 
 #endif // FPZCHANNEL_H
