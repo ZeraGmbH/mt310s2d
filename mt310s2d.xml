@@ -85,14 +85,14 @@
             <avail>true</avail>
         </m5>
         <m6>
-            <alias1>UN</alias1>
+            <alias1>UAUX</alias1>
             <ctrlchannel>4</ctrlchannel>
             <dspchannel>6</dspchannel>
             <overloadbit>-1</overloadbit>
             <avail>true</avail>
         </m6>
         <m7>
-            <alias1>IN</alias1>
+            <alias1>IAUX</alias1>
             <ctrlchannel>8</ctrlchannel>
             <dspchannel>7</dspchannel>
             <overloadbit>3</overloadbit>
