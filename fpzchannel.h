@@ -59,7 +59,6 @@ private:
     cNotificationString notifierConstant;
     void initNotifier(cNotificationString& notifier);
     cNotificationString notifierPowerType;
-    void initNotifierConstant();
 
     QString m_ReadAlias(QString& sInput);
     QString m_ReadType(QString& sInput);
