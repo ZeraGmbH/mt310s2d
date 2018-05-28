@@ -15,7 +15,6 @@ enum hw_cmdcode
     hwSetSerialNr = 0x0006,
     hwSetPCBVersion = 0x0007,
     hwStartBootloader = 0x0008,
-    hwGetClampStatus = 0x0009,
 
     hwGetInfStat  = 0x0100,
 
@@ -23,6 +22,7 @@ enum hw_cmdcode
     hwResetCritStat = 0x0201,
     hwSetIntMask = 0x0202,
     hwGetIntMask = 0x0203,
+    hwGetClampStatus = 0x0204,
 
     hwSetSeqMask = 0x1000,
     hwGetSeqMask = 0x1001,
