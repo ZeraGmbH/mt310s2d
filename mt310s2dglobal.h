@@ -42,6 +42,7 @@ enum ServerErrors
     xmlfileError,
     atmelError,
     ctrlDeviceError,
+    fpgaDeviceError,
     rmConnectionError,
     atmelProgError
 };
@@ -49,9 +50,15 @@ enum ServerErrors
 
 enum atmelInterrupts
 {
-    overloadInterrupt,
-    clampstatusInterrupt,
-    errorstatusInterrupt
+    overloadInterrupt_I1,
+    overloadInterrupt_I2,
+    overloadInterrupt_I3,
+    overloadInterrupt_I4,
+    overloadInterrupt_U1,
+    overloadInterrupt_U2,
+    overloadInterrupt_U3,
+    overloadInterrupt_U4,
+    clampstatusInterrupt
 };
 
 
