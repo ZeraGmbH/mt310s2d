@@ -60,6 +60,8 @@ int main( int argc, char *argv[] )
         syslog(LOG_EMERG,"Abort, atmel not running\n") ;
     if (r == ctrlDeviceError)
         syslog(LOG_EMERG,"Abort, ctrl device not found\n") ;
+    if (r == fpgaDeviceError)
+        syslog(LOG_EMERG,"Abort, fpga device not found\n") ;
     if (r == rmConnectionError)
         syslog(LOG_EMERG,"Abort, resourcemanager connection error\n") ;
     if (r == atmelProgError)
