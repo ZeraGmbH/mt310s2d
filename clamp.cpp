@@ -29,7 +29,7 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName)
     m_sName = "unknown";
     m_sVersion = "unknown";
     m_nFlags = 0;
-    m_nType = 0;
+    m_nType = undefined;
 
     addSystAdjInterface(); // we have an interface at once after clamp was connected
 
