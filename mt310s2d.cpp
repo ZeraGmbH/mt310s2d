@@ -172,8 +172,8 @@ void cMT310S2dServer::doConfiguration()
         {
             fcntl( pipeFD[1], F_SETFL, O_NONBLOCK);
             fcntl( pipeFD[0], F_SETFL, O_NONBLOCK);
-            m_pNotifierCtrl = new QSocketNotifier(pipeFD[0], QSocketNotifier::Read, this);
-            connect(m_pNotifierCtrl, SIGNAL(activated(int)), this, SLOT(MTIntHandler(int)));
+            m_pNotifier = new QSocketNotifier(pipeFD[0], QSocketNotifier::Read, this);
+            connect(m_pNotifier, SIGNAL(activated(int)), this, SLOT(MTIntHandler(int)));
 
             if (myXMLConfigReader->loadSchema(defaultXSDFile))
             {
