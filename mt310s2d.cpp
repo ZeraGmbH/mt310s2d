@@ -50,14 +50,14 @@
 
 cMT310S2dServer* MTServer;
 int pipeFD[2];
-char pipeBuf[2] = "I";
-
+char pipeFDBuf[2] = "I";
 
 void SigHandler(int)
 {
     if (MTServer->m_pDebugSettings->getDebugLevel() & 2) syslog(LOG_INFO,"mt interrupt received\n");
-    write(pipeFD[1], pipeBuf, 1);
+        write(pipeFD[1], pipeFDBuf, 1);
 }
+
 
 struct sigaction mySigAction;
 // sigset_t mySigmask, origSigmask;
@@ -163,7 +163,7 @@ void cMT310S2dServer::doConfiguration()
     }
     else
     {
-        if ( pipe(pipeFD) == -1 )
+        if ( pipe(pipeFD) == -1)
         {
             m_nerror = pipeError;
             emit abortInit();
@@ -172,8 +172,9 @@ void cMT310S2dServer::doConfiguration()
         {
             fcntl( pipeFD[1], F_SETFL, O_NONBLOCK);
             fcntl( pipeFD[0], F_SETFL, O_NONBLOCK);
-            m_pNotifier = new QSocketNotifier(pipeFD[0], QSocketNotifier::Read, this);
-            connect(m_pNotifier, SIGNAL(activated(int)), this, SLOT(MTIntHandler(int)));
+            m_pNotifierCtrl = new QSocketNotifier(pipeFD[0], QSocketNotifier::Read, this);
+            connect(m_pNotifierCtrl, SIGNAL(activated(int)), this, SLOT(MTIntHandler(int)));
+
             if (myXMLConfigReader->loadSchema(defaultXSDFile))
             {
 
@@ -353,75 +354,82 @@ void cMT310S2dServer::doWait4Atmel()
 void cMT310S2dServer::doSetupServer()
 {
     m_sCtrlDeviceNode = m_pCtrlSettings->getDeviceNode(); // we try to open the ctrl device
+    m_sMessageDeviceNode = m_pFPGASettings->getDeviceNode();
+
     MTServer = this;
 
-    if (false /*CtrlDevOpen() < 0*/)
+    if (CtrlDevOpen() < 0)
     {
         m_nerror = ctrlDeviceError; // and finish if not possible
         emit abortInit();
     }
     else
-    {
-        pAtmel->setPLLChannel(1); // default channel m0 for pll control
-        m_pSystemInfo = new cSystemInfo();
-        m_pAdjHandler = new cAdjustment(this);
+        if (MessageDevOpen() < 0)
+        {
+            m_nerror = fpgaDeviceError;
+            emit abortInit();
+        }
+        else
+        {
+            pAtmel->setPLLChannel(1); // default channel m0 for pll control
+            m_pSystemInfo = new cSystemInfo();
+            m_pAdjHandler = new cAdjustment(this);
 
-        //m_pSystemInfo, m_pI2CSettings->getDeviceNode(), m_pDebugSettings->getDebugLevel(), m_pI2CSettings->getI2CAdress(i2cSettings::flash)
+            //m_pSystemInfo, m_pI2CSettings->getDeviceNode(), m_pDebugSettings->getDebugLevel(), m_pI2CSettings->getI2CAdress(i2cSettings::flash)
 
-        cPCBServer::setupServer(); // here our scpi interface gets instanciated, we need this for further steps
+            cPCBServer::setupServer(); // here our scpi interface gets instanciated, we need this for further steps
 
-        scpiConnectionList.append(this); // the server itself has some commands
-        scpiConnectionList.append(m_pStatusInterface = new cStatusInterface(this));
-        scpiConnectionList.append(m_pSystemInterface = new cSystemInterface(this));
-        scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(this));
-        scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(this));
-        scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(this));
-        scpiConnectionList.append(m_pFRQInputInterface = new cFRQInputInterface(this));
-        scpiConnectionList.append(m_pSCHeadInterface = new cSCHeadInterface(this));
-        scpiConnectionList.append(m_pHKeyInterface = new cHKeyInterface(this));
+            scpiConnectionList.append(this); // the server itself has some commands
+            scpiConnectionList.append(m_pStatusInterface = new cStatusInterface(this));
+            scpiConnectionList.append(m_pSystemInterface = new cSystemInterface(this));
+            scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(this));
+            scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(this));
+            scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(this));
+            scpiConnectionList.append(m_pFRQInputInterface = new cFRQInputInterface(this));
+            scpiConnectionList.append(m_pSCHeadInterface = new cSCHeadInterface(this));
+            scpiConnectionList.append(m_pHKeyInterface = new cHKeyInterface(this));
 
-        m_pClampInterface = new cClampInterface(this, pAtmel);
+            m_pClampInterface = new cClampInterface(this, pAtmel);
 
-        resourceList.append(m_pSenseInterface); // all our resources
-        resourceList.append(m_pSamplingInterface);
-        resourceList.append(m_pSourceInterface);
-        resourceList.append(m_pFRQInputInterface);
-        resourceList.append(m_pSCHeadInterface);
-        resourceList.append(m_pHKeyInterface);
+            resourceList.append(m_pSenseInterface); // all our resources
+            resourceList.append(m_pSamplingInterface);
+            resourceList.append(m_pSourceInterface);
+            resourceList.append(m_pFRQInputInterface);
+            resourceList.append(m_pSCHeadInterface);
+            resourceList.append(m_pHKeyInterface);
 
 
-        m_pAdjHandler->addAdjFlashObject(m_pSenseInterface);
-        m_pSenseInterface->importAdjFlash(); // we read adjustmentdata at least once
+            m_pAdjHandler->addAdjFlashObject(m_pSenseInterface);
+            m_pSenseInterface->importAdjFlash(); // we read adjustmentdata at least once
 
-        initSCPIConnections();
+            initSCPIConnections();
 
-        myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
-        m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
+            myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
+            m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
 
-        /*
-        mySigAction.sa_handler = &SigHandler; // signal handler einrichten
-        sigemptyset(&mySigAction.sa_mask);
-        mySigAction. sa_flags = SA_RESTART;
-        mySigAction.sa_restorer = NULL;
-        sigaction(SIGIO, &mySigAction, NULL); // handler für sigio definieren
-        enableClampInterrupt();
-        SetFASync();
-        */
+            mySigAction.sa_handler = &SigHandler; // signal handler einrichten
+            sigemptyset(&mySigAction.sa_mask);
+            mySigAction. sa_flags = SA_RESTART;
+            mySigAction.sa_restorer = NULL;
+            sigaction(SIGIO, &mySigAction, NULL); // handler für sigio definieren
 
-        // our resource mananager connection must be opened after configuration is done
-        m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
-        //connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
-        // so we must complete our state machine here
-        m_nRetryRMConnect = 100;
-        m_retryTimer.setSingleShot(true);
-        connect(&m_retryTimer, SIGNAL(timeout()), this, SIGNAL(serverSetup()));
+            SetFASync();
+            enableClampInterrupt();
 
-        stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
-        stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connectionRMError()), stateconnect2RMError);
-        stateconnect2RMError->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
+            // our resource mananager connection must be opened after configuration is done
+            m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
+            //connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
+            // so we must complete our state machine here
+            m_nRetryRMConnect = 100;
+            m_retryTimer.setSingleShot(true);
+            connect(&m_retryTimer, SIGNAL(timeout()), this, SIGNAL(serverSetup()));
 
-        emit serverSetup(); // so we enter state machine's next state
-    }
+            stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
+            stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connectionRMError()), stateconnect2RMError);
+            stateconnect2RMError->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
+
+            emit serverSetup(); // so we enter state machine's next state
+        }
 }
 
 
@@ -466,19 +474,33 @@ void cMT310S2dServer::doIdentAndRegister()
 
 int cMT310S2dServer::CtrlDevOpen()
 {
-    if ( (DevFileDescriptor = open(m_sCtrlDeviceNode.toLatin1().data(), O_RDWR)) < 0 )
+    if ( (DevFileDescriptorCtrl = open(m_sCtrlDeviceNode.toLatin1().data(), O_RDWR)) < 0 )
     {
         if (m_pDebugSettings->getDebugLevel() & 1)  syslog(LOG_ERR,"error opening ctrl device: %s\n",m_pCtrlSettings->getDeviceNode().toLatin1().data());
     }
-    return DevFileDescriptor;
+    return DevFileDescriptorCtrl;
+}
+
+
+int cMT310S2dServer::MessageDevOpen()
+{
+    if ( (DevFileDescriptorMsg = open(m_sMessageDeviceNode.toLatin1().data(), O_RDWR)) < 0 )
+    {
+        if (m_pDebugSettings->getDebugLevel() & 1)  syslog(LOG_ERR,"error opening ctrl device: %s\n",m_pFPGASettings->getDeviceNode().toLatin1().data());
+    }
+    return DevFileDescriptorMsg;
 }
 
 
 void cMT310S2dServer::SetFASync()
 {
-    fcntl(DevFileDescriptor, F_SETOWN, getpid()); // wir sind "besitzer" des device
-    int oflags = fcntl(DevFileDescriptor, F_GETFL);
-    fcntl(DevFileDescriptor, F_SETFL, oflags | FASYNC); // async. benachrichtung (sigio) einschalten
+    fcntl(DevFileDescriptorMsg, F_SETOWN, getpid()); // wir sind "besitzer" des device
+    int oflags = fcntl(DevFileDescriptorMsg, F_GETFL);
+    fcntl(DevFileDescriptorMsg, F_SETFL, oflags | FASYNC); // async. benachrichtung (sigio) einschalten
+
+    fcntl(DevFileDescriptorCtrl, F_SETOWN, getpid());
+    oflags = fcntl(DevFileDescriptorCtrl, F_GETFL);
+    fcntl(DevFileDescriptorCtrl, F_SETFL, oflags | FASYNC);
 }
 
 
@@ -504,6 +526,15 @@ void cMT310S2dServer::MTIntHandler(int)
     {
         m_pClampInterface->actualizeClampStatus();
         pAtmel->resetCriticalStatus(stat & (1 << clampstatusInterrupt));
+    }
+
+    // here we must add the handling for message interrupts sent by fpga device
+    if (false)
+    {
+        QString message;
+        message = QString("Error");
+        qFatal(message.toLatin1());
+        qWarning(message.toLatin1());
     }
 }
 
