@@ -46,7 +46,8 @@ public:
     cRMConnection* m_pRMConnection;
     cClampInterface* m_pClampInterface;
 
-    int DevFileDescriptor; // kerneltreiber wird nur 1x geöffnet und dann gehalten
+    int DevFileDescriptorCtrl; // kerneltreiber wird nur 1x geöffnet und dann gehalten
+    int DevFileDescriptorMsg;
 
 signals:
     void abortInit();
@@ -67,7 +68,9 @@ private:
     QTimer m_retryTimer;
     QSocketNotifier* m_pNotifier;
     QString m_sCtrlDeviceNode;
+    QString m_sMessageDeviceNode;
     int CtrlDevOpen();
+    int MessageDevOpen();
     void SetFASync();
     void enableClampInterrupt();
 
