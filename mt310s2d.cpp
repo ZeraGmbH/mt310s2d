@@ -342,7 +342,7 @@ void cMT310S2dServer::programAtmelFlash()
 
 void cMT310S2dServer::doWait4Atmel()
 {
-    m_pAtmelWatcher = new cAtmelWatcher(m_pDebugSettings->getDebugLevel(), m_pFPGASettings->getDeviceNode(), 10000, 100);
+    m_pAtmelWatcher = new cAtmelWatcher(m_pDebugSettings->getDebugLevel(), m_pCtrlSettings->getDeviceNode(), 10000, 100);
 
     m_nerror = atmelError; // we preset error
     connect(m_pAtmelWatcher,SIGNAL(timeout()),this,SIGNAL(abortInit()));
