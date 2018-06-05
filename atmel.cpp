@@ -191,13 +191,13 @@ atmelRM cATMEL::resetCriticalStatus(quint16 stat)
 atmelRM cATMEL::readClampStatus(quint16 &stat)
 {
     quint8 PAR[1];
-    char answ[3];
+    char answ[2];
 
     hw_cmd CMD = {hwGetClampStatus, 0, PAR, 0, 0, 0, 0 };
 
-    if  ( (writeCommand(&CMD) == 2) && (CMD.RM == 0) &&  (readOutput(answ,3) == 3) )
+    if  ( (writeCommand(&CMD) == 2) && (CMD.RM == 0) &&  (readOutput(answ,2) == 2) )
     {
-         stat = (answ[0] << 8) + answ[1];
+         stat = answ[0];
          return cmddone;
     }
     else
