@@ -195,7 +195,7 @@ atmelRM cATMEL::readClampStatus(quint16 &stat)
 
     hw_cmd CMD = {hwGetClampStatus, 0, PAR, 0, 0, 0, 0 };
 
-    if  ( (writeCommand(&CMD) == 3) && (CMD.RM == 0) &&  (readOutput(answ,3) == 3) )
+    if  ( (writeCommand(&CMD) == 2) && (CMD.RM == 0) &&  (readOutput(answ,3) == 3) )
     {
          stat = (answ[0] << 8) + answ[1];
          return cmddone;
