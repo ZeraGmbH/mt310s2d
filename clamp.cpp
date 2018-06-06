@@ -67,6 +67,12 @@ void cClamp::initSCPIConnection(QString)
 }
 
 
+QString cClamp::getChannelName()
+{
+    return m_sChannelName;
+}
+
+
 void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)

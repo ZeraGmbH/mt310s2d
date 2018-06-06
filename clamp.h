@@ -38,6 +38,7 @@ public:
     virtual ~cClamp();
     virtual quint8 getAdjustmentStatus();
     virtual void initSCPIConnection(QString);
+    QString getChannelName();
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);

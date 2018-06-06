@@ -1,7 +1,9 @@
 #include "clampinterface.h"
 #include "mt310s2d.h"
 #include "atmel.h"
+#include "scpi.h"
 #include "clamp.h"
+#include "protonetcommand.h"
 
 
 cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler)
@@ -9,6 +11,19 @@ cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler)
 {
     m_nClampStatus = 0;
     actualizeClampStatus(); // at start we look for already connected clamps
+}
+
+
+void cClampInterface::initSCPIConnection(QString leadingNodes)
+{
+    cSCPIDelegate* delegate;
+
+    if (leadingNodes != "")
+        leadingNodes += ":";
+
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:CHANNEL").arg(leadingNodes),"CAT",SCPI::isQuery, m_pSCPIInterface, ClampSystem::cmdClampChannelCat);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
@@ -30,7 +45,9 @@ void cClampInterface::actualizeClampStatus()
                 {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    clampHash[i] = new cClamp(m_pMyServer,QString("m%1").arg(i));
+                    QString s = QString("m%1").arg(i);
+                    clampHash[i] = new cClamp(m_pMyServer,s);
+                    addChannel(s);
                 }
                 else
                 {
@@ -39,6 +56,7 @@ void cClampInterface::actualizeClampStatus()
                     {   // if we already have a clamp on this place it was actually disconnected
                         cClamp* clamp;
                         clamp = clampHash.take(i);
+                        removeChannel(clamp->getChannelName());
                         delete clamp;
                     }
                 }
@@ -48,4 +66,51 @@ void cClampInterface::actualizeClampStatus()
 }
 
 
+void cClampInterface::addChannel(QString channel)
+{
+    m_ClampChannelList.append(channel);
+}
 
+
+void cClampInterface::removeChannel(QString channel)
+{
+    m_ClampChannelList.removeAll(channel);
+}
+
+
+void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
+{
+    switch (cmdCode)
+    {
+    case ClampSystem::cmdClampChannelCat:
+        protoCmd->m_sOutput = m_ReadClampChannelCatalog(protoCmd->m_sInput);
+        break;
+    }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
+}
+
+QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        QString s = "";
+        int len;
+        len = m_ClampChannelList.count();
+        if (len > 0)
+        {
+            int i;
+            for (i = 0; i < len-1; i++)
+                s += m_ClampChannelList.at(i) + ";";
+            s += m_ClampChannelList.at(i);
+        }
+
+        s += ";"; // no clamp present
+        return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
