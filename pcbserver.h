@@ -119,6 +119,8 @@ public:
 signals:
     void sendAnswer(QByteArray answer);
 
+public slots:
+    virtual void sendAnswer(cProtonetCommand* protoCmd);
 
 protected:
     void initSCPIConnections();
@@ -135,7 +137,6 @@ protected slots:
     virtual void doConfiguration() = 0; // all servers must configure
     virtual void setupServer(); // all servers must setup
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
-    virtual void sendAnswer(cProtonetCommand* protoCmd);
     virtual void setSCPIConnection();
     virtual void SCPIInput();
     virtual void SCPIdisconnect();

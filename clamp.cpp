@@ -7,6 +7,7 @@
 #include <syslog.h>
 
 #include "clamp.h"
+#include "clampinterface.h"
 #include "adjustment.h"
 #include "justdata.h"
 #include "mt310s2d.h"
@@ -58,7 +59,7 @@ cClamp::~cClamp()
         ptr = m_RangeList.at(i);
         delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
     }
-
+    disconnect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
 }
 
 
@@ -631,6 +632,7 @@ void cClamp::addSystAdjInterface()
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
+    connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
 }
 
 
