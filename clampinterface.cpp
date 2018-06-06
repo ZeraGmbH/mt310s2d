@@ -10,6 +10,7 @@ cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler)
     :m_pMyServer(server), m_pControler(controler)
 {
     m_nClampStatus = 0;
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     actualizeClampStatus(); // at start we look for already connected clamps
 }
 
