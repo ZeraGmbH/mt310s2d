@@ -47,7 +47,7 @@ void cClampInterface::actualizeClampStatus()
                 {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    QString s = m_pMyServer->m_pSenseInterface->getChannelSystemName(i);
+                    QString s = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
                     clampHash[i] = new cClamp(m_pMyServer, s);
                     addChannel(s);
                 }
