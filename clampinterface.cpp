@@ -3,6 +3,7 @@
 #include "atmel.h"
 #include "scpi.h"
 #include "clamp.h"
+#include "senseinterface.h"
 #include "protonetcommand.h"
 
 
@@ -46,8 +47,8 @@ void cClampInterface::actualizeClampStatus()
                 {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    QString s = QString("m%1").arg(i);
-                    clampHash[i] = new cClamp(m_pMyServer,s);
+                    QString s = m_pMyServer->m_pSenseInterface->getChannelSystemName(i);
+                    clampHash[i] = new cClamp(m_pMyServer, s);
                     addChannel(s);
                 }
                 else

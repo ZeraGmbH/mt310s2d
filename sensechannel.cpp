@@ -199,6 +199,12 @@ QString &cSenseChannel::getDescription()
 }
 
 
+quint8 cSenseChannel::getCtrlChannel()
+{
+    return m_nCtrlChannel;
+}
+
+
 void cSenseChannel::setDescription(const QString &s)
 {
     m_sDescription = s;

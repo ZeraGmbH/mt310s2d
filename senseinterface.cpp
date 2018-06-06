@@ -208,6 +208,20 @@ cSenseChannel *cSenseInterface::getChannel(QString &name)
 }
 
 
+QString cSenseInterface::getChannelSystemName(quint16 ctrlChannel)
+{
+    QString s;
+    for (int i = 0; i < m_ChannelList.count(); i++)
+        if (m_ChannelList.at(i)->getCtrlChannel() == ctrlChannel)
+        {
+            s = m_ChannelList.at(i)->getName();
+            break;
+        }
+
+    return s;
+}
+
+
 cSenseRange* cSenseInterface::getRange(QString channelName, QString rangeName)
 {
     return getChannel(channelName)->getRange(rangeName);

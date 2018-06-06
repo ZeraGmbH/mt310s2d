@@ -50,6 +50,7 @@ public:
     QString& getName();
     QString& getAlias();
     QString& getDescription();
+    quint8 getCtrlChannel();
     void setDescription(const QString& s);
     void setUnit(QString& s);
     void setMMode(int m);

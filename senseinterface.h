@@ -69,6 +69,7 @@ public:
     ~cSenseInterface();
     virtual void initSCPIConnection(QString leadingNoMModedes);
     cSenseChannel* getChannel(QString& name);
+    QString getChannelSystemName(quint16 ctrlChannel);
     cSenseRange* getRange(QString channelName, QString rangeName);
     virtual quint8 getAdjustmentStatus(); // we return 0 if adj. otherwise  1 +2 +4
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
