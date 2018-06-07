@@ -590,7 +590,11 @@ void cClamp::addSense()
 void cClamp::addSenseInterface()
 {
     for (int i = 0; i < m_RangeList.count(); i++)
-        m_RangeList.at(i)->initSCPIConnection(QString("SENSE:%1").arg(m_sName));
+    {
+        cSenseRange* p_Range = m_RangeList.at(i);
+        p_Range->initSCPIConnection(QString("SENSE:%1").arg(m_sChannelName));
+        connect(p_Range, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
+    }
 }
 
 
