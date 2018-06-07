@@ -56,6 +56,7 @@ void cClampInterface::actualizeClampStatus()
                     // a clamp is not connected
                     if (clampHash.contains(i))
                     {   // if we already have a clamp on this place it was actually disconnected
+                        m_nClampStatus &= (~bmask);
                         cClamp* clamp;
                         clamp = clampHash.take(i);
                         removeChannel(clamp->getChannelName());
