@@ -523,8 +523,13 @@ void cMT310S2dServer::MTIntHandler(int)
     pAtmel->readCriticalStatus(stat);
     if ((stat & (1 << clampstatusInterrupt)) > 0)
     {
-        m_pClampInterface->actualizeClampStatus();
+        // we must reset clamp status before handling the interrupt
+        // because system may emit more interrupts so we might think
+        // we must handle them too....but atualizeClampStatus uses
+        // global variable for the clamp status -> so this might fail
+        // with unexpected behaviour.
         pAtmel->resetCriticalStatus(stat & (1 << clampstatusInterrupt));
+        m_pClampInterface->actualizeClampStatus();
     }
 
     // here we must add the handling for message interrupts sent by fpga device
