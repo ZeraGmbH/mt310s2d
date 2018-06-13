@@ -17,6 +17,8 @@ public:
     quint16 getChecksum();
 
 protected:
+    QString m_sDeviceNode;
+    quint8 m_nI2CAdr;
     quint8 m_nDebugLevel;
     quint16 m_nChecksum;
     virtual void exportAdjData(QDataStream& stream) = 0; // the derived class exports adjdata to qdatastream
@@ -27,9 +29,6 @@ protected:
     virtual void setI2CMux() = 0; // default we do nothing here but if necessary it can be overwritten
 
 private:
-    QString m_sDeviceNode;
-    quint8 m_nI2CAdr;
-
     void setAdjCountChecksum(QByteArray& ba);
 };
 
