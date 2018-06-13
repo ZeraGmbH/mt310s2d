@@ -182,7 +182,7 @@ QString cClamp::exportXMLString()
 {
     QDateTime DateTime;
 
-    QString s = QString("%1AdjustmentData").arg(m_sName);
+    QString s = QString("ClampAdjustmentData");
     QDomDocument justqdom (s);
 
     QDomElement pcbtag = justqdom.createElement( "CLAMP" );
@@ -303,7 +303,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
     QDateTime DateTime;
     QDomDocumentType TheDocType = qdomdoc->doctype ();
 
-    if  (TheDocType.name() != QString("%1AdjustmentData").arg(m_sName))
+    if  (TheDocType.name() != QString("ClampAdjustmentData"))
     {
         if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
