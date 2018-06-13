@@ -5,6 +5,7 @@
 #include <QDomElement>
 #include <QBuffer>
 #include <syslog.h>
+#include "i2cutils.h"
 
 #include "clamp.h"
 #include "clampinterface.h"
@@ -20,8 +21,8 @@
 #include "clampjustdata.h"
 #include "protonetcommand.h"
 
-cClamp::cClamp(cMT310S2dServer *server, QString channelName)
-    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)), m_pMyServer(server), m_sChannelName(channelName)
+cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
+    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)), m_pMyServer(server), m_sChannelName(channelName), m_nCtrlChannel(ctrlChannel)
 {
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
@@ -470,7 +471,16 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 
 void cClamp::setI2CMux()
 {
+    ushort I2CAdress;
+    uchar outpBuf[1]; // 1 adr byte, 1 byte data = mux code
 
+    I2CAdress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux);
+    outpBuf[0] = (m_nCtrlChannel - 4) | 8; // .... hardware ????
+
+    struct i2c_msg Msgs = {addr: I2CAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
+    struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
+
+    I2CTransfer(m_sDeviceNode, I2CAdress, 0, &MuxData);
 }
 
 
@@ -513,17 +523,17 @@ void cClamp::initClamp(quint8 type)
     case CL120A:
         m_sName = QString("CL120A");
 
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("1V")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,  "C100A",  "C100A", true, 100.0, 2953735.0, 3544482.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("500mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("1V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,   "C50A",   "C50A", true,  50.0, 2953735.0, 3544482.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("100mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("200mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,   "C10A",   "C10A", true,  10.0, 2796203.0, 3355444.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("50mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("100mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,    "C5A",    "C5A", true,   5.0, 3495253.0, 4194304.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("10mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("20mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,    "C1A",    "C1A", true,   1.0, 2796203.0, 3355444.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("5mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("10mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C500mA", "C500mA", true,   0.5, 3495253.0, 4194304.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C100mA", "C100mA", true,   0.1, 2796203.0, 3355444.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
@@ -537,17 +547,17 @@ void cClamp::initClamp(quint8 type)
     case CL300A:
         m_sName = QString("CL300A");
 
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("1V")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,  "C300A",  "C300A", true, 300.0, 3544482.0, 3579927.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("500mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("1V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,  "C150A",  "C150A", true, 150.0, 3544482.0, 4253379.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("100mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("200mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,   "C30A",   "C30A", true,  30.0, 3355443.0, 4026532.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("50mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("100mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,   "C15A",   "C15A", true,  15.0, 4194304.0, 5033165.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("10mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("20mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,    "C3A",    "C3A", true,   3.0, 3355443.0, 4026532.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("5mV")));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("10mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,  "C1.5A",  "C1.5A", true,   1.5, 4194304.0, 5033165.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C300mA", "C300mA", true,   0.3, 3355443.0, 4026532.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
