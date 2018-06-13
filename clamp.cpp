@@ -203,6 +203,11 @@ QString cClamp::exportXMLString()
     t = justqdom.createTextNode(m_sSerial);
     tag.appendChild( t );
 
+    tag = justqdom.createElement( "Name" );
+    pcbtag.appendChild( tag );
+    t = justqdom.createTextNode(m_sName);
+    tag.appendChild( t );
+
     tag = justqdom.createElement( "Date" );
     pcbtag.appendChild( tag );
     QDate d=DateTime.currentDateTime().date();
@@ -310,6 +315,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
     bool TypeOK = false;
     bool VersionNrOK = false;
     bool SerialNrOK = false;
+    bool NameOK = false;
     bool DateOK = false;
     bool TimeOK = false;
 
@@ -340,6 +346,14 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
         {
             SerialNrOK = true;
             m_sSerial = qdElem.text();
+        }
+
+        else
+
+        if (tName == "Name")
+        {
+            NameOK = true;
+            m_sName = qdElem.text();
         }
 
         else
@@ -694,7 +708,7 @@ QString cClamp::m_ReadWriteSerial(QString& sInput)
         if (cmd.isCommand(1))
         {
             QString serial = cmd.getParam(0);
-            if (serial.length() == 10)
+            if (serial.length() <= 10)
             {
                 m_sSerial = serial;
                 answer = SCPI::scpiAnswer[SCPI::ack];
