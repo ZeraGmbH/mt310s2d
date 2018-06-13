@@ -22,7 +22,7 @@
 #include "protonetcommand.h"
 
 cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
-    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)), m_pMyServer(server), m_sChannelName(channelName), m_nCtrlChannel(ctrlChannel)
+    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)), cAdjXML(server->m_pDebugSettings->getDebugLevel()), m_pMyServer(server), m_sChannelName(channelName), m_nCtrlChannel(ctrlChannel)
 {
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
@@ -99,6 +99,12 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         break;
     case clamp::cmdChksum:
         protoCmd->m_sOutput = m_ReadChksum(protoCmd->m_sInput);
+        break;
+    case clamp::cmdXMLWrite:
+        protoCmd->m_sOutput = m_WriteXML(protoCmd->m_sInput);
+        break;
+    case clamp::cmdXMLRead:
+        protoCmd->m_sOutput = m_ReadXML(protoCmd->m_sInput);
         break;
     case clamp::cmdStatAdjustment:
         protoCmd->m_sOutput = m_ReadAdjStatus(protoCmd->m_sInput);
@@ -640,6 +646,15 @@ void cClamp::addSystAdjInterface()
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
+    cmdParent = QString("SYSTEM:ADJUSTMENT:CLAMP:%1:XML").arg(m_sChannelName);
+
+    delegate = new cSCPIDelegate(cmdParent,"WRITE", SCPI::isCmd, m_pSCPIInterface, clamp::cmdXMLWrite);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(cmdParent,"READ", SCPI::isCmd, m_pSCPIInterface, clamp::cmdXMLRead);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+
     cmdParent = QString("STATUS:CLAMP:%1").arg(m_sChannelName);
 
     delegate = new cSCPIDelegate(cmdParent, "ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, clamp::cmdStatAdjustment);
@@ -860,6 +875,48 @@ QString cClamp::m_ReadChksum(QString& sInput)
     {
         answer = SCPI::scpiAnswer[SCPI::nak];
     }
+
+    return answer;
+}
+
+
+QString cClamp::m_WriteXML(QString &sInput)
+{
+    QString answer;
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(1))
+    {
+        QString filename = cmd.getParam(0);
+        if (exportAdjXML(filename))
+            answer = SCPI::scpiAnswer[SCPI::ack];
+        else
+            answer = SCPI::scpiAnswer[SCPI::errexec];
+    }
+
+    else
+        answer = SCPI::scpiAnswer[SCPI::nak];
+
+    return answer;
+}
+
+
+QString cClamp::m_ReadXML(QString &sInput)
+{
+    QString answer;
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(1))
+    {
+        QString filename = cmd.getParam(0);
+        if (importAdjXML(filename))
+            answer = SCPI::scpiAnswer[SCPI::ack];
+        else
+            answer = SCPI::scpiAnswer[SCPI::errexec];
+    }
+
+    else
+        answer = SCPI::scpiAnswer[SCPI::nak];
 
     return answer;
 }

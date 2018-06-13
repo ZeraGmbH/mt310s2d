@@ -6,6 +6,7 @@
 #include <QDateTime>
 
 #include "adjflash.h"
+#include "adjxml.h"
 #include "scpiconnection.h"
 
 namespace clamp
@@ -19,6 +20,8 @@ namespace clamp
         cmdFlashWrite,
         cmdFlashRead,
         cmdChksum,
+        cmdXMLWrite,
+        cmdXMLRead,
         cmdStatAdjustment
     };
 
@@ -31,7 +34,7 @@ class cMT310S2dServer;
 class cSenseRange;
 class QDomDocument;
 
-class cClamp: public cAdjFlash, public cSCPIConnection
+class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
 public:
     cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel);
@@ -79,6 +82,8 @@ private:
     QString m_WriteFlash(QString &sInput);
     QString m_ReadFlash(QString &sInput);
     QString m_ReadChksum(QString &sInput);
+    QString m_WriteXML(QString &sInput);
+    QString m_ReadXML(QString &sInput);
     QString m_ReadAdjStatus(QString &sInput);
 
 };
