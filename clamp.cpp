@@ -124,17 +124,17 @@ void cClamp::exportAdjData(QDataStream &stream)
 
     stream << m_nType;
     stream << m_nFlags;
-    stream << m_sName.toStdString().c_str(); // the clamp's name
-    stream << m_sVersion.toStdString().c_str(); // version
-    stream << m_sSerial.toStdString().c_str(); //  serial
-    stream << mDateTime.toString(Qt::TextDate).toStdString().c_str(); // date, time
+    stream << m_sName; // the clamp's name
+    stream << m_sVersion; // version
+    stream << m_sSerial; //  serial
+    stream << mDateTime.toString(Qt::TextDate); // date, time
 
     for (int i = 0; i < m_RangeList.count(); i++)
     {
         QString spec;
 
         spec = QString("%1").arg(m_RangeList.at(i)->getName());
-        stream << spec.toLatin1();
+        stream << spec;
         m_RangeList.at(i)->getJustData()->Serialize(stream);
     }
 }
