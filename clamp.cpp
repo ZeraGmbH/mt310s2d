@@ -521,6 +521,7 @@ quint8 cClamp::getAdjustmentStatus()
 quint8 cClamp::readClampType()
 {
     QByteArray ba;
+    setI2CMux();
     if (readFlash(ba)) // flash data could be read with correct chksum
     {
         quint8 type;
