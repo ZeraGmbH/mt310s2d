@@ -147,6 +147,7 @@ bool cClamp::importAdjData(QDataStream &stream)
 
     n = 0;
 
+    stream.skipRawData(6);
     stream >> m_nType;
     stream >> m_nFlags;
     stream >> m_sName;
