@@ -8,7 +8,7 @@
 #include <QHostAddress>
 #include <xmlconfigreader.h>
 #include <QCoreApplication>
-#include <protonetserver.h>
+#include <xiqnetserver.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <syslog.h>

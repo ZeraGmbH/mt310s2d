@@ -2,13 +2,13 @@
 #define NOTIFICATIONDATA_H
 
 #include <QByteArray>
-#include <protonetpeer.h>
+#include <xiqnetpeer.h>
 
 #include "notificationstring.h"
 
 struct cNotificationData
 {
-    ProtoNetPeer *netPeer;
+    XiQNetPeer *netPeer;
     QByteArray clientID;
     quint16 notifier;
     cNotificationString *notString;

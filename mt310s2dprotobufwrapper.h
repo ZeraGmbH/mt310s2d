@@ -1,17 +1,17 @@
 #ifndef MT310S2DPROTOBUFWRAPPER_H
 #define MT310S2DPROTOBUFWRAPPER_H
 
-#include <protonetwrapper.h>
+#include <xiqnetwrapper.h>
 
-class cMT310S2dProtobufWrapper : public ProtoNetWrapper
+class cMT310S2dProtobufWrapper : public XiQNetWrapper
 {
 public:
   cMT310S2dProtobufWrapper();
 
 
-  google::protobuf::Message *byteArrayToProtobuf(QByteArray bA);
+  std::shared_ptr<google::protobuf::Message> byteArrayToProtobuf(QByteArray bA) override;
 
-  QByteArray protobufToByteArray(google::protobuf::Message *pMessage);
+  QByteArray protobufToByteArray(const google::protobuf::Message &pMessage) override;
 };
 
 #endif // MT310S2DPROTOBUFWRAPPER_H

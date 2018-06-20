@@ -11,7 +11,7 @@ systemd_notification {
 }
 
 LIBS +=  -lSCPI
-LIBS +=  -lproto-net-qt
+LIBS +=  -lxiqnet
 LIBS +=  -lzerai2c
 LIBS +=  -lzeramisc
 LIBS +=  -lzeraxmlconfig
