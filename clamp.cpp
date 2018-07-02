@@ -540,6 +540,8 @@ void cClamp::initClamp(quint8 type)
 {
     cClampJustData* clampJustData;
 
+    m_RangeList.clear(); // we must clear our list, maybe we wanted to redefine a clamp
+
     switch (type)
     {
     case CL120A:
