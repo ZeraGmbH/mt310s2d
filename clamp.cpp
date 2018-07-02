@@ -787,12 +787,14 @@ QString cClamp::m_ReadWriteType(QString& sInput)
 
                 m_nType = type;
                 initClamp(type);
-                exportAdjFlash();
-                addSense();
-                addSenseInterface();
-
-                answer = SCPI::scpiAnswer[SCPI::ack];
-
+                if (exportAdjFlash())
+                {
+                    addSense();
+                    addSenseInterface();
+                    answer = SCPI::scpiAnswer[SCPI::ack];
+                }
+                else
+                    answer = SCPI::scpiAnswer[SCPI::errexec];
             }
 
             else
