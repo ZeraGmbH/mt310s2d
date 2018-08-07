@@ -70,9 +70,9 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
     for (i = 0; i < 4; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "250V",   "250V", true, 250.0, 4415057.0, 5298069.0, 0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",     "8V", true,   8.0, 3355443.0, 4026532.0, 1, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV" , "100mV", true,   0.1, 4026532.0, 4831839.0, 2, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "250V",   "250V", true, 250.0, 4415057.0, 5298069.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",     "8V", true,   8.0, 3355443.0, 4026532.0, 8388607.0, 1, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV" , "100mV", true,   0.1, 4026532.0, 4831839.0, 8388607.0, 2, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
         /*
         rngList.append(new cSenseRange(m_pSCPIInterface,  "HF250V",   "250V", false, 250.0, 1078.0, 1294.0, 0, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
@@ -86,28 +86,28 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
     for (i = 4; i < 7; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "10A",   "10A", true,  10.0, 3197613.0, 3837136.0,  0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "5A",    "5A", true,   5.0, 3197613.0, 3837136.0,  1, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "2.5A",  "2.5A", true,   2.5, 3997016.0, 4796420.0,  2, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "1.0A",  "1.0A", true,   1.0, 4177527.0, 5013033.0,  3, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "500mA", "500mA", true,   0.5, 4177527.0, 5013033.0,  4, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "250mA", "250mA", true,  0.25, 4177527.0, 5013033.0,  5, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "100mA", "100mA", true,   0.1, 4177527.0, 5013033.0,  6, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mA",  "50mA", true,  0.05, 4177527.0, 5013033.0,  7, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "25mA",  "25mA", true, 0.025, 4177527.0, 5013033.0,  8, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "10A",   "10A", true,  10.0, 3197613.0, 3837136.0, 8388607.0,  0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "5A",    "5A", true,   5.0, 3197613.0, 3837136.0, 8388607.0,  1, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "2.5A",  "2.5A", true,   2.5, 3997016.0, 4796420.0, 8388607.0,  2, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "1.0A",  "1.0A", true,   1.0, 4177527.0, 5013033.0, 8388607.0,  3, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "500mA", "500mA", true,   0.5, 4177527.0, 5013033.0, 8388607.0,  4, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "250mA", "250mA", true,  0.25, 4177527.0, 5013033.0, 8388607.0,  5, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "100mA", "100mA", true,   0.1, 4177527.0, 5013033.0, 8388607.0,  6, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mA",  "50mA", true,  0.05, 4177527.0, 5013033.0, 8388607.0,  7, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "25mA",  "25mA", true, 0.025, 4177527.0, 5013033.0, 8388607.0,  8, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",    "8V", false,   8.0, 3355443.0, 4026532.0,  9, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "5V",    "5V", false,   5.0, 4194304.0, 5033165.0, 10, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "2V",    "2V", false,   2.0, 2835586.0, 3402704.0, 11, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,    "1V",    "1V", false,   1.0, 2835586.0, 3402704.0, 12, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "500mV", "500mV", false,   0.5, 3544482.0, 4253379.0, 13, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "200mV", "200mV", false,   0.2, 2684355.0, 3221226.0, 14, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV", "100mV", false,   0.1, 3355443.0, 4026532.0, 15, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mV",  "50mV", false,  0.05, 3355443.0, 4026532.0, 16, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "20mV",  "20mV", false,  0.02, 2684355.0, 3221226.0, 17, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "10mV",  "10mV", false,  0.01, 3355443.0, 4026532.0, 18, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", false, 0.005, 3355443.0, 4026532.0, 19, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", false, 0.002, 2684355.0, 3221226.0, 20, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",    "8V", false,   8.0, 3355443.0, 4026532.0, 8388607.0,  9, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "5V",    "5V", false,   5.0, 4194304.0, 5033165.0, 8388607.0, 10, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "2V",    "2V", false,   2.0, 2835586.0, 3402704.0, 8388607.0, 11, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,    "1V",    "1V", false,   1.0, 2835586.0, 3402704.0, 8388607.0, 12, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "500mV", "500mV", false,   0.5, 3544482.0, 4253379.0, 8388607.0, 13, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "200mV", "200mV", false,   0.2, 2684355.0, 3221226.0, 8388607.0, 14, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface, "100mV", "100mV", false,   0.1, 3355443.0, 4026532.0, 8388607.0, 15, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "50mV",  "50mV", false,  0.05, 3355443.0, 4026532.0, 8388607.0, 16, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "20mV",  "20mV", false,  0.02, 2684355.0, 3221226.0, 8388607.0, 17, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,  "10mV",  "10mV", false,  0.01, 3355443.0, 4026532.0, 8388607.0, 18, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", false, 0.005, 3355443.0, 4026532.0, 8388607.0, 19, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+        rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", false, 0.002, 2684355.0, 3221226.0, 8388607.0, 20, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
         /*
         rngList.append(new cSenseRange(m_pSCPIInterface, "HF10A"  ,"10A"  , false, 10.0  , 781.0,  938.0, 0, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
@@ -125,20 +125,19 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
     }
 
     rngList.clear();
-    rngList.append(new cSenseRange(m_pSCPIInterface,    "0A",    "0A", true,    0.0, 3197613.0, 3837136.0,  0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-
-    rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",    "8V", false,   8.0, 3355443.0, 4026532.0,  9, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,    "5V",    "5V", false,   5.0, 4194304.0, 5033165.0, 10, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,    "2V",    "2V", false,   2.0, 2835586.0, 3402704.0, 11, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,    "1V",    "1V", false,   1.0, 2835586.0, 3402704.0, 12, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface, "500mV", "500mV", false,   0.5, 3544482.0, 4253379.0, 13, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface, "200mV", "200mV", false,   0.2, 2684355.0, 3221226.0, 14, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface, "100mV", "100mV", false,   0.1, 3355443.0, 4026532.0, 15, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,  "50mV",  "50mV", false,  0.05, 3355443.0, 4026532.0, 16, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,  "20mV",  "20mV", false,  0.02, 2684355.0, 3221226.0, 17, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,  "10mV",  "10mV", false,  0.01, 3355443.0, 4026532.0, 18, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", false, 0.005, 3355443.0, 4026532.0, 19, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-    rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", false, 0.002, 2684355.0, 3221226.0, 20, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,    "0A",    "0A", true,    0.0, 3197613.0, 3837136.0, 8388607.0,  0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",    "8V", false,   8.0, 3355443.0, 4026532.0, 8388607.0,  9, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,    "5V",    "5V", false,   5.0, 4194304.0, 5033165.0, 8388607.0, 10, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,    "2V",    "2V", false,   2.0, 2835586.0, 3402704.0, 8388607.0, 11, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,    "1V",    "1V", false,   1.0, 2835586.0, 3402704.0, 8388607.0, 12, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface, "500mV", "500mV", false,   0.5, 3544482.0, 4253379.0, 8388607.0, 13, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface, "200mV", "200mV", false,   0.2, 2684355.0, 3221226.0, 8388607.0, 14, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface, "100mV", "100mV", false,   0.1, 3355443.0, 4026532.0, 8388607.0, 15, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,  "50mV",  "50mV", false,  0.05, 3355443.0, 4026532.0, 8388607.0, 16, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,  "20mV",  "20mV", false,  0.02, 2684355.0, 3221226.0, 8388607.0, 17, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,  "10mV",  "10mV", false,  0.01, 3355443.0, 4026532.0, 8388607.0, 18, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", false, 0.005, 3355443.0, 4026532.0, 8388607.0, 19, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
+    rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", false, 0.002, 2684355.0, 3221226.0, 8388607.0, 20, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
     m_ChannelList.at(7)->setRangeList(rngList);
 
