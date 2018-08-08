@@ -196,7 +196,7 @@ QString cSenseRange::m_ReadRangeRejection(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fRejection);
+        return QString("%1").arg(m_fRejection, 0, 'g', 8);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -207,7 +207,7 @@ QString cSenseRange::m_ReadRangeOVRejection(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fOVRejection);
+        return QString("%1").arg(m_fOVRejection, 0, 'g', 8);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -218,7 +218,7 @@ QString cSenseRange::m_ReadRangeADWRejection(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fADCRejection);
+        return QString("%1").arg(m_fADCRejection, 0, 'g', 8);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
