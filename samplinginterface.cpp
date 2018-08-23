@@ -17,13 +17,14 @@ cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
 {
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
-    m_pllChannelList.append("0");
     m_pllChannelList.append("m0");
     m_pllChannelList.append("m1");
     m_pllChannelList.append("m2");
+    m_pllChannelList.append("m6");
     m_pllChannelList.append("m3");
     m_pllChannelList.append("m4");
     m_pllChannelList.append("m5");
+    m_pllChannelList.append("m7");
 
     QList<SamplingSystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pSamplingSettings->getChannelSettings();
@@ -290,7 +291,7 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
     {
         if (pAtmel->readPLLChannel(pll) == cmddone)
         {
-            if (pll < 7) // then everything is ok
+            if (pll < 8) // then everything is ok
                 return m_pllChannelList.at(pll);
         }
 
