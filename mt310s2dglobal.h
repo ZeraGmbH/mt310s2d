@@ -11,9 +11,12 @@ enum DebugLevel {NoDebug, DebugLevel1, DebugLevel2, DebugLevel3 = 4, MaxDebugLev
 
 #define CheckSumOffset 56
 
+// 28.08.2018 v1.01 erste lauffähige version mit geändertem netzwerk zugang systemctl zdsp1d.socket
+
+
 #define LeiterkartenName "ADW5743"
 #define ServerName "mt310s2d"
-#define ServerVersion "V1.00"
+#define ServerVersion "V1.01"
 #define MaxClients 30
 #define defaultDebugLevel NoDebug
 #define defaultFPGADeviceNode "/dev/zFPGA1reg"
