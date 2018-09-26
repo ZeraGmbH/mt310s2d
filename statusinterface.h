@@ -15,7 +15,8 @@ namespace StatusSystem
 enum StatusCommands
 {
     cmdDevice,
-    cmdAdjustment
+    cmdAdjustment,
+    cmdAuthorization
 };
 }
 
@@ -37,6 +38,7 @@ protected slots:
 private:
     cMT310S2dServer* m_pMyServer;
     quint8 getDeviceStatus();
+    quint8 getAuthorizationStatus();
 };
 
 #endif // STATUSINTERFACE_H
