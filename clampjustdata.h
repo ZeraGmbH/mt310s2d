@@ -22,8 +22,11 @@ public:
 
 protected:
     virtual double getGainCorrection(double par);
+    virtual double getJustGainCorrection(double par);
     virtual double getPhaseCorrection(double par);
+    virtual double getJustPhaseCorrection(double par);
     virtual double getOffsetCorrection(double par);
+    virtual double getJustOffsetCorrection(double par);
 
 private:
     cSenseRange* m_pFirstStageRange; //

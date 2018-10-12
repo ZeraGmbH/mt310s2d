@@ -8,8 +8,11 @@
 
 enum DirectJustCommands
 {
+    DirectGain,
     DirectJustGain,
+    DirectPhase,
     DirectJustPhase,
+    DirectOffset,
     DirectJustOffset,
     DirectJustStatus,
     DirectJustCompute,
@@ -50,15 +53,21 @@ protected slots:
 
 protected:
     QString mReadGainCorrection(QString&sInput);
+    QString mReadJustGainCorrection(QString&sInput);
     QString mReadPhaseCorrection(QString&sInput);
+    QString mReadJustPhaseCorrection(QString&sInput);
     QString mReadOffsetCorrection(QString&sInput);
+    QString mReadJustOffsetCorrection(QString&sInput);
     QString m_ReadStatus(QString& sInput);
     QString m_ComputeJustData(QString& sInput);
     QString m_InitJustData(QString& sInput);
 
     virtual double getGainCorrection(double par);
+    virtual double getJustGainCorrection(double par);
     virtual double getPhaseCorrection(double par);
+    virtual double getJustPhaseCorrection(double par);
     virtual double getOffsetCorrection(double par);
+    virtual double getJustOffsetCorrection(double par);
 };
 
 
