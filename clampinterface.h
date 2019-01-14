@@ -19,7 +19,8 @@ namespace ClampSystem
 
 enum ClampCommands
 {
-    cmdClampChannelCat
+    cmdClampChannelCat,
+    cmdClampWrite
 };
 }
 
@@ -45,6 +46,7 @@ private:
     QHash<int, cClamp*> clampHash;
 
     QString m_ReadClampChannelCatalog(QString& sInput);
+    QString m_WriteAllClamps(QString& sInput);
 
 };
 

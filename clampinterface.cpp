@@ -25,6 +25,9 @@ void cClampInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1SYSTEM:CLAMP:CHANNEL").arg(leadingNodes),"CATALOG",SCPI::isQuery, m_pSCPIInterface, ClampSystem::cmdClampChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:CLAMP").arg(leadingNodes),"WRITE",SCPI::isCmd, m_pSCPIInterface, ClampSystem::cmdClampWrite);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
@@ -79,13 +82,15 @@ void cClampInterface::removeChannel(QString channel)
     m_ClampChannelList.removeAll(channel);
 }
 
-
 void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case ClampSystem::cmdClampChannelCat:
         protoCmd->m_sOutput = m_ReadClampChannelCatalog(protoCmd->m_sInput);
+        break;
+    case ClampSystem::cmdClampWrite:
+        protoCmd->m_sOutput = m_WriteAllClamps(protoCmd->m_sInput);
         break;
     }
 
@@ -112,6 +117,41 @@ QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
 
         s += ";"; // no clamp present
         return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cClampInterface::m_WriteAllClamps(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(0))
+    {
+        int n;
+        n = clampHash.count();
+
+        if (n > 0)
+        {
+            bool done;
+            QList<int> keylist;
+
+            keylist = clampHash.keys();
+            done = true;
+
+            for (int i = 0; i < n; n++)
+            {
+                cClamp* pClamp;
+                pClamp = clampHash[keylist.at(i)];
+                done = done && pClamp->exportAdjFlash();
+            }
+
+            if (!done)
+                return SCPI::scpiAnswer[SCPI::errexec];
+        }
+
+        return SCPI::scpiAnswer[SCPI::ack]; // we return ack even in case there is no clamp because nothing went wrong
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
