@@ -170,6 +170,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
 
     if (cmd.isQuery())
     {
+        QString s;
         int n;
         n = clampHash.count();
 
@@ -177,7 +178,6 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         {
             QList<int> keylist;
             cClamp* pClamp;
-            QString s;
 
             keylist = clampHash.keys();
             for (int i = 0; i < n; n++)
@@ -186,6 +186,8 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                 s.append(pClamp->exportXMLString());
             }
         }
+
+        return s;
     }
     else
     {
