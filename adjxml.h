@@ -12,6 +12,7 @@ public:
 
     virtual bool exportAdjXML(QString file);
     virtual bool importAdjXML(QString file);
+    virtual bool importAdjXMLString(QString& xml);
 
 protected:
     virtual QString exportXMLString() = 0; // adjustment data xml export to string

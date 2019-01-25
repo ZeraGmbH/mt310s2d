@@ -62,6 +62,9 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "READ", SCPI::isCmd, m_pSCPIInterface, SystemSystem::cmdAdjFlashRead);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT").arg(leadingNodes), "XML", SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdAdjXMLImportExport);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "WRITE", SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdAdjXMLWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -116,6 +119,9 @@ void cSystemInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         break;
     case SystemSystem::cmdAdjFlashRead:
         protoCmd->m_sOutput = m_AdjFlashRead(protoCmd->m_sInput);
+        break;
+    case SystemSystem::cmdAdjXMLImportExport:
+        protoCmd->m_sOutput = m_AdjXmlImportExport(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdAdjXMLWrite:
         protoCmd->m_sOutput = m_AdjXMLWrite(protoCmd->m_sInput);
@@ -383,6 +389,28 @@ QString cSystemInterface::m_AdjFlashRead(QString &sInput)
     }
 
     return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
+{
+    QString s;
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        s = m_pMyServer->m_pSenseInterface->exportXMLString();
+    }
+    else
+    {
+        if (cmd.isCommand(1))
+        {
+            QString XML = cmd.getParam(0);
+            m_pMyServer->m_pSenseInterface->importAdjXMLString(XML);
+        }
+    }
+
+    return s;
 }
 
 

@@ -20,7 +20,8 @@ namespace ClampSystem
 enum ClampCommands
 {
     cmdClampChannelCat,
-    cmdClampWrite
+    cmdClampWrite,
+    cmdClampImportExport
 };
 }
 
@@ -47,6 +48,7 @@ private:
 
     QString m_ReadClampChannelCatalog(QString& sInput);
     QString m_WriteAllClamps(QString& sInput);
+    QString m_ImportExportAllClamps(QString& sInput);
 
 };
 

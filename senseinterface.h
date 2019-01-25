@@ -74,11 +74,11 @@ public:
     virtual quint8 getAdjustmentStatus(); // we return 0 if adj. otherwise  1 +2 +4
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
+    virtual QString exportXMLString();
 
 protected:
     virtual void exportAdjData(QDataStream& stream);
     virtual bool importAdjData(QDataStream& stream);
-    virtual QString exportXMLString();
     virtual bool importXMLDocument(QDomDocument* qdomdoc);
 
     virtual void setI2CMux();

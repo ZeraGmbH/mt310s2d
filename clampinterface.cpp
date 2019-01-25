@@ -28,6 +28,9 @@ void cClampInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1SYSTEM:CLAMP").arg(leadingNodes),"WRITE",SCPI::isCmd, m_pSCPIInterface, ClampSystem::cmdClampWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:CLAMP").arg(leadingNodes),"XML",SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, ClampSystem::cmdClampImportExport);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
@@ -92,6 +95,9 @@ void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case ClampSystem::cmdClampWrite:
         protoCmd->m_sOutput = m_WriteAllClamps(protoCmd->m_sInput);
         break;
+    case ClampSystem::cmdClampImportExport:
+        protoCmd->m_sOutput = m_ImportExportAllClamps(protoCmd->m_sInput);
+        break;
     }
 
     if (protoCmd->m_bwithOutput)
@@ -155,4 +161,34 @@ QString cClampInterface::m_WriteAllClamps(QString &sInput)
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        int n;
+        n = clampHash.count();
+
+        if (n > 0)
+        {
+            QList<int> keylist;
+            cClamp* pClamp;
+            QString s;
+
+            keylist = clampHash.keys();
+            for (int i = 0; i < n; n++)
+            {
+                pClamp = clampHash[keylist.at(i)];
+                s.append(pClamp->exportXMLString());
+            }
+        }
+    }
+    else
+    {
+
+    }
 }

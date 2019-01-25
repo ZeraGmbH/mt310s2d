@@ -42,6 +42,7 @@ public:
     virtual quint8 getAdjustmentStatus();
     virtual void initSCPIConnection(QString);
     QString getChannelName();
+    virtual QString exportXMLString();
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
@@ -51,7 +52,6 @@ protected:
 
     virtual void exportAdjData(QDataStream& stream);
     virtual bool importAdjData(QDataStream& stream);
-    virtual QString exportXMLString();
     virtual bool importXMLDocument(QDomDocument* qdomdoc);
 
     virtual void setI2CMux();

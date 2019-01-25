@@ -62,3 +62,16 @@ bool cAdjXML::importAdjXML(QString file)
 }
 
 
+bool cAdjXML::importAdjXMLString(QString &xml)
+{
+    QDomDocument justqdom( "TheDocument" );
+    if ( !justqdom.setContent(xml) )
+    {
+        if ((DebugLevel & 1) != 0)
+            syslog(LOG_ERR,"justdata import, format error in xml file\n");
+        return false;
+    }
+    return importXMLDocument(&justqdom);
+}
+
+
