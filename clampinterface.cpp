@@ -180,7 +180,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
             cClamp* pClamp;
 
             keylist = clampHash.keys();
-            for (int i = 0; i < n; n++)
+            for (int i = 0; i < n; i++)
             {
                 pClamp = clampHash[keylist.at(i)];
                 s.append(pClamp->exportXMLString());
