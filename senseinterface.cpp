@@ -465,11 +465,11 @@ void cSenseInterface::exportAdjData(QDataStream &stream)
 }
 
 
-QString cSenseInterface::exportXMLString()
+QString cSenseInterface::exportXMLString(int indent)
 {
     QDateTime DateTime;
 
-    QString s = QString("%1AdjustmentData").arg(LeiterkartenName);
+    QString s = QString("PCBAdjustmentData");
     QDomDocument justqdom (s);
 
     QDomElement pcbtag = justqdom.createElement( "PCB" );
@@ -593,7 +593,7 @@ QString cSenseInterface::exportXMLString()
         }
     }
 
-    return justqdom.toString();
+    return justqdom.toString(indent);
 }
 
 
@@ -611,6 +611,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
     QDomElement rootElem = qdomdoc->documentElement();
     QDomNodeList nl = rootElem.childNodes();
 
+    bool TypeOK = false;
     bool VersionNrOK = false;
     bool SerialNrOK = false;
     bool DateOK = false;
@@ -627,6 +628,17 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
         }
 
         QString tName = qdElem.tagName();
+
+        if (tName == "Type")
+        {
+            if ( !(TypeOK = (qdElem.text() == QString(LeiterkartenName))))
+            {
+                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
+                return false;
+            }
+        }
+
+        else
 
         if (tName == "SerialNumber")
         {
