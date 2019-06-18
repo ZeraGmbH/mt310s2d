@@ -179,7 +179,7 @@ bool cClamp::importAdjData(QDataStream &stream)
 }
 
 
-QString cClamp::exportXMLString()
+QString cClamp::exportXMLString(int indent)
 {
     QDateTime DateTime;
 
@@ -191,7 +191,7 @@ QString cClamp::exportXMLString()
 
     QDomElement tag = justqdom.createElement( "Type" );
     pcbtag.appendChild( tag );
-    QDomText t = justqdom.createTextNode(QString("%1").arg(m_nType));
+    QDomText t = justqdom.createTextNode(getClampName(m_nType));
     tag.appendChild( t );
 
     tag = justqdom.createElement( "VersionNumber" );
@@ -202,11 +202,6 @@ QString cClamp::exportXMLString()
     tag = justqdom.createElement( "SerialNumber" );
     pcbtag.appendChild( tag );
     t = justqdom.createTextNode(m_sSerial);
-    tag.appendChild( t );
-
-    tag = justqdom.createElement( "Name" );
-    pcbtag.appendChild( tag );
-    t = justqdom.createTextNode(m_sName);
     tag.appendChild( t );
 
     tag = justqdom.createElement( "Date" );
@@ -295,7 +290,7 @@ QString cClamp::exportXMLString()
         tag.appendChild(t);
     }
 
-    return justqdom.toString();
+    return justqdom.toString(indent);
 }
 
 
@@ -316,7 +311,6 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
     bool TypeOK = false;
     bool VersionNrOK = false;
     bool SerialNrOK = false;
-    bool NameOK = false;
     bool DateOK = false;
     bool TimeOK = false;
 
@@ -334,7 +328,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 
         if (tName == "Type")
         {
-            if ( !(TypeOK = (qdElem.text().toInt() == m_nType)))
+            if ( !(TypeOK = (qdElem.text() == getClampName(m_nType))))
             {
                 if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                 return false;
@@ -347,14 +341,6 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
         {
             SerialNrOK = true;
             m_sSerial = qdElem.text();
-        }
-
-        else
-
-        if (tName == "Name")
-        {
-            NameOK = true;
-            m_sName = qdElem.text();
         }
 
         else
@@ -541,12 +527,11 @@ void cClamp::initClamp(quint8 type)
     cClampJustData* clampJustData;
 
     m_RangeList.clear(); // we must clear our list, maybe we wanted to redefine a clamp
+    m_sName = getClampName(type);
 
     switch (type)
     {
     case CL120A:
-        m_sName = QString("CL120A");
-
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,  "C100A",  "C100A", true, 100.0, 2953735.0, 3544482.0, 8388607.0, 11, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("1V")));
@@ -569,8 +554,6 @@ void cClamp::initClamp(quint8 type)
         break;
 
     case CL300A:
-        m_sName = QString("CL300A");
-
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("5V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface,  "C300A",  "C300A", true, 300.0, 2097152.0, 2097152.0, 8388607.0, 11, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2V")));
@@ -591,8 +574,6 @@ void cClamp::initClamp(quint8 type)
         break;
 
     case CL1000A:
-        m_sName = QString("CL1000A");
-
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("1V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C1000A", "C1000A", true, 1000.0, 2362988.0, 2362988.0, 8388607.0, 12, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("500mV")));
@@ -612,6 +593,30 @@ void cClamp::initClamp(quint8 type)
 
         break;
     }
+}
+
+
+QString cClamp::getClampName(quint8 type)
+{
+    QString CLName;
+
+    switch (type)
+    {
+       case CL120A:
+            CLName = QString("CL120A");
+            break;
+       case CL300A:
+            CLName = QString("CL300A");
+            break;
+       case CL1000A:
+            CLName  = QString("CL1000A");
+            break;
+
+       default:
+            CLName = QString("Undefined");
+    }
+
+    return CLName;
 }
 
 

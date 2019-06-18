@@ -42,7 +42,7 @@ public:
     virtual quint8 getAdjustmentStatus();
     virtual void initSCPIConnection(QString);
     QString getChannelName();
-    virtual QString exportXMLString();
+    virtual QString exportXMLString(int indent = 1);
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
@@ -57,6 +57,7 @@ protected:
     virtual void setI2CMux();
     virtual quint8 readClampType();
     virtual void initClamp(quint8 type);
+    virtual QString getClampName(quint8 type);
     void addSense();
     void addSenseInterface();
     void addSystAdjInterface();
