@@ -183,7 +183,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
             for (int i = 0; i < n; i++)
             {
                 pClamp = clampHash[keylist.at(i)];
-                s.append(pClamp->exportXMLString());
+                s.append(pClamp->exportXMLString(-1));
             }
         }
 
