@@ -602,7 +602,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
     QDateTime DateTime;
     QDomDocumentType TheDocType = qdomdoc->doctype ();
 
-    if  (TheDocType.name() != QString("%1AdjustmentData").arg(LeiterkartenName))
+    if  (TheDocType.name() != QString("PCBAdjustmentData"))
     {
         if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
