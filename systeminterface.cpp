@@ -399,14 +399,17 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
 
     if (cmd.isQuery())
     {
-        s = m_pMyServer->m_pSenseInterface->exportXMLString();
+        s = m_pMyServer->m_pSenseInterface->exportXMLString(-1);
     }
     else
     {
         if (cmd.isCommand(1))
         {
             QString XML = cmd.getParam(0);
-            m_pMyServer->m_pSenseInterface->importAdjXMLString(XML);
+            if (m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
+                return SCPI::scpiAnswer[SCPI::ack];
+            else
+                return SCPI::scpiAnswer[SCPI::errexec];
         }
     }
 
