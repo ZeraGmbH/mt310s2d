@@ -404,14 +404,11 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
     }
     else
     {
-        if (cmd.isCommand(1))
-        {
-            QString XML = cmd.getParam(0);
-            if (m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
-                return SCPI::scpiAnswer[SCPI::ack];
-            else
-                return SCPI::scpiAnswer[SCPI::errexec];
-        }
+        QString XML = cmd.getParam();
+        if (m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
+            s = SCPI::scpiAnswer[SCPI::ack];
+        else
+            s = SCPI::scpiAnswer[SCPI::errexec];
     }
 
     return s;
