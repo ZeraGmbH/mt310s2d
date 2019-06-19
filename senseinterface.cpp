@@ -616,6 +616,8 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
     bool SerialNrOK = false;
     bool DateOK = false;
     bool TimeOK = false;
+    bool ChksumOK = false;
+    bool SenseOK = false;
 
     for (int i = 0; i < nl.length() ; i++)
     {
@@ -685,22 +687,26 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
 
         if (tName == "Adjustment")
         {
-            if ( VersionNrOK && SerialNrOK && DateOK && TimeOK)
+            if ( VersionNrOK && SerialNrOK && DateOK && TimeOK && TypeOK)
             {
-                bool done = false;
-
                 QDomNodeList adjChildNl = qdElem.childNodes();
                 for (qint32 j = 0; j < adjChildNl.length(); j++)
                 {
+                    QString tagName;
+
                     qdNode = adjChildNl.item(j);
 
-                    qDebug() << qdNode.toElement().tagName();
-                    if (qdNode.toElement().tagName() != "Sense") // data not for us
-                        return false;
+                    tagName = qdNode.toElement().tagName();
+                    if (tagName == "Chksum")
+                    {
+                        ChksumOK = true; // we don't read it actually because if something was changed outside ....
+                    }
+
+                    else
 
                     if (qdNode.toElement().tagName() == "Sense")
                     {
-                        done = true;
+                        SenseOK = true;
 
                         QDomNodeList channelNl = qdNode.childNodes(); // we have a list our channels entries now
 
@@ -788,8 +794,6 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
                         }
                     }
                 }
-                if (!done)
-                    return done; // we couldn't find sense
             }
             else
             {
@@ -804,7 +808,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
         }
     }
 
-    return true;
+    return ChksumOK && SenseOK;
 }
 
 
