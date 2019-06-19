@@ -400,6 +400,7 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
     if (cmd.isQuery())
     {
         s = m_pMyServer->m_pSenseInterface->exportXMLString(-1);
+        s.replace("\n","");
     }
     else
     {
