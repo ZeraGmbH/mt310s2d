@@ -37,12 +37,15 @@ class QDomDocument;
 class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
 public:
+    cClamp(){}
     cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel);
     virtual ~cClamp();
     virtual quint8 getAdjustmentStatus();
     virtual void initSCPIConnection(QString);
     QString getChannelName();
+    QString getSerial();
     virtual QString exportXMLString(int indent = 1);
+    virtual bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);

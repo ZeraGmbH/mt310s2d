@@ -54,12 +54,14 @@ cClamp::~cClamp()
     m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
 
     // then we delete all our ranges including their scpi interface
-    for (int i = 0; i < m_RangeList.count(); i++)
-    {
-        cSenseRange* ptr;
-        ptr = m_RangeList.at(i);
-        delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
-    }
+    if (m_RangeList.count() > 0)
+        for (int i = 0; i < m_RangeList.count(); i++)
+        {
+            cSenseRange* ptr;
+            ptr = m_RangeList.at(i);
+            delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
+        }
+
     disconnect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
 }
 
@@ -72,6 +74,12 @@ void cClamp::initSCPIConnection(QString)
 QString cClamp::getChannelName()
 {
     return m_sChannelName;
+}
+
+
+QString cClamp::getSerial()
+{
+    return m_sSerial;
 }
 
 
@@ -294,7 +302,7 @@ QString cClamp::exportXMLString(int indent)
 }
 
 
-bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
+bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
 {
     QDateTime DateTime;
     QDomDocumentType TheDocType = qdomdoc->doctype ();
@@ -328,10 +336,15 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 
         if (tName == "Type")
         {
-            if ( !(TypeOK = (qdElem.text() == getClampName(m_nType))))
+            if (ignoreType)
+                TypeOK = true;
+            else
             {
-                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
-                return false;
+                if ( !(TypeOK = (qdElem.text() == getClampName(m_nType))))
+                {
+                    if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
+                    return false;
+                }
             }
         }
 
@@ -474,6 +487,11 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
     return true;
 }
 
+
+bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
+{
+    return importXMLDocument(qdomdoc, false);
+}
 
 
 void cClamp::setI2CMux()
