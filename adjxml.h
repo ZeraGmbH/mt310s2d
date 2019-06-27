@@ -8,6 +8,7 @@ class QDomDocument;
 class cAdjXML
 {
 public:
+    cAdjXML(){}
     cAdjXML(quint8 dlevel);
 
     virtual bool exportAdjXML(QString file);

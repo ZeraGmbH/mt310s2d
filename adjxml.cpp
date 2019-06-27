@@ -71,6 +71,7 @@ bool cAdjXML::importAdjXMLString(QString &xml)
             syslog(LOG_ERR,"justdata import, format error in xml file\n");
         return false;
     }
+
     return importXMLDocument(&justqdom);
 }
 
