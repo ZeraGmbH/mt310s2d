@@ -75,6 +75,7 @@ public:
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
     virtual QString exportXMLString(int indent = 1);
+    void m_ComputeSenseAdjData();
 
 protected:
     virtual void exportAdjData(QDataStream& stream);
