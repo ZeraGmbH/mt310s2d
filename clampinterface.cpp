@@ -1,3 +1,5 @@
+#include <QDomDocument>
+
 #include "clampinterface.h"
 #include "mt310s2d.h"
 #include "atmel.h"
@@ -191,6 +193,92 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
     }
     else
     {
+        // here we got 1 to n concenated xml document's that we want distribute to connected clamps.
+        // if we got more than 1 xml document we first check if we have the correct clamps connected
+        // we do this using the serial numbers
+        // if we only have 1 clamp and 1 xml document we accept this document and take the data for
+        // initialzing. so this function can be used by testing field to set up new clamps :-)
 
+        QStringList sl;
+        QString allXML;
+        QString answer;
+        QString sep = "<!DOCTYPE";
+        int anzXML;
+        bool err;
+
+        allXML = cmd.getParam(); // we fetch all input
+        sl = allXML.split(sep);
+        anzXML = sl.count();
+
+        if ( (anzXML != clampHash.count()) || (anzXML == 0) )
+        {
+            err = true;
+            answer = SCPI::errxml;
+        }
+
+        if (!err)
+            for (int i = 0; i < anzXML; i++)
+            {
+                QString XML;
+                cClamp tmpClamp;
+                QDomDocument justqdom( "TheDocument" );
+
+                XML = sep + sl.at(i);
+                if ( !justqdom.setContent(XML) )
+                {
+                    err = true;
+                    answer = SCPI::errxml;
+                    break;
+                }
+
+                if (tmpClamp.importXMLDocument(&justqdom,true))
+                {
+                    QList<int> keylist;
+                    cClamp *pClamp, *pClamp4Use;
+                    int anzClamps;
+                    int anzSNR;
+
+                    anzSNR = 0;
+                    keylist = clampHash.keys();
+                    anzClamps = keylist.count();
+
+                    for (int j = 0; j < anzClamps; j++)
+                    {
+                        pClamp = clampHash[keylist.at(j)];
+                        if (pClamp->getSerial() == tmpClamp.getSerial())
+                        {
+                            pClamp4Use = pClamp;
+                            anzSNR++;
+                        }
+                    }
+
+                    if ( (anzSNR == 1) /*|| ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1))*/ )
+                    // we have 1 matching serial number or (we only have 1 xml and 1 clamp)
+                    {
+                        pClamp4Use->importXMLDocument(&justqdom,false); // we let the found clamp import its xml data
+                        m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
+                        // then we let it compute its new adjustment coefficients... we simply call senseinterface's compute
+                        // command. we compute a little bit to much but this doesn't matter at all
+                        if (!pClamp4Use->exportAdjFlash()) // and then we program the clamp
+                        {
+                            err = true;
+                            answer = SCPI::errexec;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    err = true;
+                    answer = SCPI::errxml;
+                    break;
+                }
+
+            }
+
+        if (!err)
+            answer = SCPI::ack;
+
+        return answer;
     }
 }
