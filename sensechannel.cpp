@@ -147,12 +147,13 @@ void cSenseChannel::addRangeList(QList<cSenseRange *> &list)
 
 void cSenseChannel::removeRangeList(QList<cSenseRange *> &list)
 {
-    for (int i = 0; i < list.count(); i++)
-    {
-        cSenseRange *rng;
-        rng = list.at(i);
-        m_RangeList.removeOne(rng);
-    }
+    if (list.count() > 0)
+        for (int i = 0; i < list.count(); i++)
+        {
+            cSenseRange *rng;
+            rng = list.at(i);
+            m_RangeList.removeOne(rng);
+        }
 
     setNotifierSenseChannelRangeCat();
 }
