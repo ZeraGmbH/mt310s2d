@@ -9,6 +9,7 @@ class QDataStream;
 class cAdjFlash
 {
 public:
+    cAdjFlash(){}
     cAdjFlash(QString devnode, quint8 dlevel, quint8 i2cadr);
     virtual bool exportAdjFlash();
     virtual bool importAdjFlash();
