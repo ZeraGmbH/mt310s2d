@@ -405,10 +405,16 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
     else
     {
         QString XML = cmd.getParam();
-        if (m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
-            s = SCPI::scpiAnswer[SCPI::ack];
+        if (!m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
+            s = SCPI::errxml;
         else
-            s = SCPI::scpiAnswer[SCPI::errexec];
+        {
+            m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
+            if (!m_pMyServer->m_pSenseInterface->exportAdjFlash())
+                s = SCPI::scpiAnswer[SCPI::errexec];
+            else
+                s = SCPI::scpiAnswer[SCPI::ack];
+        }
     }
 
     return s;
