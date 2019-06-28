@@ -53,10 +53,9 @@ bool cAdjFlash::importAdjFlash()
 
 void cAdjFlash::setAdjCountChecksum(QByteArray &ba)
 {
-    quint16 chksum;
     quint32 count;
 
-    chksum = 0;
+    m_nChecksum = 0;
     count = ba.size();
 
     QByteArray ca(6, 0); // qbyte array mit 6 bytes
@@ -70,12 +69,12 @@ void cAdjFlash::setAdjCountChecksum(QByteArray &ba)
     mem.seek(0); // positioning qbuffer to chksum
     mem.write(ca); // we set count here  and chksum to 0
 
-    chksum = qChecksum(ba.data(),ba.size()); // +crc-16
+    m_nChecksum = qChecksum(ba.data(),ba.size()); // +crc-16
 
     QDataStream ca2stream( &ca, QIODevice::WriteOnly );
     ca2stream.setVersion(QDataStream::Qt_5_4);
 
-    ca2stream << count << chksum;
+    ca2stream << count << m_nChecksum;
 
     mem.seek(0); // positioning qbuffer to chksum
     mem.write(ca); // setting correct chksum now
