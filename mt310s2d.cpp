@@ -260,7 +260,7 @@ void cMT310S2dServer::programAtmelFlash()
             }
 
             r = read(fd,(char*) &pcbTestReg,4);
-            syslog(LOG_ERR,"reading fpga adr 0xffc =  %x\n", (unsigned int) pcbTestReg);
+            syslog(LOG_INFO,"reading fpga adr 0xffc =  %x\n", (unsigned int) pcbTestReg);
             if (r < 0 )
             {
                 syslog(LOG_ERR,"error reading fpga device: %s\n", devNode.toLatin1().data());
@@ -300,6 +300,7 @@ void cMT310S2dServer::programAtmelFlash()
             cIntelHexFileIO IntelHexData;
             if (IntelHexData.ReadHexFile(atmelFlashfilePath))
             {
+               syslog(LOG_INFO,"Writing %s to atmel...\n", atmelFlashfilePath);
                if (pAtmel->loadFlash(IntelHexData) == cmddone)
                {
                    syslog(LOG_INFO,"Programming atmel passed\n");
@@ -307,9 +308,10 @@ void cMT310S2dServer::programAtmelFlash()
                    // we must restart atmel now
                    if (pAtmel->startProgram() == cmddone)
                    {
-                       syslog(LOG_ERR,"Restart atmel after programming done\n");
+                       syslog(LOG_INFO,"Restart atmel after programming done\n");
                        // once the job is done, we remove the file
-                       atmelFile.remove();
+                       if(!atmelFile.remove())
+                           syslog(LOG_ERR,"Error deleting %s\n", atmelFlashfilePath);
 
                        emit atmelProgrammed();
                    }

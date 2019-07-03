@@ -27,6 +27,7 @@ cAtmelWatcher::~cAtmelWatcher()
 
 void cAtmelWatcher::start()
 {
+    syslog(LOG_INFO,"Atmel run-detection started\n");
     m_TimerTO.start();
     m_TimerPeriod.start();
     connect(&m_TimerPeriod, SIGNAL(timeout()), this, SLOT(doAtmelTest()));
@@ -57,7 +58,7 @@ void cAtmelWatcher::doAtmelTest()
             close(fd);
 
             if (DEBUG2)
-                syslog(LOG_ERR,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
+                syslog(LOG_INFO,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
 
             if (ret < 0 )
             {
@@ -67,6 +68,7 @@ void cAtmelWatcher::doAtmelTest()
             {
                 if ((pcbTestReg & 1) > 0)
                 {
+                    syslog(LOG_INFO,"Atmel running\n");
                     m_TimerTO.disconnect(SIGNAL(timeout()));
                     m_TimerPeriod.disconnect(SIGNAL(timeout()));
                     m_TimerTO.stop();
@@ -81,6 +83,7 @@ void cAtmelWatcher::doAtmelTest()
 
 void cAtmelWatcher::doTimeout()
 {
+    syslog(LOG_ERR,"Atmel did not start within timeout\n");
     m_TimerPeriod.disconnect(SIGNAL(timeout()));
     m_TimerPeriod.stop();
     emit timeout();
