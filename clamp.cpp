@@ -286,6 +286,11 @@ QString cClamp::exportXMLString(int indent)
 
         gpotag = justqdom.createElement( "Offset" );
         rtag.appendChild(gpotag);
+        tag = justqdom.createElement( "Status" );
+        jdata = rng->getJustData()->m_pOffsetCorrection->SerializeStatus();
+        t = justqdom.createTextNode(jdata);
+        tag.appendChild(t);
+        gpotag.appendChild(tag);
         tag = justqdom.createElement( "Coefficients" );
         gpotag.appendChild(tag);
         jdata = rng->getJustData()->m_pOffsetCorrection->SerializeCoefficients();
