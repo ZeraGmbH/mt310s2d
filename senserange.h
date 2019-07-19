@@ -44,6 +44,7 @@ public:
     QString& getName();
     double getUrvalue();
     quint8 getSelCode();
+    quint16 getMMask();
     cMT310S2JustData* getJustData();
     bool isAvail();
     void setMMode(int m);

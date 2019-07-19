@@ -78,6 +78,12 @@ quint8 cSenseRange::getSelCode()
 }
 
 
+quint16 cSenseRange::getMMask()
+{
+    return m_nMMask;
+}
+
+
 cMT310S2JustData *cSenseRange::getJustData()
 {
     return m_pJustdata;
