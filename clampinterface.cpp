@@ -202,7 +202,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         // if we only have 1 clamp and 1 xml document we accept this document and take the data for
         // initialzing. so this function can be used by testing field to set up new clamps :-)
 
-        QStringList sl;
+        QStringList sl, sl2;
         QString allXML;
         QString answer;
         QString sep = "<!DOCTYPE";
@@ -212,8 +212,14 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         allXML = cmd.getParam(); // we fetch all input
         while (allXML[0] == QChar(' ')) // we remove all leading blanks
             allXML.remove(0,1);
-        sl = allXML.split(sep);
-        anzXML = sl.count();
+
+        if (sl.count() > 0)
+            for (int i = 0; i < sl.count(); i++)
+                if (sl.at(i).length() > 0)
+                    sl2.append(sl.at(i));
+
+        sl2 = allXML.split(sep);
+        anzXML = sl2.count();
 
         if ( (anzXML != clampHash.count()) || (anzXML == 0) )
         {
@@ -228,7 +234,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                 cClamp tmpClamp;
                 QDomDocument justqdom( "TheDocument" );
 
-                XML = sep + sl.at(i);
+                XML = sep + sl2.at(i);
                 if ( !justqdom.setContent(XML) )
                 {
                     err = true;
