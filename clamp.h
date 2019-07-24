@@ -37,7 +37,7 @@ class QDomDocument;
 class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
 public:
-    cClamp(){}
+    cClamp(){m_pMyServer = 0;}
     cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel);
     virtual ~cClamp();
     virtual quint8 getAdjustmentStatus();

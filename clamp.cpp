@@ -50,19 +50,22 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
 
 cClamp::~cClamp()
 {
-    // first we remove the ranges from the sense interface
-    m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
+    if (m_pMyServer != 0)
+    {
+        // first we remove the ranges from the sense interface
+        m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
 
-    // then we delete all our ranges including their scpi interface
-    if (m_RangeList.count() > 0)
-        for (int i = 0; i < m_RangeList.count(); i++)
-        {
-            cSenseRange* ptr;
-            ptr = m_RangeList.at(i);
-            delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
-        }
+        // then we delete all our ranges including their scpi interface
+        if (m_RangeList.count() > 0)
+            for (int i = 0; i < m_RangeList.count(); i++)
+            {
+                cSenseRange* ptr;
+                ptr = m_RangeList.at(i);
+                delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
+            }
 
-    disconnect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
+        disconnect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
+    }
 }
 
 
