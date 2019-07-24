@@ -210,13 +210,15 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         bool err;
 
         allXML = cmd.getParam(); // we fetch all input
+        while (allXML[0] == QChar(' ')) // we remove all leading blanks
+            allXML.remove(0,1);
         sl = allXML.split(sep);
         anzXML = sl.count();
 
         if ( (anzXML != clampHash.count()) || (anzXML == 0) )
         {
             err = true;
-            answer = SCPI::errxml;
+            answer = SCPI::scpiAnswer[SCPI::errxml];
         }
 
         if (!err)
@@ -230,7 +232,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                 if ( !justqdom.setContent(XML) )
                 {
                     err = true;
-                    answer = SCPI::errxml;
+                    answer = SCPI::scpiAnswer[SCPI::errxml];
                     break;
                 }
 
@@ -265,7 +267,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                         if (!pClamp4Use->exportAdjFlash()) // and then we program the clamp
                         {
                             err = true;
-                            answer = SCPI::errexec;
+                            answer = SCPI::scpiAnswer[SCPI::errexec];
                             break;
                         }
                     }
@@ -273,14 +275,14 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                 else
                 {
                     err = true;
-                    answer = SCPI::errxml;
+                    answer = SCPI::scpiAnswer[SCPI::errxml];
                     break;
                 }
 
             }
 
         if (!err)
-            answer = SCPI::ack;
+            answer = SCPI::scpiAnswer[SCPI::ack];
 
         return answer;
     }
