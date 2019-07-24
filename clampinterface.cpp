@@ -213,12 +213,13 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         while (allXML[0] == QChar(' ')) // we remove all leading blanks
             allXML.remove(0,1);
 
+        sl = allXML.split(sep);
+
         if (sl.count() > 0)
             for (int i = 0; i < sl.count(); i++)
                 if (sl.at(i).length() > 0)
                     sl2.append(sl.at(i));
 
-        sl2 = allXML.split(sep);
         anzXML = sl2.count();
 
         if ( (anzXML != clampHash.count()) || (anzXML == 0) )
