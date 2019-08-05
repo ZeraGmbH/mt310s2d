@@ -171,7 +171,20 @@ QString cMT310S2JustData::mReadPhaseCorrection(QString& sInput)
 
 QString cMT310S2JustData::mReadJustPhaseCorrection(QString &sInput)
 {
+    bool ok;
+    cSCPICommand cmd = sInput;
 
+    if (cmd.isQuery(1))
+    {
+        QString spar = cmd.getParam(0);
+        double par = spar.toDouble(&ok);
+        if (ok)
+            return QString("%1").arg(getJustPhaseCorrection(par));
+        else
+            return SCPI::scpiAnswer[SCPI::errval];
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -197,6 +210,20 @@ QString cMT310S2JustData::mReadOffsetCorrection(QString& sInput)
 
 QString cMT310S2JustData::mReadJustOffsetCorrection(QString &sInput)
 {
+    bool ok;
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery(1))
+    {
+        QString spar = cmd.getParam(0);
+        double par = spar.toDouble(&ok);
+        if (ok)
+            return QString("%1").arg(getJustOffsetCorrection(par));
+        else
+            return SCPI::scpiAnswer[SCPI::errval];
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
 
 }
 
