@@ -206,7 +206,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         QString allXML;
         QString answer;
         QString sep = "<!DOCTYPE";
-        int anzXML;
+        int anzXML, anzClamp;
         bool err;
 
         allXML = cmd.getParam(); // we fetch all input
@@ -221,15 +221,18 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                     sl2.append(sl.at(i));
 
         anzXML = sl2.count();
+        anzClamp = clampHash.count();
 
-        if ( (anzXML != clampHash.count()) || (anzXML == 0) )
+        if ( !((anzXML >0) && (anzClamp > 0)) )
         {
             err = true;
             answer = SCPI::scpiAnswer[SCPI::errxml];
         }
 
+        int i;
+
         if (!err)
-            for (int i = 0; i < anzXML; i++)
+            for (i = 0; (i < anzXML) && (anzClamp > 0); i++)
             {
                 QString XML;
                 cClamp tmpClamp;
@@ -265,8 +268,9 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                     }
 
                     if ( (anzSNR == 1) /*|| ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1))*/ )
-                    // we have 1 matching serial number or (we only have 1 xml and 1 clamp)
+                    // we have 1 matching serial number
                     {
+                        anzClamp--;
                         pClamp4Use->importXMLDocument(&justqdom,false); // we let the found clamp import its xml data
                         m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
                         // then we let it compute its new adjustment coefficients... we simply call senseinterface's compute
