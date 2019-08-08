@@ -148,7 +148,7 @@ QString cClampInterface::m_WriteAllClamps(QString &sInput)
             keylist = clampHash.keys();
             done = true;
 
-            for (int i = 0; i < n; n++)
+            for (int i = 0; i < n; i++)
             {
                 cClamp* pClamp;
                 pClamp = clampHash[keylist.at(i)];
