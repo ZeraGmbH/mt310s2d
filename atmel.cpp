@@ -357,14 +357,14 @@ atmelRM cATMEL::readPLLChannel(quint8& chn)
     quint8 PAR[1];
     chn = 0; // default AC
 
-    hw_cmd CMD = {hwGetMode, 0, PAR, 0, 0, 0, 0 };
+    hw_cmd CMD = {hwGetPLLChannel, 0, PAR, 0, 0, 0, 0 };
 
     if ( (writeCommand(&CMD) == 2) && (CMD.RM == 0))
     {
         char answ[2];
         if (readOutput(answ,2) == 2)
             chn = answ[0];
-                return cmddone;
+        return cmddone;
     }
 
     return cmdexecfault;
