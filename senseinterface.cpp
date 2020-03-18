@@ -380,9 +380,11 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     }
 
     stream >> s; // we take the serial number now
-    if (QString(s) != m_pMyServer->m_pSystemInfo->getSerialNumber())
-    {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong serialnumber\n");
+    if (QString(s) != m_pMyServer->m_pSystemInfo->getSerialNumber()) {
+        if (DEBUG1) {
+            syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
+                   s, qPrintable(m_pMyServer->m_pSystemInfo->getSerialNumber()));
+        }
         m_nSerialStatus += Adjustment::wrongSNR;
         if (!enable) return false; // wrong serial number
     }
