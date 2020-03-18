@@ -4,7 +4,7 @@
 
 
 <connectivity>
-    <debuglevel>0</debuglevel>
+    <debuglevel>1</debuglevel>
     <ethernet>
         <ipadress>
             <resourcemanager>127.0.0.1</resourcemanager>
