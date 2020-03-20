@@ -325,9 +325,10 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
 
     stream.skipRawData(6); // we don't need count and chksum
     stream >> s;
-    if (QString(s) != "ServerVersion")
-    {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, ServerVersion not found\n");
+    if (QString(s) != "ServerVersion") {
+        if(DEBUG1) {
+            syslog(LOG_ERR,"flashmemory read, ServerVersion not found\n");
+        }
         return false; // unexpected data
     }
 
@@ -335,9 +336,12 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     SVersion = QString(s);
     stream >> s; // we take the device name
 
-    if (QString(s) != m_pMyServer->m_pSystemInfo->getDeviceName())
-    {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong pcb name\n");
+    QString sysDevName = m_pMyServer->m_pSystemInfo->getDeviceName();
+    if (QString(s) != sysDevName) {
+        if(DEBUG1) {
+            syslog(LOG_ERR,"flashmemory read, contains wrong pcb name: flash %s / µC %s\n",
+                   s, qPrintable(sysDevName));
+        }
         return false; // wrong pcb name
     }
 
@@ -348,8 +352,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     pAtmel->getEEPROMAccessEnable(enable);
 
     QString sDV = m_pMyServer->m_pSystemInfo->getDeviceVersion();
-    if (qs != sDV)
-    {
+    if (qs != sDV) {
         // test ob sich nur die hinteren nummern der lca bzw. ctrl version geändert haben
         // indem die hinteren stellen der nummern aus sDeviceVersion nach s übertragen werden
         // und anschliessend nochmal verglichen wird
@@ -369,25 +372,36 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         ss.replace(ss2,sd2); // tausch .xx durch .yy
         qs.replace(qs.section(';',3,3), ss); // CTRL: x.yy -> s
 
-        if (qs != sDV)
-        {
-            if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber\n");
+        if (qs != sDV) {
+            if(DEBUG1) {
+                syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber: flash %s / µC %s\n",
+                       qPrintable(qs), qPrintable(sDV));
+            }
             m_nVersionStatus += Adjustment::wrongVERS;
-            if (!enable) return false; // wrong version number
+            if (!enable) {
+                return false; // wrong version number
+            }
         }
-        else
+        else {
             m_nVersionStatus = 0; // ok
+        }
     }
 
     stream >> s; // we take the serial number now
-    if (QString(s) != m_pMyServer->m_pSystemInfo->getSerialNumber())
-    {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong serialnumber\n");
+    QString sysSerNo = m_pMyServer->m_pSystemInfo->getSerialNumber();
+    if (QString(s) != sysSerNo) {
+        if (DEBUG1) {
+            syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
+                   s, qPrintable(sysSerNo));
+        }
         m_nSerialStatus += Adjustment::wrongSNR;
-        if (!enable) return false; // wrong serial number
+        if (!enable) {
+            return false; // wrong serial number
+        }
     }
-    else
+    else {
         m_nSerialStatus = 0; // ok
+    }
 
 
     stream >> s;
