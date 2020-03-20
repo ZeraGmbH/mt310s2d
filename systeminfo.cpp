@@ -1,8 +1,6 @@
 #include "atmel.h"
 #include "systeminfo.h"
 
-extern cATMEL* pAtmel;
-
 cSystemInfo::cSystemInfo()
 {
     m_sDeviceName = m_sPCBVersion = m_sLCAVersion = m_sCTRLVersion = m_sSerialNumber = "Unknown";

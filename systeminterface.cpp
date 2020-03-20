@@ -10,8 +10,6 @@
 #include "senseinterface.h"
 #include "protonetcommand.h"
 
-extern cATMEL* pAtmel;
-
 cSystemInterface::cSystemInterface(cMT310S2dServer *server)
     :m_pMyServer(server)
 {

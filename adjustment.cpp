@@ -19,7 +19,6 @@
 #include "adjustment.h"
 
 
-extern cATMEL* pAtmel;
 
 
 cAdjustment::cAdjustment(cMT310S2dServer *server)

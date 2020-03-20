@@ -11,9 +11,6 @@
 #include "sensechannel.h"
 #include "protonetcommand.h"
 
-extern cATMEL* pAtmel;
-
-
 cSenseChannel::cSenseChannel(cSCPI* scpiinterface, QString description, QString unit, SenseSystem::cChannelSettings *cSettings, quint8 nr)
     :m_sDescription(description), m_sUnit(unit)
 {

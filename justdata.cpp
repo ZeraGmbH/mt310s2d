@@ -13,8 +13,6 @@
 #include "justnode.h"
 
 
-extern cATMEL* pAtmel;
-
 cJustData::cJustData(cSCPI* scpiinterface, int order, double init)
     : m_nOrder(order)
 {

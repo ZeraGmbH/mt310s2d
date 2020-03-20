@@ -9,8 +9,6 @@
 #include "scpidelegate.h"
 #include "mt310s2justdata.h"
 
-extern cATMEL* pAtmel;
-
 cMT310S2JustData::cMT310S2JustData(cSCPI *scpiinterface)
 {
     m_pSCPIInterface = scpiinterface;

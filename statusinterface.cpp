@@ -4,9 +4,6 @@
 #include "statusinterface.h"
 #include "protonetcommand.h"
 
-extern cATMEL* pAtmel;
-
-
 cStatusInterface::cStatusInterface(cMT310S2dServer* server)
     :m_pMyServer(server)
 {

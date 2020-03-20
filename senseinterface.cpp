@@ -29,8 +29,6 @@
 #include "protonetcommand.h"
 
 
-extern cATMEL* pAtmel;
-
 cSenseInterface::cSenseInterface(cMT310S2dServer *server)
     :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)), cAdjXML(server->m_pDebugSettings->getDebugLevel()), m_pMyServer(server)
 {
@@ -221,7 +219,7 @@ cSenseChannel *cSenseInterface::getChannel(QString &name)
     if (i < m_ChannelList.count())
         return m_ChannelList.at(i);
     else
-        return 0;
+        return nullptr;
 }
 
 
@@ -421,11 +419,11 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         {
             cSenseChannel* chn;
             QString s = spec.at(1);
-            if ((chn = getChannel(s)) != 0)
+            if ((chn = getChannel(s)) != nullptr)
             {
                 cSenseRange* rng;
                 s = spec.at(2);
-                if ((rng = chn->getRange(s)) != 0)
+                if ((rng = chn->getRange(s)) != nullptr)
                 {
                     rng->getJustData()->Deserialize(stream);
                     done = true;
@@ -762,7 +760,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
 
                                 if (tName == "Range")
                                 {
-                                    if (chnPtr != 0) // if we know this channel
+                                    if (chnPtr != nullptr) // if we know this channel
                                     {
                                         QDomNodeList chnJustNl = ChannelJustNode.childNodes();
 
@@ -781,9 +779,9 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
                                                 rngPtr = chnPtr->getRange(Name);
                                             }
 
-                                            cJustData* pJustData = 0;
+                                            cJustData* pJustData = nullptr;
 
-                                            if (rngPtr != 0)
+                                            if (rngPtr != nullptr)
                                             {
                                                 if (tName == "Gain")
                                                     pJustData = rngPtr->getJustData()->m_pGainCorrection;

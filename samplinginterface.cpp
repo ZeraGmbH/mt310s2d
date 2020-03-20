@@ -10,8 +10,6 @@
 #include "atmel.h"
 #include "mt310s2d.h"
 
-extern cATMEL* pAtmel;
-
 cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
     :m_pMyServer(server)
 {
