@@ -248,7 +248,7 @@ QString cMT310S2JustData::m_ComputeJustData(QString& sInput)
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {
@@ -275,7 +275,7 @@ QString cMT310S2JustData::m_InitJustData(QString &sInput)
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {

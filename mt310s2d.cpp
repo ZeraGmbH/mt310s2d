@@ -301,12 +301,12 @@ void cMT310S2dServer::programAtmelFlash()
             if (IntelHexData.ReadHexFile(atmelFlashfilePath))
             {
                syslog(LOG_INFO,"Writing %s to atmel...\n", atmelFlashfilePath);
-               if (pAtmel->loadFlash(IntelHexData) == cmddone)
+               if (pAtmel->loadFlash(IntelHexData) == ZeraMcontrollerBase::cmddone)
                {
                    syslog(LOG_INFO,"Programming atmel passed\n");
 
                    // we must restart atmel now
-                   if (pAtmel->startProgram() == cmddone)
+                   if (pAtmel->startProgram() == ZeraMcontrollerBase::cmddone)
                    {
                        syslog(LOG_INFO,"Restart atmel after programming done\n");
                        // once the job is done, we remove the file

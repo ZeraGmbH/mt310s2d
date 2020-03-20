@@ -64,7 +64,7 @@ quint8 cStatusInterface::getDeviceStatus()
 {
     QString s;
 
-    if (pAtmel->readDeviceName(s) == cmddone) // no problem reading from atmel
+    if (pAtmel->readDeviceName(s) == ZeraMcontrollerBase::cmddone) // no problem reading from atmel
         return 1; // means device available
     else
         return 0;
@@ -77,7 +77,7 @@ quint8 cStatusInterface::getAuthorizationStatus()
     bool enable;
 
     ret  = 0;
-    if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+    if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
     {
         if (enable)
             ret = 1;

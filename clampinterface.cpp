@@ -41,7 +41,7 @@ void cClampInterface::actualizeClampStatus()
     quint16 clStat;
     quint16 clChange;
 
-    if ( m_pControler->readClampStatus(clStat) == cmddone)
+    if ( m_pControler->readClampStatus(clStat) == ZeraMcontrollerBase::cmddone)
     {
         clChange = clStat ^ m_nClampStatus; // now we know which clamps changed
         for (int i = 0; i < 16; i++)
