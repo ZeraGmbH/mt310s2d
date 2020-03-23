@@ -1,8 +1,6 @@
 #include "atmel.h"
 #include "systeminfo.h"
 
-extern cATMEL* pAtmel;
-
 cSystemInfo::cSystemInfo()
 {
     m_sDeviceName = m_sPCBVersion = m_sLCAVersion = m_sCTRLVersion = m_sSerialNumber = "Unknown";
@@ -12,13 +10,13 @@ cSystemInfo::cSystemInfo()
 
 void cSystemInfo::getSystemInfo()
 {
-    int rm = cmddone;
+    int rm = ZeraMcontrollerBase::cmddone;
     rm |= pAtmel->readDeviceName(m_sDeviceName);
     rm |= pAtmel->readPCBVersion(m_sPCBVersion);
     rm |= pAtmel->readLCAVersion(m_sLCAVersion);
     rm |= pAtmel->readCTRLVersion(m_sCTRLVersion);
     rm |= pAtmel->readSerialNumber(m_sSerialNumber);
-    m_bRead = (rm == cmddone);
+    m_bRead = (rm == ZeraMcontrollerBase::cmddone);
 }
 
 

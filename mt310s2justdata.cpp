@@ -9,8 +9,6 @@
 #include "scpidelegate.h"
 #include "mt310s2justdata.h"
 
-extern cATMEL* pAtmel;
-
 cMT310S2JustData::cMT310S2JustData(cSCPI *scpiinterface)
 {
     m_pSCPIInterface = scpiinterface;
@@ -248,7 +246,7 @@ QString cMT310S2JustData::m_ComputeJustData(QString& sInput)
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {
@@ -275,7 +273,7 @@ QString cMT310S2JustData::m_InitJustData(QString &sInput)
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {

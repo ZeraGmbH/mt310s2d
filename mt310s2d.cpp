@@ -48,9 +48,9 @@
 #endif
 
 
-cMT310S2dServer* MTServer;
-int pipeFD[2];
-char pipeFDBuf[2] = "I";
+static cMT310S2dServer* MTServer;
+static int pipeFD[2];
+static char pipeFDBuf[2] = "I";
 
 void SigHandler(int)
 {
@@ -59,7 +59,7 @@ void SigHandler(int)
 }
 
 
-struct sigaction mySigAction;
+static struct sigaction mySigAction;
 // sigset_t mySigmask, origSigmask;
 
 
@@ -68,22 +68,22 @@ cATMEL* pAtmel; // we take a static object for atmel connection
 cMT310S2dServer::cMT310S2dServer(QObject *parent)
     :cPCBServer(parent)
 {
-
-    m_pDebugSettings = 0;
-    m_pETHSettings = 0;
-    m_pI2CSettings = 0;
-    m_pFPGASettings = 0;
-    m_pCtrlSettings  = 0;
-    m_pSenseSettings = 0;
-    pAtmel = 0;
-    m_pAtmelWatcher = 0;
-    m_pStatusInterface = 0;
-    m_pSystemInterface = 0;
-    m_pSenseInterface = 0;
-    m_pClampInterface = 0;
-    m_pSystemInfo = 0;
-    m_pAdjHandler = 0;
-    m_pRMConnection = 0;
+    // TODO: Move to cPCBServer::cPCBServer?
+    m_pDebugSettings = nullptr;
+    m_pETHSettings = nullptr;
+    m_pI2CSettings = nullptr;
+    m_pFPGASettings = nullptr;
+    m_pCtrlSettings  = nullptr;
+    m_pSenseSettings = nullptr;
+    pAtmel = nullptr;
+    m_pAtmelWatcher = nullptr;
+    m_pStatusInterface = nullptr;
+    m_pSystemInterface = nullptr;
+    m_pSenseInterface = nullptr;
+    m_pClampInterface = nullptr;
+    m_pSystemInfo = nullptr;
+    m_pAdjHandler = nullptr;
+    m_pRMConnection = nullptr;
 
     m_pInitializationMachine = new QStateMachine(this);
 
@@ -249,9 +249,8 @@ void cMT310S2dServer::programAtmelFlash()
         }
         else
         {
-            ulong pcbTestReg;
-            int r;
-            if ( (r = lseek(fd,0xffc,0)) < 0 )
+            quint32 pcbTestReg;
+            if ( lseek(fd, 0xffc, 0) < 0 )
             {
                 syslog(LOG_ERR,"error positioning fpga device: %s\n", devNode.toLatin1().data());
                 syslog(LOG_ERR,"Programming atmel failed\n");
@@ -259,8 +258,8 @@ void cMT310S2dServer::programAtmelFlash()
                 emit abortInit();
             }
 
-            r = read(fd,(char*) &pcbTestReg,4);
-            syslog(LOG_INFO,"reading fpga adr 0xffc =  %x\n", (unsigned int) pcbTestReg);
+            ssize_t r = read(fd, &pcbTestReg, 4);
+            syslog(LOG_INFO,"reading fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
             if (r < 0 )
             {
                 syslog(LOG_ERR,"error reading fpga device: %s\n", devNode.toLatin1().data());
@@ -269,8 +268,8 @@ void cMT310S2dServer::programAtmelFlash()
             }
 
             pcbTestReg |=  1 << (atmelResetBit-1); // set bit for atmel reset
-            syslog(LOG_INFO,"writing fpga adr 0xffc =  %x\n", (unsigned int) pcbTestReg);
-            r = write(fd, (char*) &pcbTestReg,4);
+            syslog(LOG_INFO,"writing fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
+            r = write(fd, &pcbTestReg, 4);
 
             if (r < 0 )
             {
@@ -281,9 +280,9 @@ void cMT310S2dServer::programAtmelFlash()
 
             usleep(100); // give atmel some time for reset
 
-            pcbTestReg &=  ~(1 << (atmelResetBit-1)); // reset bit for atmel reset
-            syslog(LOG_INFO,"writing fpga adr 0xffc =  %x\n", (unsigned int) pcbTestReg);
-            r = write(fd, (char*) &pcbTestReg,4);
+            pcbTestReg &= static_cast<quint32>(~(1 << (atmelResetBit-1))); // reset bit for atmel reset
+            syslog(LOG_INFO,"writing fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
+            r = write(fd, &pcbTestReg, 4);
             close(fd);
 
             if (r < 0 )
@@ -301,12 +300,12 @@ void cMT310S2dServer::programAtmelFlash()
             if (IntelHexData.ReadHexFile(atmelFlashfilePath))
             {
                syslog(LOG_INFO,"Writing %s to atmel...\n", atmelFlashfilePath);
-               if (pAtmel->loadFlash(IntelHexData) == cmddone)
+               if (pAtmel->loadFlash(IntelHexData) == ZeraMcontrollerBase::cmddone)
                {
                    syslog(LOG_INFO,"Programming atmel passed\n");
 
                    // we must restart atmel now
-                   if (pAtmel->startProgram() == cmddone)
+                   if (pAtmel->startProgram() == ZeraMcontrollerBase::cmddone)
                    {
                        syslog(LOG_INFO,"Restart atmel after programming done\n");
                        // once the job is done, we remove the file
@@ -411,11 +410,11 @@ void cMT310S2dServer::doSetupServer()
             myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
             m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
 
-            mySigAction.sa_handler = &SigHandler; // signal handler einrichten
+            mySigAction.sa_handler = &SigHandler; // setup signal handler
             sigemptyset(&mySigAction.sa_mask);
             mySigAction. sa_flags = SA_RESTART;
-            mySigAction.sa_restorer = NULL;
-            sigaction(SIGIO, &mySigAction, NULL); // handler für sigio definieren
+            mySigAction.sa_restorer = nullptr;
+            sigaction(SIGIO, &mySigAction, nullptr); // set handler for sigio
 
             SetFASync();
             enableClampInterrupt();
@@ -538,13 +537,13 @@ void cMT310S2dServer::MTIntHandler(int)
     }
 
     // here we must add the handling for message interrupts sent by fpga device
-    if (false)
+    /*if (false)
     {
         QString message;
         message = QString("Error");
         qFatal(message.toLatin1());
         qWarning(message.toLatin1());
-    }
+    }*/
 }
 
 

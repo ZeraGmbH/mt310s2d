@@ -10,8 +10,6 @@
 #include "atmel.h"
 #include "mt310s2d.h"
 
-extern cATMEL* pAtmel;
-
 cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
     :m_pMyServer(server)
 {
@@ -242,7 +240,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
                 if (m_SampleRangeList.at(i)->getName() == srng)
                     break;
             if (i < m_SampleRangeList.count())
-                if ( pAtmel->setSamplingRange(m_SampleRangeList.at(i)->getSelCode()) == cmddone)
+                if ( pAtmel->setSamplingRange(m_SampleRangeList.at(i)->getSelCode()) == ZeraMcontrollerBase::cmddone)
                 {
                     setNotifierSampleChannelRange();
                     return SCPI::scpiAnswer[SCPI::ack];
@@ -289,7 +287,7 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (pAtmel->readPLLChannel(pll) == cmddone)
+        if (pAtmel->readPLLChannel(pll) == ZeraMcontrollerBase::cmddone)
         {
             if (pll < 8) // then everything is ok
                 return m_pllChannelList.at(pll);
@@ -304,7 +302,7 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
             QString pllchn = cmd.getParam(0);
             pll = m_pllChannelList.indexOf(pllchn);
 
-            if (pAtmel->setPLLChannel(pll) == cmddone)
+            if (pAtmel->setPLLChannel(pll) == ZeraMcontrollerBase::cmddone)
                 return SCPI::scpiAnswer[SCPI::ack];
             else
                 return SCPI::scpiAnswer[SCPI::errexec];
@@ -339,7 +337,7 @@ void cSamplingInterface::setNotifierSampleChannelRange()
     int i;
     quint8 sRange;
 
-    if (pAtmel->readSamplingRange(sRange) == cmddone)
+    if (pAtmel->readSamplingRange(sRange) == ZeraMcontrollerBase::cmddone)
     {
         for (i = 0; i < m_SampleRangeList.count(); i++)
             if (m_SampleRangeList.at(i)->getSelCode() == sRange)

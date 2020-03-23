@@ -96,7 +96,7 @@ private:
     QHash<QString,quint8> m_MModeHash;
 
     quint8 m_nVersionStatus;
-    qint8 m_nSerialStatus;
+    quint8 m_nSerialStatus;
 
     QString m_ReadVersion(QString& sInput);
     void m_ReadWriteMMode(cProtonetCommand* protoCmd);
