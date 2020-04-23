@@ -66,12 +66,8 @@ ZeraMcontrollerBase::atmelRM cATMEL::writeSerialNumber(QString &sNumber)
     else {
         QByteArray ba = sNumber.toLatin1();
         hw_cmd CMD(hwSetSerialNr, 0, reinterpret_cast<quint8*>(ba.data()), len);
-        if ( writeCommand(&CMD) == 0 ) {
-            ret = cmddone;
-        }
-        else {
-            ret = cmdexecfault;
-        }
+        writeCommand(&CMD);
+        ret = getLastErrorMask() == 0 ? cmddone : cmdexecfault;
     }
     return ret;
 }
@@ -99,12 +95,8 @@ ZeraMcontrollerBase::atmelRM cATMEL::writePCBVersion(QString &sVersion)
     else {
         QByteArray ba = sVersion.toLatin1();
         hw_cmd CMD(hwSetPCBVersion, 0, reinterpret_cast<quint8*>(ba.data()), len);
-        if(writeCommand(&CMD) == 0) {
-            ret = cmddone;
-        }
-        else {
-            ret = cmdexecfault;
-        }
+        writeCommand(&CMD);
+        ret = getLastErrorMask() == 0 ? cmddone : cmdexecfault;
     }
     return ret;
 }
@@ -124,39 +116,37 @@ ZeraMcontrollerBase::atmelRM cATMEL::readLCAVersion(QString& answer)
 
 ZeraMcontrollerBase::atmelRM cATMEL::startBootLoader()
 {
-    ZeraMcontrollerBase::atmelRM ret;
     hw_cmd CMD(hwStartBootloader, 0, nullptr, 0);
-    if( writeCommand(&CMD) == 0) { // bootloader started ...
-        ret = cmddone;
-    }
-    else {
-        ret = cmdexecfault;
-    }
-    return ret;
+    writeCommand(&CMD);
+    return getLastErrorMask() == 0 ? cmddone : cmdexecfault;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readChannelStatus(quint8 channel, quint8 &stat)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     quint8 answ[2];
     hw_cmd CMD (hwGetStatus, channel, nullptr, 0);
-    if(writeCommand(&CMD, answ, 2) == 2) {
+    writeCommand(&CMD, answ, 2);
+    if(getLastErrorMask() == 0) {
         stat = answ[0];
-        return cmddone;
+        ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readCriticalStatus(quint16 &stat)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     quint8 answ[3];
     hw_cmd CMD(hwGetCritStat, 0, nullptr, 0);
-    if(writeCommand(&CMD, answ, 3) == 3) {
-         stat = static_cast<quint16>(answ[0] << 8) + answ[1];
-         return cmddone;
+    writeCommand(&CMD, answ, 3);
+    if(getLastErrorMask() == 0) {
+         stat = (static_cast<quint16>(answ[0]) << 8) + answ[1];
+         ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
@@ -166,22 +156,22 @@ ZeraMcontrollerBase::atmelRM cATMEL::resetCriticalStatus(quint16 stat)
     PAR[0] = (stat >> 8) & 255;
     PAR[1] = stat & 255;
     hw_cmd CMD(hwResetCritStat, 0, PAR, 2);
-    if(writeCommand(&CMD) == 0) {
-        return cmddone;
-    }
-    return cmdexecfault;
+    writeCommand(&CMD);
+    return getLastErrorMask() == 0 ? cmddone : cmdexecfault;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readClampStatus(quint16 &stat)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     quint8 answ[2];
     hw_cmd CMD(hwGetClampStatus, 0, nullptr, 0);
-    if(writeCommand(&CMD, answ, 2) == 2) {
+    writeCommand(&CMD, answ, 2);
+    if(getLastErrorMask() == 0) {
          stat = answ[0];
-         return cmddone;
+         ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
@@ -191,57 +181,59 @@ ZeraMcontrollerBase::atmelRM cATMEL::writeIntMask(quint16 mask)
     PAR[0] = (mask >> 8) & 255;
     PAR[1] = mask & 255;
     hw_cmd CMD(hwSetIntMask, 0, PAR, 2);
-    if(writeCommand(&CMD) == 0) {
-        return cmddone;
-    }
-    return cmdexecfault;
+    writeCommand(&CMD);
+    return getLastErrorMask() == 0 ? cmddone : cmdexecfault;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readIntMask(quint16 &mask)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     quint8 answ[3];
     hw_cmd CMD(hwGetIntMask, 0, nullptr, 0);
-    if(writeCommand(&CMD, answ, 3) == 3) {
+    writeCommand(&CMD, answ, 3);
+    if(getLastErrorMask() == 0) {
          mask = static_cast<quint16>(answ[0] << 8) + answ[1];
-         return cmddone;
+         ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readRange(quint8 channel, quint8 &range)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     hw_cmd CMD(hwGetRange, channel, nullptr, 0);
     quint8 answ[2];
-    if(writeCommand(&CMD, answ, 2) == 2) {
+    writeCommand(&CMD, answ, 2);
+    if(getLastErrorMask() == 0) {
         range = answ[0];
-        return cmddone;
+        ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::setRange(quint8 channel, quint8 range)
 {
     hw_cmd CMD(hwSetRange, channel, &range, 1);
-    if(writeCommand(&CMD) == 0) {
-        return cmddone;
-    }
-    return cmdexecfault;
+    writeCommand(&CMD);
+    return getLastErrorMask() == 0 ? cmddone : cmdexecfault;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::getEEPROMAccessEnable(bool &enable)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     enable = false; // default
     hw_cmd CMD(hwGetFlashWriteAccess, 0, nullptr, 0);
     quint8 answ[2];
-    if(writeCommand(&CMD) == 2) {
+    writeCommand(&CMD, answ, 2);
+    if(getLastErrorMask() == 0) {
         enable = (answ[0] != 0);
-        return cmddone;
+        ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
@@ -261,44 +253,44 @@ ZeraMcontrollerBase::atmelRM cATMEL::setSamplingRange(quint8)
 ZeraMcontrollerBase::atmelRM cATMEL::setMeasMode(quint8 mmode)
 {
     hw_cmd CMD(hwSetMode, 0, &mmode, 1);
-    if(writeCommand(&CMD) == 0) {
-        return cmddone;
-    }
-    return cmdexecfault;
+    writeCommand(&CMD);
+    return getLastErrorMask() == 0 ? cmddone : cmdexecfault;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readMeasMode(quint8 &mmode)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     mmode = 0; // default AC
     hw_cmd CMD(hwGetMode, 0, nullptr, 0);
     quint8 answ[2];
-    if(writeCommand(&CMD) == 2) {
+    writeCommand(&CMD, answ, 2);
+    if(getLastErrorMask() == 0) {
         mmode = answ[0];
-        return cmddone;
+        ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::setPLLChannel(quint8 chn)
 {
     hw_cmd CMD(hwSetPLLChannel, 0, &chn, 1);
-    if(writeCommand(&CMD) == 0) {
-        return cmddone;
-    }
-    return cmdexecfault;
+    writeCommand(&CMD);
+    return getLastErrorMask() == 0 ? cmddone : cmdexecfault;
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readPLLChannel(quint8& chn)
 {
+    ZeraMcontrollerBase::atmelRM ret = cmdexecfault;
     chn = 0; // default AC
     hw_cmd CMD(hwGetPLLChannel, 0, nullptr, 0);
     quint8 answ[2];
-    if(writeCommand(&CMD) == 2) {
+    writeCommand(&CMD, answ, 2);
+    if(getLastErrorMask() == 0) {
         chn = answ[0];
-        return cmddone;
+        ret = cmddone;
     }
-    return cmdexecfault;
+    return ret;
 }
