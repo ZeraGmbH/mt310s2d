@@ -407,7 +407,7 @@ void cMT310S2dServer::doSetupServer()
             // after init. we once poll the clampstatus because we don't get an interrupt if clamp was already connected on power up
             m_pClampInterface->actualizeClampStatus();
 
-            myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
+            myServer->startServer(m_pETHSettings->getPort(protobufserver), false); // and can start the server now
             m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
 
             mySigAction.sa_handler = &SigHandler; // setup signal handler
