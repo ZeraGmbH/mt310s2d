@@ -379,7 +379,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
                 syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber: flash %s / µC %s\n",
                        qPrintable(qs), qPrintable(sDV));
             }
-            m_nVersionStatus += Adjustment::wrongVERS;
+            m_nVersionStatus |= Adjustment::wrongVERS;
             if (!enable) {
                 return false; // wrong version number
             }
@@ -399,7 +399,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
             syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
                    s, qPrintable(sysSerNo));
         }
-        m_nSerialStatus += Adjustment::wrongSNR;
+        m_nSerialStatus |= Adjustment::wrongSNR;
         if (!enable) {
             return false; // wrong serial number
         }
