@@ -36,6 +36,7 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
 
     // Init with bad defaults so coder's bugs pop up
     m_nVersionStatus = Adjustment::wrongVERS;
+    m_nSerialStatus = Adjustment::wrongSNR;
 
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_MModeHash["AC"]   = SenseSystem::modeAC;
