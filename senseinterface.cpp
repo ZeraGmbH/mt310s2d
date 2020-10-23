@@ -34,6 +34,9 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
 {
     int i;
 
+    // Init with bad defaults so coder's bugs pop up
+    m_nVersionStatus = Adjustment::wrongVERS;
+
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_MModeHash["AC"]   = SenseSystem::modeAC;
     m_MModeHash["HF"]   = SenseSystem::modeHF;
@@ -383,6 +386,9 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         else {
             m_nVersionStatus = 0; // ok
         }
+    }
+    else { // version full match
+        m_nVersionStatus = 0; // ok
     }
 
     stream >> s; // we take the serial number now
