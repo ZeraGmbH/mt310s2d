@@ -34,6 +34,10 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server)
 {
     int i;
 
+    // Init with bad defaults so coder's bugs pop up
+    m_nVersionStatus = Adjustment::wrongVERS;
+    m_nSerialStatus = Adjustment::wrongSNR;
+
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_MModeHash["AC"]   = SenseSystem::modeAC;
     m_MModeHash["HF"]   = SenseSystem::modeHF;
@@ -245,24 +249,23 @@ cSenseRange* cSenseInterface::getRange(QString channelName, QString rangeName)
 
 quint8 cSenseInterface::getAdjustmentStatus()
 {
-    quint8 stat = 255;
-    quint8 stat2;
-    for (int i = 0; i < m_ChannelList.count(); i++)
-        stat &= m_ChannelList.at(i)->getAdjustmentStatus();
-
-    if ((stat & JustData::Justified)== 0)
-        stat = Adjustment::notAdjusted;
-    else
-        stat = Adjustment::adjusted;
-
-    stat2 = m_nSerialStatus | m_nVersionStatus;
-    if (stat2 != 0) // if we read wrong serial or version we are unjustified in any case
-    {
-        stat = Adjustment::notAdjusted;
-        stat |= stat2;
+    quint8 adjustmentStatusMask = Adjustment::adjusted;
+    // Loop adjustment state for all channels
+    for (int channel = 0; channel < m_ChannelList.count(); channel++) {
+        quint8 channelFlags = m_ChannelList.at(channel)->getAdjustmentStatus();
+        // Currently there is one flag in channel flags only
+        if((channelFlags & JustData::Justified)== 0) {
+            adjustmentStatusMask = Adjustment::notAdjusted;
+            break;
+        }
     }
-
-    return stat;
+    // if we read wrong serial or version we are not adjusted in any case
+    quint8 sernoVersionStatusMask = m_nSerialStatus | m_nVersionStatus;
+    if (sernoVersionStatusMask != 0) {
+        adjustmentStatusMask = Adjustment::notAdjusted;
+        adjustmentStatusMask |= sernoVersionStatusMask;
+    }
+    return adjustmentStatusMask;
 }
 
 
@@ -375,7 +378,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
                 syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber: flash %s / µC %s\n",
                        qPrintable(qs), qPrintable(sDV));
             }
-            m_nVersionStatus += Adjustment::wrongVERS;
+            m_nVersionStatus |= Adjustment::wrongVERS;
             if (!enable) {
                 return false; // wrong version number
             }
@@ -383,6 +386,9 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         else {
             m_nVersionStatus = 0; // ok
         }
+    }
+    else { // version full match
+        m_nVersionStatus = 0; // ok
     }
 
     stream >> s; // we take the serial number now
@@ -392,7 +398,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
             syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
                    s, qPrintable(sysSerNo));
         }
-        m_nSerialStatus += Adjustment::wrongSNR;
+        m_nSerialStatus |= Adjustment::wrongSNR;
         if (!enable) {
             return false; // wrong serial number
         }
