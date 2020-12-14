@@ -5,6 +5,7 @@
 #include <QStringList>
 
 #include "scpiconnection.h"
+#include "notificationstring.h"
 
 
 // here we hold the clamps that are hotplugged to the system
@@ -34,6 +35,7 @@ public:
     void actualizeClampStatus();
     void addChannel(QString channel);
     void removeChannel(QString channel);
+    void generateAndNotifyClampChannelList();
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
@@ -42,6 +44,7 @@ private:
     cMT310S2dServer *m_pMyServer;
     cATMEL *m_pControler;
     QStringList m_ClampChannelList;
+    cNotificationString notifierClampChannelList;
 
     quint16 m_nClampStatus;
     QHash<int, cClamp*> clampHash;
