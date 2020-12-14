@@ -79,12 +79,14 @@ void cClampInterface::actualizeClampStatus()
 void cClampInterface::addChannel(QString channel)
 {
     m_ClampChannelList.append(channel);
+    generateAndNotifyClampChannelList();
 }
 
 
 void cClampInterface::removeChannel(QString channel)
 {
     m_ClampChannelList.removeAll(channel);
+    generateAndNotifyClampChannelList();
 }
 
 void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
@@ -106,25 +108,21 @@ void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         emit cmdExecutionDone(protoCmd);
 }
 
+void cClampInterface::generateAndNotifyClampChannelList()
+{
+    QString newClampList = m_ClampChannelList.join(";") + ";";
+    notifierClampChannelList = newClampList;
+}
+
 QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
     {
-        QString s = "";
-        int len;
-        len = m_ClampChannelList.count();
-        if (len > 0)
-        {
-            int i;
-            for (i = 0; i < len-1; i++)
-                s += m_ClampChannelList.at(i) + ";";
-            s += m_ClampChannelList.at(i);
-        }
-
-        s += ";"; // no clamp present
-        return s;
+        emit notifier(&notifierClampChannelList); // enable async notification on clamp catalog change
+        generateAndNotifyClampChannelList();
+        return notifierClampChannelList.getString();
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
