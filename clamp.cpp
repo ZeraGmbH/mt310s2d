@@ -519,6 +519,14 @@ void cClamp::setI2CMux()
 
 quint8 cClamp::getAdjustmentStatus()
 {
+    // Out of order clamps - e.g with non-working EEPROM
+    // have an empty range list. To avoid reporting them
+    // hey I can't do anything for you but I am adjusted,
+    // bail out early
+    if(m_RangeList.count() == 0) {
+        return Adjustment::notAdjusted;
+    }
+
     quint8 stat = 255;
     for (int i = 0; i < m_RangeList.count(); i++)
         stat &= m_RangeList.at(i)->getAdjustmentStatus();
