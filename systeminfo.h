@@ -1,7 +1,7 @@
 #ifndef SYSTEMINFO_H
 #define SYSTEMINFO_H
 
-class QString;
+#include <QString>
 
 class cSystemInfo
 {
