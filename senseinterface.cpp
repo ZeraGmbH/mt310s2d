@@ -968,14 +968,13 @@ QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
-    if (cmd.isQuery())
-    {
-        QString s;
-
-        s = ";"; // this server has no grouping constraints
+    if (cmd.isQuery()) {
+        QString s = ";"; // this server has no grouping constraints
+        return s;
     }
-    else
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
 
 
