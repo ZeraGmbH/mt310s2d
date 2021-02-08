@@ -135,7 +135,7 @@ QString cClampInterface::m_WriteAllClamps(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         int n;
         n = clampHash.count();
