@@ -625,6 +625,8 @@ void cClamp::initClamp(quint8 type)
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2mV")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C300mA", "C300mA", true,    0.3,  335544.0,  419430.0, 8388607.0, 20, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
 
+        break;
+
     case EMOB32:
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2V")));
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C50A", "C50A", true, 50.0, 1772241.0, 2215301.0, 8388607.0, 11, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
