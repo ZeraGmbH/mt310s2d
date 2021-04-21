@@ -212,7 +212,7 @@ QString cSamplingInterface::m_ReadStatus(QString &sInput)
     if (cmd.isQuery())
     {
         quint32 r;
-        r = (m_bAvail) ? 0 : 2 << 31;
+        r = (m_bAvail) ? 0 : 1 << 31;
         return QString("%1").arg(r);
     }
     else
