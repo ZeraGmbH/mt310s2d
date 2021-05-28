@@ -20,11 +20,3 @@ std::shared_ptr<google::protobuf::Message> cMT310S2dProtobufWrapper::byteArrayTo
     std::shared_ptr<google::protobuf::Message> proto {intermediate};
     return proto;
 }
-
-
-QByteArray cMT310S2dProtobufWrapper::protobufToByteArray(const google::protobuf::Message &pMessage)
-{
-    return QByteArray(pMessage.SerializeAsString().c_str(), pMessage.ByteSizeLong());
-}
-
-
