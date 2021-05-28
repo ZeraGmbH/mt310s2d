@@ -6,12 +6,10 @@
 class cMT310S2dProtobufWrapper : public XiQNetWrapper
 {
 public:
-  cMT310S2dProtobufWrapper();
+    cMT310S2dProtobufWrapper();
 
 
-  std::shared_ptr<google::protobuf::Message> byteArrayToProtobuf(QByteArray bA) override;
-
-  QByteArray protobufToByteArray(const google::protobuf::Message &pMessage) override;
+    std::shared_ptr<google::protobuf::Message> byteArrayToProtobuf(QByteArray bA) override;
 };
 
 #endif // MT310S2DPROTOBUFWRAPPER_H
