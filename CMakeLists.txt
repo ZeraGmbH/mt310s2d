@@ -87,7 +87,6 @@ ${PROJECT_SOURCE_DIR}/adjxml.cpp
 ${PROJECT_SOURCE_DIR}/ctrlsettings.cpp
 ${PROJECT_SOURCE_DIR}/clampinterface.cpp
 ${PROJECT_SOURCE_DIR}/mt310s2d.cpp
-${PROJECT_SOURCE_DIR}/mt310s2dprotobufwrapper.cpp
 ${PROJECT_SOURCE_DIR}/mt310s2justdata.cpp
 ${PROJECT_SOURCE_DIR}/hkeysettings.cpp
 ${PROJECT_SOURCE_DIR}/hkeyinterface.cpp
@@ -143,7 +142,6 @@ ${PROJECT_SOURCE_DIR}/ctrlsettings.h
 ${PROJECT_SOURCE_DIR}/clampinterface.h
 ${PROJECT_SOURCE_DIR}/mt310s2d.h
 ${PROJECT_SOURCE_DIR}/mt310s2dglobal.h
-${PROJECT_SOURCE_DIR}/mt310s2dprotobufwrapper.h
 ${PROJECT_SOURCE_DIR}/mt310s2justdata.h
 ${PROJECT_SOURCE_DIR}/hkeychannel.h
 ${PROJECT_SOURCE_DIR}/hkeyinterface.h

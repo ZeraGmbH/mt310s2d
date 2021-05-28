@@ -9,8 +9,8 @@
 
 #include <QObject>
 #include <QList>
+#include <xiqnetwrapper.h>
 
-#include "mt310s2dprotobufwrapper.h"
 #include "scpiconnection.h"
 #include "notificationstring.h"
 #include "notificationdata.h"
@@ -125,7 +125,7 @@ public slots:
 protected:
     void initSCPIConnections();
     XiQNetServer* myServer; // the real server that does the communication job
-    cMT310S2dProtobufWrapper m_ProtobufWrapper;
+    XiQNetWrapper m_ProtobufWrapper;
     Zera::XMLConfig::cReader* myXMLConfigReader; // the xml configurator
     QString m_sConfigurationPath;
     QList<cSCPIConnection*> scpiConnectionList; // a list of all scpi connections

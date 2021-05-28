@@ -3,8 +3,7 @@
 
 #include <QObject>
 #include <QAbstractSocket>
-
-#include "mt310s2dprotobufwrapper.h"
+#include <xiqnetwrapper.h>
 
 namespace google {
 namespace protobuf {
@@ -34,7 +33,7 @@ private:
     quint8 m_nDebugLevel;
     QString m_sCommand;
     XiQNetPeer* m_pResourceManagerClient;
-    cMT310S2dProtobufWrapper m_ProtobufWrapper;
+    XiQNetWrapper m_ProtobufWrapper;
 
 private slots:
     void tcpErrorHandler(QAbstractSocket::SocketError errorCode);
