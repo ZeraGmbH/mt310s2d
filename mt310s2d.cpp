@@ -520,20 +520,27 @@ void cMT310S2dServer::MTIntHandler(int)
 {// handles clamp interrupt sent by the controler
 
     char buf[2];
-    quint16 stat;
+    quint16 stat = 0;
 
     read(pipeFD[0], buf, 1); // first we read the pipe
 
-    pAtmel->readCriticalStatus(stat);
-    if ((stat & (1 << clampstatusInterrupt)) > 0)
-    {
-        // we must reset clamp status before handling the interrupt
-        // because system may emit more interrupts so we might think
-        // we must handle them too....but atualizeClampStatus uses
-        // global variable for the clamp status -> so this might fail
-        // with unexpected behaviour.
-        pAtmel->resetCriticalStatus(stat & (1 << clampstatusInterrupt));
-        m_pClampInterface->actualizeClampStatus();
+    if ( pAtmel->readCriticalStatus(stat) == ZeraMcontrollerBase::cmddone ) {
+        if ((stat & (1 << clampstatusInterrupt)) > 0) {
+            // we must reset clamp status before handling the interrupt
+            // because system may emit more interrupts so we might think
+            // we must handle them too....but atualizeClampStatus uses
+            // global variable for the clamp status -> so this might fail
+            // with unexpected behaviour.
+            pAtmel->resetCriticalStatus(stat & (1 << clampstatusInterrupt));
+            m_pClampInterface->actualizeClampStatus();
+        }
+        quint16 knownMaskBits = (1 << clampstatusInterrupt);
+        if((stat & ~knownMaskBits) > 0) {
+            qWarning("cMT310S2dServer::MTIntHandler: unknown bits in critical status mask: %04x!", stat);
+        }
+    }
+    else {
+        qWarning("cMT310S2dServer::MTIntHandler: pAtmel->readCriticalStatus failed - cannot actualize clamp status!");
     }
 
     // here we must add the handling for message interrupts sent by fpga device
