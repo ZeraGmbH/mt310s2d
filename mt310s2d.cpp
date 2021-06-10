@@ -509,10 +509,13 @@ void cMT310S2dServer::SetFASync()
 
 void cMT310S2dServer::enableClampInterrupt()
 {
-    quint16 imask;
-
-    pAtmel->readIntMask(imask);
-    pAtmel->writeIntMask(imask | (1 << clampstatusInterrupt));
+    quint16 maskToAdd = (1 << clampstatusInterrupt);
+    if(pAtmel->writeIntMask(m_atmelInterruptMask | maskToAdd) == ZeraMcontrollerBase::cmddone) {
+        m_atmelInterruptMask |= maskToAdd;
+    }
+    else {
+        qWarning("Could not enable clamp interrupt!");
+    }
 }
 
 
