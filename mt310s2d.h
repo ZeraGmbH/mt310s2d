@@ -49,6 +49,8 @@ public:
     int DevFileDescriptorCtrl; // kerneltreiber wird nur 1x geöffnet und dann gehalten
     int DevFileDescriptorMsg;
 
+    quint16 m_atmelInterruptMask = 0;
+
 signals:
     void abortInit();
     void confStarting();
