@@ -43,35 +43,43 @@ void cClampInterface::actualizeClampStatus()
 
     if ( m_pControler->readClampStatus(clStat) == ZeraMcontrollerBase::cmddone)
     {
+        qInfo("Clamp status read: 0x%02X", clStat);
         clChange = clStat ^ m_nClampStatus; // now we know which clamps changed
-        for (int i = 0; i < 16; i++)
-        {
+        for (int i = 0; i < 16; i++) {
             quint16 bmask;
             bmask = 1 << i;
-            if ((clChange & bmask) > 0)
-            {
-                if ((m_nClampStatus & bmask) == 0)
-                {
+            if ((clChange & bmask) > 0) {
+                QString channnelName;
+                if ((m_nClampStatus & bmask) == 0) {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    QString s = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
-                    clampHash[i] = new cClamp(m_pMyServer, s, i+1);
-                    addChannel(s);
+                    channnelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
+                    clampHash[i] = new cClamp(m_pMyServer, channnelName, i+1);
+                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i);
+                    addChannel(channnelName);
                 }
                 else
                 {
                     // a clamp is not connected
-                    if (clampHash.contains(i))
-                    {   // if we already have a clamp on this place it was actually disconnected
+                    if (clampHash.contains(i)) {
+                        // if we already have a clamp on this place it was actually disconnected
                         m_nClampStatus &= (~bmask);
                         cClamp* clamp;
                         clamp = clampHash.take(i);
-                        removeChannel(clamp->getChannelName());
+                        channnelName = clamp->getChannelName();
+                        qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i);
+                        removeChannel(channnelName);
                         delete clamp;
+                    }
+                    else {
+                        qWarning("Clamp %i to remove not found!", i);
                     }
                 }
             }
         }
+    }
+    else {
+        qWarning("cClampInterface::actualizeClampStatus: readClampStatus failed");
     }
 }
 
