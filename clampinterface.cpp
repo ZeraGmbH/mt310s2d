@@ -224,7 +224,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
 
         if (sl.count() > 0) {
             for (int i = 0; i < sl.count(); i++) {
-                sl2.append(sl.at(i));
+                sl2.append(sep+sl.at(i));
             }
         }
 
