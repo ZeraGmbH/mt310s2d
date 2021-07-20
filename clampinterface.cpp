@@ -213,7 +213,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         QString answer;
         QString sep = "<!DOCTYPE";
         int anzXML, anzClamp;
-        bool err;
+        bool err = false;
 
         allXML = cmd.getParam(); // we fetch all input
         while (allXML[0] == QChar(' ')) { // we remove all leading blanks
