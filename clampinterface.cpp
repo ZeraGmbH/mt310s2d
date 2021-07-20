@@ -220,13 +220,11 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
             allXML.remove(0,1);
         }
 
-        sl = allXML.split(sep);
+        sl = allXML.split(sep, Qt::SkipEmptyParts);
 
         if (sl.count() > 0) {
             for (int i = 0; i < sl.count(); i++) {
-                if (sl.at(i).length() > 0) {
-                    sl2.append(sl.at(i));
-                }
+                sl2.append(sl.at(i));
             }
         }
 
