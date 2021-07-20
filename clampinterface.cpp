@@ -216,28 +216,31 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         bool err;
 
         allXML = cmd.getParam(); // we fetch all input
-        while (allXML[0] == QChar(' ')) // we remove all leading blanks
+        while (allXML[0] == QChar(' ')) { // we remove all leading blanks
             allXML.remove(0,1);
+        }
 
         sl = allXML.split(sep);
 
-        if (sl.count() > 0)
-            for (int i = 0; i < sl.count(); i++)
-                if (sl.at(i).length() > 0)
+        if (sl.count() > 0) {
+            for (int i = 0; i < sl.count(); i++) {
+                if (sl.at(i).length() > 0) {
                     sl2.append(sl.at(i));
+                }
+            }
+        }
 
         anzXML = sl2.count();
         anzClamp = clampHash.count();
 
-        if ( !((anzXML >0) && (anzClamp > 0)) )
-        {
+        if ( !((anzXML >0) && (anzClamp > 0)) ) {
             err = true;
             answer = SCPI::scpiAnswer[SCPI::errxml];
         }
 
         int i;
 
-        if (!err)
+        if (!err) {
             for (i = 0; (i < anzXML) && (anzClamp > 0); i++)
             {
                 QString XML;
@@ -297,6 +300,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                 }
 
             }
+        }
 
         if (!err)
             answer = SCPI::scpiAnswer[SCPI::ack];
