@@ -22,7 +22,11 @@
 #include "protonetcommand.h"
 
 cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
-    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)), cAdjXML(server->m_pDebugSettings->getDebugLevel()), m_pMyServer(server), m_sChannelName(channelName), m_nCtrlChannel(ctrlChannel)
+    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(),server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)),
+    cAdjXML(server->m_pDebugSettings->getDebugLevel()),
+    m_pMyServer(server),
+    m_sChannelName(channelName),
+    m_nCtrlChannel(ctrlChannel)
 {
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
