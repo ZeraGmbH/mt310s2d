@@ -517,7 +517,7 @@ void cClamp::setI2CMux()
     struct i2c_msg Msgs = {addr: I2CAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
     struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
 
-    I2CTransfer(m_sDeviceNode, I2CAdress, 0, &MuxData);
+    I2CTransfer(m_sDeviceNode, I2CAdress, m_pMyServer->m_pDebugSettings->getDebugLevel(), &MuxData);
 }
 
 
