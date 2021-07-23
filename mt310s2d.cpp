@@ -38,6 +38,7 @@
 #include "scheadinterface.h"
 #include "hkeyinterface.h"
 #include "clampinterface.h"
+#include "atmelsysctrl.h"
 #include "atmel.h"
 #include "atmelwatcher.h"
 #include "adjustment.h"
@@ -63,6 +64,7 @@ static struct sigaction mySigAction;
 // sigset_t mySigmask, origSigmask;
 
 
+cATMELSysCtrl* pAtmelSys; // we take a static object for atmel connection
 cATMEL* pAtmel; // we take a static object for atmel connection
 
 cMT310S2dServer::cMT310S2dServer(QObject *parent)
@@ -75,6 +77,7 @@ cMT310S2dServer::cMT310S2dServer(QObject *parent)
     m_pFPGASettings = nullptr;
     m_pCtrlSettings  = nullptr;
     m_pSenseSettings = nullptr;
+    pAtmelSys = nullptr;
     pAtmel = nullptr;
     m_pAtmelWatcher = nullptr;
     m_pStatusInterface = nullptr;
@@ -132,6 +135,7 @@ cMT310S2dServer::~cMT310S2dServer()
     if (m_pSourceSettings) delete m_pSourceSettings;
     if (m_pFRQInputSettings) delete m_pFRQInputSettings;
     if (m_pSCHeadSettings) delete m_pSCHeadSettings;
+    if (pAtmelSys) delete pAtmelSys;
     if (pAtmel) delete pAtmel;
     if (m_pAtmelWatcher) delete m_pAtmelWatcher;
     if (m_pStatusInterface) delete m_pStatusInterface;
@@ -227,6 +231,7 @@ void cMT310S2dServer::doConfiguration()
 void cMT310S2dServer::doWait4Atmel()
 {
     // a singletom for atmel would be nice...
+    pAtmelSys = new cATMELSysCtrl(m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::atmelsys), m_pDebugSettings->getDebugLevel());
     pAtmel = new cATMEL(m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::atmel), m_pDebugSettings->getDebugLevel());
     m_pAtmelWatcher = new cAtmelWatcher(m_pDebugSettings->getDebugLevel(), m_pCtrlSettings->getDeviceNode(), 10000, 100);
 
