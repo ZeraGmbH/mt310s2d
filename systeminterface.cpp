@@ -226,7 +226,8 @@ QString cSystemInterface::m_ReadCTRLVersion(QString &sInput)
     if (cmd.isQuery())
     {
         if (m_pMyServer->m_pSystemInfo->dataRead())
-            return m_pMyServer->m_pSystemInfo->getCTRLVersion();
+            return m_pMyServer->m_pSystemInfo->getSysCTRLVersion() + QStringLiteral(" / ") +
+                    m_pMyServer->m_pSystemInfo->getCTRLVersion();
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
