@@ -154,10 +154,19 @@ file(GLOB RESOURCES
     ${PROJECT_SOURCE_DIR}/*.qrc
     )
 
-set(OTHER_FILES 
-    ${PROJECT_SOURCE_DIR}/mt310s2d.xsd
+set(CONFIG_FILES
     ${PROJECT_SOURCE_DIR}/mt310s2d.xml
 )
+set(CONFIG_VALIDATOR
+    ${PROJECT_SOURCE_DIR}/mt310s2d.xsd
+)
+
+# check for valid config files / display in qt-creator
+add_custom_target(mt310s2-configs ALL
+    DEPENDS ${CONFIG_VALIDATOR} ${CONFIG_FILES}
+    SOURCES ${CONFIG_VALIDATOR} ${CONFIG_FILES}
+    COMMAND xmllint --noout --schema ${CONFIG_VALIDATOR} ${CONFIG_FILES}
+    )
 
 #create executable
 add_executable(mt310s2d
@@ -191,10 +200,6 @@ target_link_libraries(mt310s2d
     VeinMeta::zeraprotobuf
     )	
 
-
-
-
-
 # announce headers - target perspective
 target_include_directories(mt310s2d
     PUBLIC
@@ -204,8 +209,6 @@ target_include_directories(mt310s2d
     ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-
-
 #install mt310s2dto bin 
 install(TARGETS mt310s2d
     EXPORT mt310s2dExport
@@ -213,16 +216,10 @@ install(TARGETS mt310s2d
     )
 
 install(
-    FILES ${OTHER_FILES}
+    FILES ${CONFIG_FILES} ${CONFIG_VALIDATOR}
     DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/zera/mt310s2d
     )
 
-
 # spawn out some info on configuration
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
-
-
-
-
-
 
