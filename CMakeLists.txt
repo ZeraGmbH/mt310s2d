@@ -56,6 +56,7 @@ ${PROJECT_SOURCE_DIR}/statusinterface.cpp
 ${PROJECT_SOURCE_DIR}/scpiconnection.cpp
 ${PROJECT_SOURCE_DIR}/systeminterface.cpp
 ${PROJECT_SOURCE_DIR}/atmel.cpp
+${PROJECT_SOURCE_DIR}/atmelsysctrl.cpp
 ${PROJECT_SOURCE_DIR}/debugsettings.cpp
 ${PROJECT_SOURCE_DIR}/senseinterface.cpp
 ${PROJECT_SOURCE_DIR}/sensesettings.cpp
@@ -108,6 +109,7 @@ ${PROJECT_SOURCE_DIR}/statusinterface.h
 ${PROJECT_SOURCE_DIR}/scpiconnection.h
 ${PROJECT_SOURCE_DIR}/systeminterface.h
 ${PROJECT_SOURCE_DIR}/atmel.h
+${PROJECT_SOURCE_DIR}/atmelsysctrl.h
 ${PROJECT_SOURCE_DIR}/xmlsettings.h
 ${PROJECT_SOURCE_DIR}/debugsettings.h
 ${PROJECT_SOURCE_DIR}/senseinterface.h
