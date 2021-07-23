@@ -55,7 +55,6 @@ signals:
     void abortInit();
     void confStarting();
     void confFinished();
-    void atmelProgrammed();
     void atmelRunning();
     void serverSetup();
 
@@ -79,7 +78,6 @@ private:
 private slots:
     void MTIntHandler(int);
     void doConfiguration();
-    void programAtmelFlash();
     void doWait4Atmel();
     void doSetupServer();
     void doCloseServer();

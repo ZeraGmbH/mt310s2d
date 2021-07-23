@@ -31,9 +31,6 @@ enum DebugLevel {NoDebug, DebugLevel1, DebugLevel2, DebugLevel3 = 4, MaxDebugLev
 #define defaultI2CFlashAdress 0x50
 #define defaultI2CClampFlashAdr 0x51
 #define defaultXSDFile "/etc/zera/mt310s2d/mt310s2d.xsd"
-#define atmelFlashfilePath "/opt/zera/bin/atmel-mt310s2.hex"
-#define atmelResetBit 16
-#define defaultTMaxAtmel 10000
 
 enum ServerErrors
 {

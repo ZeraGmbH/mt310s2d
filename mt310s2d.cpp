@@ -93,7 +93,6 @@ cMT310S2dServer::cMT310S2dServer(QObject *parent)
     stateCONF->addTransition(this, SIGNAL(abortInit()),stateFINISH); // from anywhere we arrive here if some error
 
     QState* statexmlConfiguration = new QState(stateCONF); // we configure our server with xml file
-    QState* stateprogAtmel = new QState(stateCONF); // maybe we have to update the atmel
     QState* statewait4Atmel = new QState(stateCONF); // we synchronize on atmel running
     QState* statesetupServer = new QState(stateCONF); // we setup our server now
     stateconnect2RM = new QState(stateCONF); // we connect to resource manager
@@ -102,8 +101,7 @@ cMT310S2dServer::cMT310S2dServer(QObject *parent)
 
     stateCONF->setInitialState(statexmlConfiguration);
 
-    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML(bool)), stateprogAtmel);
-    stateprogAtmel->addTransition(this, SIGNAL(atmelProgrammed()), statewait4Atmel);
+    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML(bool)), statewait4Atmel);
     statewait4Atmel->addTransition(this, SIGNAL(atmelRunning()), statesetupServer);
     statesetupServer->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
 
@@ -112,7 +110,6 @@ cMT310S2dServer::cMT310S2dServer(QObject *parent)
     m_pInitializationMachine->setInitialState(stateCONF);
 
     QObject::connect(statexmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
-    QObject::connect(stateprogAtmel, SIGNAL(entered()), this, SLOT(programAtmelFlash()));
     QObject::connect(statewait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
     QObject::connect(statesetupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
     QObject::connect(stateconnect2RM, SIGNAL(entered()), this, SLOT(doConnect2RM()));
@@ -227,122 +224,10 @@ void cMT310S2dServer::doConfiguration()
 }
 
 
-void cMT310S2dServer::programAtmelFlash()
-{
-    pAtmel = new cATMEL(m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::atmel), m_pDebugSettings->getDebugLevel());
-
-    QFile atmelFile(atmelFlashfilePath);
-    if (atmelFile.exists())
-    {
-        int fd;
-        QString devNode;
-
-        m_nerror = atmelProgError; // preset error
-
-        devNode = m_pFPGASettings->getDeviceNode();
-        syslog(LOG_INFO,"Starting programming atmel flash\n");
-
-        if ( (fd = open(devNode.toLatin1().data(),O_RDWR)) < 0 )
-        {
-            syslog(LOG_ERR,"error opening fpga device: %s\n",devNode.toLatin1().data());
-            emit abortInit();
-        }
-        else
-        {
-            quint32 pcbTestReg;
-            if ( lseek(fd, 0xffc, 0) < 0 )
-            {
-                syslog(LOG_ERR,"error positioning fpga device: %s\n", devNode.toLatin1().data());
-                syslog(LOG_ERR,"Programming atmel failed\n");
-                close(fd);
-                emit abortInit();
-            }
-
-            ssize_t r = read(fd, &pcbTestReg, 4);
-            syslog(LOG_INFO,"reading fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
-            if (r < 0 )
-            {
-                syslog(LOG_ERR,"error reading fpga device: %s\n", devNode.toLatin1().data());
-                syslog(LOG_ERR,"Programming atmel failed\n");
-                emit abortInit();
-            }
-
-            pcbTestReg |=  1 << (atmelResetBit-1); // set bit for atmel reset
-            syslog(LOG_INFO,"writing fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
-            r = write(fd, &pcbTestReg, 4);
-
-            if (r < 0 )
-            {
-                syslog(LOG_ERR,"error writing fpga device: %s\n", devNode.toLatin1().data());
-                syslog(LOG_ERR,"Programming atmel failed\n");
-                emit abortInit();
-            }
-
-            usleep(100); // give atmel some time for reset
-
-            pcbTestReg &= static_cast<quint32>(~(1 << (atmelResetBit-1))); // reset bit for atmel reset
-            syslog(LOG_INFO,"writing fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
-            r = write(fd, &pcbTestReg, 4);
-            close(fd);
-
-            if (r < 0 )
-            {
-                syslog(LOG_ERR,"error writing fpga device: %s\n", devNode.toLatin1().data());
-                syslog(LOG_ERR,"Programming atmel failed\n");
-                emit abortInit();
-            }
-
-            // atmel is reset
-            usleep(100000); // now we wait for 100ms so bootloader is running definitely
-
-            // and start writing flash
-            cIntelHexFileIO IntelHexData;
-            if (IntelHexData.ReadHexFile(atmelFlashfilePath))
-            {
-               syslog(LOG_INFO,"Writing %s to atmel...\n", atmelFlashfilePath);
-               if (pAtmel->loadFlash(IntelHexData) == ZeraMcontrollerBase::cmddone)
-               {
-                   syslog(LOG_INFO,"Programming atmel passed\n");
-
-                   // we must restart atmel now
-                   if (pAtmel->startProgram() == ZeraMcontrollerBase::cmddone)
-                   {
-                       syslog(LOG_INFO,"Restart atmel after programming done\n");
-                       // once the job is done, we remove the file
-                       if(!atmelFile.remove())
-                           syslog(LOG_ERR,"Error deleting %s\n", atmelFlashfilePath);
-
-                       emit atmelProgrammed();
-                   }
-                   else
-                   {
-                       syslog(LOG_ERR,"Restart atmel after programming failed\n");
-                       emit abortInit();
-                   }
-               }
-               else
-               {
-                   syslog(LOG_ERR,"error writing atmel flash\n");
-                   syslog(LOG_ERR,"Programming atmel failed\n");
-                   emit abortInit();
-               }
-            }
-            else
-            {
-                syslog(LOG_ERR,"error reading hex file\n");
-                syslog(LOG_ERR,"Programming atmel failed\n");
-                emit abortInit();
-            }
-        }
-    }
-
-    else
-        emit atmelProgrammed();
-}
-
-
 void cMT310S2dServer::doWait4Atmel()
 {
+    // a singletom for atmel would be nice...
+    pAtmel = new cATMEL(m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::atmel), m_pDebugSettings->getDebugLevel());
     m_pAtmelWatcher = new cAtmelWatcher(m_pDebugSettings->getDebugLevel(), m_pCtrlSettings->getDeviceNode(), 10000, 100);
 
     m_nerror = atmelError; // we preset error
