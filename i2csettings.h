@@ -11,7 +11,6 @@ namespace i2cSettings
 {
 enum member
 {
-    master,
     atmel,
     flashmux,
     flash,
@@ -21,7 +20,6 @@ enum member
 enum configstate
 {
     SetDevNode,
-    SetMasterAdr,
     SetAtmelAdr,
     SetFlashMuxAdr,
     SetFlashAdr,
@@ -53,7 +51,7 @@ public slots:
 
 private:
     QString m_sDeviceNode;
-    quint8 m_nMasterAdr, m_nAtmelAdr, m_nFlashMuxAdr, m_nFlashAdr, m_nClampFlashAdr;
+    quint8 m_nAtmelAdr, m_nFlashMuxAdr, m_nFlashAdr, m_nClampFlashAdr;
 };
 
 
