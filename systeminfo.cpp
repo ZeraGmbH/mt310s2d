@@ -1,9 +1,10 @@
+#include "atmelsysctrl.h"
 #include "atmel.h"
 #include "systeminfo.h"
 
 cSystemInfo::cSystemInfo()
 {
-    m_sDeviceName = m_sPCBVersion = m_sLCAVersion = m_sCTRLVersion = m_sSerialNumber = "Unknown";
+    m_sDeviceName = m_sPCBVersion = m_sLCAVersion = m_sSysCTRLVersion = m_sCTRLVersion = m_sSerialNumber = "Unknown";
     getSystemInfo();
 }
 
@@ -14,6 +15,7 @@ void cSystemInfo::getSystemInfo()
     rm |= pAtmel->readDeviceName(m_sDeviceName);
     rm |= pAtmel->readPCBVersion(m_sPCBVersion);
     rm |= pAtmel->readLCAVersion(m_sLCAVersion);
+    rm |= pAtmelSys->readCTRLVersion(m_sSysCTRLVersion);
     rm |= pAtmel->readCTRLVersion(m_sCTRLVersion);
     rm |= pAtmel->readSerialNumber(m_sSerialNumber);
     m_bRead = (rm == ZeraMcontrollerBase::cmddone);
@@ -52,6 +54,12 @@ QString &cSystemInfo::getPCBVersion()
 QString &cSystemInfo::getLCAVersion()
 {
     return m_sLCAVersion;
+}
+
+
+QString &cSystemInfo::getSysCTRLVersion()
+{
+    return m_sSysCTRLVersion;
 }
 
 

@@ -13,6 +13,7 @@ public:
     QString& getDeviceName();
     QString& getPCBVersion();
     QString& getLCAVersion();
+    QString& getSysCTRLVersion();
     QString& getCTRLVersion();
     QString& getSerialNumber();
 
@@ -21,6 +22,7 @@ private:
     QString m_sDeviceName;
     QString m_sPCBVersion;
     QString m_sLCAVersion;
+    QString m_sSysCTRLVersion;
     QString m_sCTRLVersion;
     QString m_sSerialNumber;
 };
