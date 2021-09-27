@@ -362,11 +362,22 @@ QString cSystemInterface::m_LoadEEProm(QString &sInput)
 QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
 {
     cSCPICommand cmd = sInput;
+    bool enable;
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
-        if (m_pMyServer->m_pSenseInterface->exportAdjFlash())
-            return SCPI::scpiAnswer[SCPI::ack];
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
+        {
+            if (enable)
+            {
+                if (m_pMyServer->m_pSenseInterface->exportAdjFlash())
+                    return SCPI::scpiAnswer[SCPI::ack];
+                else
+                    return SCPI::scpiAnswer[SCPI::errexec];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::erraut];
+        }
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
@@ -403,17 +414,33 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
     }
     else
     {
-        QString XML = cmd.getParam();
-        if (!m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
-            s = SCPI::errxml;
-        else
+        if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
         {
-            m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
-            if (!m_pMyServer->m_pSenseInterface->exportAdjFlash())
-                s = SCPI::scpiAnswer[SCPI::errexec];
+            bool enable;
+            if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
+            {
+                if (enable)
+                {
+                    QString XML = cmd.getParam();
+                    if (!m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
+                        s = SCPI::errxml;
+                    else
+                    {
+                        m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
+                        if (!m_pMyServer->m_pSenseInterface->exportAdjFlash())
+                            s = SCPI::scpiAnswer[SCPI::errexec];
+                        else
+                            s = SCPI::scpiAnswer[SCPI::ack];
+                    }
+                }
+                else
+                    s = SCPI::scpiAnswer[SCPI::erraut];
+            }
             else
-                s = SCPI::scpiAnswer[SCPI::ack];
+                s = SCPI::scpiAnswer[SCPI::errexec];
         }
+        else
+            s = SCPI::scpiAnswer[SCPI::nak];
     }
 
     return s;
@@ -443,8 +470,8 @@ QString cSystemInterface::m_AdjXMLRead(QString &sInput)
 
     if (cmd.isCommand(1))
     {
-        bool enable = false;
-        if ((pAtmel->getEEPROMAccessEnable(enable)) == ZeraMcontrollerBase::cmddone)
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {
