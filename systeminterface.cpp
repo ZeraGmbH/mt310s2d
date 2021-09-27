@@ -414,33 +414,28 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
     }
     else
     {
-        if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
-            bool enable;
-            if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
+            if (enable)
             {
-                if (enable)
-                {
-                    QString XML = cmd.getParam();
-                    if (!m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
-                        s = SCPI::errxml;
-                    else
-                    {
-                        m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
-                        if (!m_pMyServer->m_pSenseInterface->exportAdjFlash())
-                            s = SCPI::scpiAnswer[SCPI::errexec];
-                        else
-                            s = SCPI::scpiAnswer[SCPI::ack];
-                    }
-                }
+                QString XML = cmd.getParam();
+                if (!m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
+                    s = SCPI::errxml;
                 else
-                    s = SCPI::scpiAnswer[SCPI::erraut];
+                {
+                    m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
+                    if (!m_pMyServer->m_pSenseInterface->exportAdjFlash())
+                        s = SCPI::scpiAnswer[SCPI::errexec];
+                    else
+                        s = SCPI::scpiAnswer[SCPI::ack];
+                }
             }
             else
-                s = SCPI::scpiAnswer[SCPI::errexec];
+                s = SCPI::scpiAnswer[SCPI::erraut];
         }
         else
-            s = SCPI::scpiAnswer[SCPI::nak];
+            s = SCPI::scpiAnswer[SCPI::errexec];
     }
 
     return s;
