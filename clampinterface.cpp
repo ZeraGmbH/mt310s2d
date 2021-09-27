@@ -148,20 +148,31 @@ QString cClampInterface::m_WriteAllClamps(QString &sInput)
 
         if (n > 0)
         {
-            bool done;
-            QList<int> keylist;
-
-            keylist = clampHash.keys();
-            done = true;
-
-            for (int i = 0; i < n; i++)
+            bool enable;
+            if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
             {
-                cClamp* pClamp;
-                pClamp = clampHash[keylist.at(i)];
-                done = done && pClamp->exportAdjFlash();
-            }
+                if (enable)
+                {
+                    bool done;
+                    QList<int> keylist;
 
-            if (!done)
+                    keylist = clampHash.keys();
+                    done = true;
+
+                    for (int i = 0; i < n; i++)
+                    {
+                        cClamp* pClamp;
+                        pClamp = clampHash[keylist.at(i)];
+                        done = done && pClamp->exportAdjFlash();
+                    }
+
+                    if (!done)
+                        return SCPI::scpiAnswer[SCPI::errexec];
+                }
+                else
+                    return SCPI::scpiAnswer[SCPI::erraut];
+            }
+            else
                 return SCPI::scpiAnswer[SCPI::errexec];
         }
 
@@ -215,89 +226,107 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
         int anzXML, anzClamp;
         bool err = false;
 
-        allXML = cmd.getParam(); // we fetch all input
-        while (allXML[0] == QChar(' ')) { // we remove all leading blanks
-            allXML.remove(0,1);
-        }
-
-        sl = allXML.split(sep, Qt::SkipEmptyParts);
-
-        if (sl.count() > 0) {
-            for (int i = 0; i < sl.count(); i++) {
-                sl2.append(sl.at(i));
-            }
-        }
-
-        anzXML = sl2.count();
-        anzClamp = clampHash.count();
-
-        if ( !((anzXML >0) && (anzClamp > 0)) ) {
-            err = true;
-            answer = SCPI::scpiAnswer[SCPI::errxml];
-        }
-
-        int i;
-
-        if (!err) {
-            for (i = 0; (i < anzXML) && (anzClamp > 0); i++)
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
+        {
+            if (enable)
             {
-                QString XML;
-                cClamp tmpClamp;
-                QDomDocument justqdom( "TheDocument" );
 
-                XML = sep + sl2.at(i);
-                if ( !justqdom.setContent(XML) )
-                {
-                    err = true;
-                    answer = SCPI::scpiAnswer[SCPI::errxml];
-                    break;
+                allXML = cmd.getParam(); // we fetch all input
+                while (allXML[0] == QChar(' ')) { // we remove all leading blanks
+                    allXML.remove(0,1);
                 }
 
-                if (tmpClamp.importXMLDocument(&justqdom,true))
-                {
-                    QList<int> keylist;
-                    cClamp *pClamp, *pClamp4Use;
-                    int anzClamps;
-                    int anzSNR;
+                sl = allXML.split(sep, Qt::SkipEmptyParts);
 
-                    anzSNR = 0;
-                    keylist = clampHash.keys();
-                    anzClamps = keylist.count();
-
-                    for (int j = 0; j < anzClamps; j++)
-                    {
-                        pClamp = clampHash[keylist.at(j)];
-                        if (pClamp->getSerial() == tmpClamp.getSerial())
-                        {
-                            pClamp4Use = pClamp;
-                            anzSNR++;
-                        }
+                if (sl.count() > 0) {
+                    for (int i = 0; i < sl.count(); i++) {
+                        sl2.append(sl.at(i));
                     }
+                }
 
-                    if ( (anzSNR == 1) /*|| ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1))*/ )
-                    // we have 1 matching serial number
+                anzXML = sl2.count();
+                anzClamp = clampHash.count();
+
+                if ( !((anzXML >0) && (anzClamp > 0)) ) {
+                    err = true;
+                    answer = SCPI::scpiAnswer[SCPI::errxml];
+                }
+
+                int i;
+
+                if (!err) {
+                    for (i = 0; (i < anzXML) && (anzClamp > 0); i++)
                     {
-                        anzClamp--;
-                        pClamp4Use->importXMLDocument(&justqdom,false); // we let the found clamp import its xml data
-                        m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
-                        // then we let it compute its new adjustment coefficients... we simply call senseinterface's compute
-                        // command. we compute a little bit to much but this doesn't matter at all
-                        if (!pClamp4Use->exportAdjFlash()) // and then we program the clamp
+                        QString XML;
+                        cClamp tmpClamp;
+                        QDomDocument justqdom( "TheDocument" );
+
+                        XML = sep + sl2.at(i);
+                        if ( !justqdom.setContent(XML) )
                         {
                             err = true;
-                            answer = SCPI::scpiAnswer[SCPI::errexec];
+                            answer = SCPI::scpiAnswer[SCPI::errxml];
                             break;
                         }
+
+                        if (tmpClamp.importXMLDocument(&justqdom,true))
+                        {
+                            QList<int> keylist;
+                            cClamp *pClamp, *pClamp4Use;
+                            int anzClamps;
+                            int anzSNR;
+
+                            anzSNR = 0;
+                            keylist = clampHash.keys();
+                            anzClamps = keylist.count();
+
+                            for (int j = 0; j < anzClamps; j++)
+                            {
+                                pClamp = clampHash[keylist.at(j)];
+                                if (pClamp->getSerial() == tmpClamp.getSerial())
+                                {
+                                    pClamp4Use = pClamp;
+                                    anzSNR++;
+                                }
+                            }
+
+                            if ( (anzSNR == 1) /*|| ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1))*/ )
+                            // we have 1 matching serial number
+                            {
+                                anzClamp--;
+                                pClamp4Use->importXMLDocument(&justqdom,false); // we let the found clamp import its xml data
+                                m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
+                                // then we let it compute its new adjustment coefficients... we simply call senseinterface's compute
+                                // command. we compute a little bit to much but this doesn't matter at all
+                                if (!pClamp4Use->exportAdjFlash()) // and then we program the clamp
+                                {
+                                    err = true;
+                                    answer = SCPI::scpiAnswer[SCPI::errexec];
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            err = true;
+                            answer = SCPI::scpiAnswer[SCPI::errxml];
+                            break;
+                        }
+
                     }
                 }
-                else
-                {
-                    err = true;
-                    answer = SCPI::scpiAnswer[SCPI::errxml];
-                    break;
-                }
-
             }
+            else
+            {
+                err = true;
+                answer = SCPI::scpiAnswer[SCPI::erraut];
+            }
+        }
+        else
+        {
+            err = true;
+            answer = SCPI::scpiAnswer[SCPI::errexec];
         }
 
         if (!err)
