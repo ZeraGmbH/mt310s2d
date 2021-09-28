@@ -291,11 +291,16 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                                 }
                             }
 
-                            if ( (anzSNR == 1) /*|| ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1))*/ )
+                            if ( (anzSNR == 1) || ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1)) )
                             // we have 1 matching serial number
                             {
                                 anzClamp--;
-                                pClamp4Use->importXMLDocument(&justqdom,false); // we let the found clamp import its xml data
+
+                                if (anzSNR == 0)
+                                    pClamp4Use->importXMLDocument(&justqdom,true); // if we only have 1 xml and 1 clamp we accept all information
+                                else
+                                    pClamp4Use->importXMLDocument(&justqdom,false); // otherwise clamp type cannot be changed
+
                                 m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
                                 // then we let it compute its new adjustment coefficients... we simply call senseinterface's compute
                                 // command. we compute a little bit to much but this doesn't matter at all
