@@ -297,7 +297,10 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
                                 anzClamp--;
 
                                 if (anzSNR == 0)
+                                {
+                                    pClamp4Use = pClamp;
                                     pClamp4Use->importXMLDocument(&justqdom,true); // if we only have 1 xml and 1 clamp we accept all information
+                                }
                                 else
                                     pClamp4Use->importXMLDocument(&justqdom,false); // otherwise clamp type cannot be changed
 
