@@ -18,7 +18,7 @@ class cClampJustData: public cMT310S2JustData
     Q_OBJECT
 
 public:
-    cClampJustData(cSCPI* scpiinterface, cSenseRange* cascadedRange);
+    cClampJustData(cSCPI* scpiinterface, cSenseRange* cascadedRange, double cvRatio);
 
 protected:
     virtual double getGainCorrection(double par);
@@ -30,6 +30,7 @@ protected:
 
 private:
     cSenseRange* m_pFirstStageRange; //
+    double m_cvRatio;
 };
 
 #endif // CLAMPJUSTDATA

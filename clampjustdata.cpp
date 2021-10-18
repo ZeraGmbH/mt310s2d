@@ -3,15 +3,15 @@
 #include "clampjustdata.h"
 #include "justdata.h"
 
-cClampJustData::cClampJustData(cSCPI *scpiinterface, cSenseRange *cascadedRange)
-    :cMT310S2JustData(scpiinterface), m_pFirstStageRange(cascadedRange)
+cClampJustData::cClampJustData(cSCPI *scpiinterface, cSenseRange *cascadedRange, double cvRatio)
+    :cMT310S2JustData(scpiinterface), m_pFirstStageRange(cascadedRange), m_cvRatio(cvRatio)
 {   
 }
 
 
 double cClampJustData::getGainCorrection(double par)
 {
-    return m_pGainCorrection->getCorrection(par) * m_pFirstStageRange->getJustData()->m_pGainCorrection->getCorrection(par);
+    return m_pGainCorrection->getCorrection(par) * m_pFirstStageRange->getJustData()->m_pGainCorrection->getCorrection(par / m_cvRatio);
 }
 
 
@@ -35,7 +35,7 @@ double cClampJustData::getJustPhaseCorrection(double par)
 
 double cClampJustData::getOffsetCorrection(double par)
 {
-    return m_pOffsetCorrection->getCorrection(par) + m_pFirstStageRange->getJustData()->m_pOffsetCorrection->getCorrection(par);
+    return m_pOffsetCorrection->getCorrection(par) + m_pFirstStageRange->getJustData()->m_pOffsetCorrection->getCorrection(par / m_cvRatio);
 }
 
 
