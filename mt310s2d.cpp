@@ -16,7 +16,7 @@
 
 #include "mt310s2dglobal.h"
 #include "mt310s2d.h"
-#include "pcbserver.h"
+#include "basepcbserver.h"
 #include "debugsettings.h"
 #include "ethsettings.h"
 #include "i2csettings.h"
