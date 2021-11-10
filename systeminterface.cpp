@@ -162,10 +162,7 @@ QString cSystemInterface::m_ReadDeviceVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pMyServer->m_pSystemInfo->dataRead())
-            return m_pMyServer->m_pSystemInfo->getDeviceVersion();
-        else
-            return SCPI::scpiAnswer[SCPI::errexec];
+        return m_pMyServer->m_pSystemInfo->getDeviceVersion();
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
@@ -179,10 +176,7 @@ QString cSystemInterface::m_ReadDeviceName(QString& sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pMyServer->m_pSystemInfo->dataRead())
-            return m_pMyServer->m_pSystemInfo->getDeviceName();
-        else
-            return SCPI::scpiAnswer[SCPI::errexec];
+        return m_pMyServer->m_pSystemInfo->getDeviceName();
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
@@ -197,10 +191,7 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pMyServer->m_pSystemInfo->dataRead())
-            s = m_pMyServer->m_pSystemInfo->getPCBVersion();
-        else
-            s = SCPI::scpiAnswer[SCPI::errexec];
+        s = m_pMyServer->m_pSystemInfo->getPCBVersion();
     }
     else
     {
@@ -220,16 +211,12 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
 
 QString cSystemInterface::m_ReadCTRLVersion(QString &sInput)
 {
-    QString s;
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
     {
-        if (m_pMyServer->m_pSystemInfo->dataRead())
-            return m_pMyServer->m_pSystemInfo->getSysCTRLVersion() + QStringLiteral(" / ") +
-                    m_pMyServer->m_pSystemInfo->getCTRLVersion();
-        else
-            return SCPI::scpiAnswer[SCPI::errexec];
+        return m_pMyServer->m_pSystemInfo->getSysCTRLVersion() + QStringLiteral(" / ") +
+               m_pMyServer->m_pSystemInfo->getCTRLVersion();
     }
 
     else
@@ -243,10 +230,7 @@ QString cSystemInterface::m_ReadFPGAVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pMyServer->m_pSystemInfo->dataRead())
-            return m_pMyServer->m_pSystemInfo->getLCAVersion();
-        else
-            return SCPI::scpiAnswer[SCPI::errexec];
+        return m_pMyServer->m_pSystemInfo->getLCAVersion();
     }
 
     else
@@ -263,10 +247,7 @@ QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
     if (cmd.isQuery())
     {
         {
-            if (m_pMyServer->m_pSystemInfo->dataRead())
-                s = m_pMyServer->m_pSystemInfo->getSerialNumber();
-            else
-                s = SCPI::scpiAnswer[SCPI::errexec];
+            s = m_pMyServer->m_pSystemInfo->getSerialNumber();
         }
     }
     else
