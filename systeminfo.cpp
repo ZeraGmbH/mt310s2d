@@ -1,10 +1,12 @@
+#include "scpi.h"
 #include "atmelsysctrl.h"
 #include "atmel.h"
 #include "systeminfo.h"
 
 cSystemInfo::cSystemInfo()
+    :cBaseSystemInfo()
 {
-    m_sDeviceName = m_sPCBVersion = m_sLCAVersion = m_sSysCTRLVersion = m_sCTRLVersion = m_sSerialNumber = "Unknown";
+    m_sLCAVersion = m_sSysCTRLVersion = m_sCTRLVersion = "Unknown";
     getSystemInfo();
 }
 
@@ -22,12 +24,6 @@ void cSystemInfo::getSystemInfo()
 }
 
 
-bool cSystemInfo::dataRead()
-{
-    return m_bRead;
-}
-
-
 QString cSystemInfo::getDeviceVersion()
 {
     QString s = QString ("DEVICE: %1;PCB: %2;LCA: %3;CTRL: %4")
@@ -39,39 +35,36 @@ QString cSystemInfo::getDeviceVersion()
 }
 
 
-QString &cSystemInfo::getDeviceName()
+QString cSystemInfo::getLCAVersion()
 {
-    return m_sDeviceName;
+    QString s;
+
+    if (m_bRead)
+        return m_sLCAVersion;
+    else
+        return s = SCPI::scpiAnswer[SCPI::errexec];
 }
 
 
-QString &cSystemInfo::getPCBVersion()
+QString cSystemInfo::getSysCTRLVersion()
 {
-    return m_sPCBVersion;
+    QString s;
+
+    if (m_bRead)
+        return m_sSysCTRLVersion;
+    else
+        return s = SCPI::scpiAnswer[SCPI::errexec];
 }
 
 
-QString &cSystemInfo::getLCAVersion()
+QString cSystemInfo::getCTRLVersion()
 {
-    return m_sLCAVersion;
-}
+    QString s;
 
-
-QString &cSystemInfo::getSysCTRLVersion()
-{
-    return m_sSysCTRLVersion;
-}
-
-
-QString &cSystemInfo::getCTRLVersion()
-{
-    return m_sCTRLVersion;
-}
-
-
-QString &cSystemInfo::getSerialNumber()
-{
-    return m_sSerialNumber;
+    if (m_bRead)
+        return m_sCTRLVersion;
+    else
+        return s = SCPI::scpiAnswer[SCPI::errexec];
 }
 
 

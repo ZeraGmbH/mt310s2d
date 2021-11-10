@@ -2,28 +2,21 @@
 #define SYSTEMINFO_H
 
 #include <QString>
+#include "basesysteminfo.h"
 
-class cSystemInfo
+class cSystemInfo: public cBaseSystemInfo
 {
 public:
     cSystemInfo();
-    void getSystemInfo(); // here we fetch all system info
-    bool dataRead(); // false if we were not able to read required information
+    virtual void getSystemInfo(); // here we fetch all system info
     QString getDeviceVersion();
-    QString& getDeviceName();
-    QString& getPCBVersion();
-    QString& getLCAVersion();
-    QString& getSysCTRLVersion();
-    QString& getCTRLVersion();
-    QString& getSerialNumber();
+    QString getLCAVersion();
+    QString getSysCTRLVersion();
+    QString getCTRLVersion();
 
-private:
-    bool m_bRead; // we keep in mind whether we could read the information
-    QString m_sDeviceName;
-    QString m_sPCBVersion;
+protected:
     QString m_sLCAVersion;
     QString m_sSysCTRLVersion;
     QString m_sCTRLVersion;
-    QString m_sSerialNumber;
 };
 #endif // SYSTEMINFO_H
