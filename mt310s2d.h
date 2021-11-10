@@ -6,12 +6,11 @@
 
 #include <QTimer>
 
-#include "pcbserver.h"
+#include "basepcbserver.h"
 
 class QStateMachine;
 class QState;
 class cStatusInterface;
-class cSystemInterface;
 class cSenseInterface;
 class cSamplingInterface;
 class cSourceInterface;
@@ -25,6 +24,16 @@ class cRMConnection;
 class QSocketNotifier;
 class cClampInterface;
 
+class cFPGASettings;
+class cCtrlSettings;
+class cI2CSettings;
+class cFRQInputSettings;
+class cSCHeadSettings;
+class cHKeySettings;
+class cSenseSettings;
+class cSamplingSettings;
+class cSourceSettings;
+
 class cMT310S2dServer: public cPCBServer
 {
     Q_OBJECT
@@ -33,8 +42,16 @@ public:
     explicit cMT310S2dServer(QObject* parent=0);
     ~cMT310S2dServer();
 
-    cStatusInterface* m_pStatusInterface;
-    cSystemInterface* m_pSystemInterface;
+    cFPGASettings* m_pFPGASettings;
+    cCtrlSettings* m_pCtrlSettings;
+    cI2CSettings* m_pI2CSettings;
+    cSenseSettings* m_pSenseSettings;
+    cSamplingSettings* m_pSamplingSettings;
+    cSourceSettings* m_pSourceSettings;
+    cFRQInputSettings* m_pFRQInputSettings;
+    cSCHeadSettings* m_pSCHeadSettings;
+    cHKeySettings* m_pHKeySettings;
+
     cSenseInterface* m_pSenseInterface;
     cSamplingInterface* m_pSamplingInterface;
     cSourceInterface* m_pSourceInterface;
