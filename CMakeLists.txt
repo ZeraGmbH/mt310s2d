@@ -44,9 +44,10 @@ endif()
 
 #sum up project Files 
 set(SOURCES
+${PROJECT_SOURCE_DIR}/basepcbserver.cpp
+${PROJECT_SOURCE_DIR}/basesysteminfo.cpp
 ${PROJECT_SOURCE_DIR}/main.cpp
 ${PROJECT_SOURCE_DIR}/justdata.cpp
-${PROJECT_SOURCE_DIR}/pcbserver.cpp
 ${PROJECT_SOURCE_DIR}/i2csettings.cpp
 ${PROJECT_SOURCE_DIR}/ethsettings.cpp
 ${PROJECT_SOURCE_DIR}/fpgasettings.cpp
@@ -96,10 +97,12 @@ ${PROJECT_SOURCE_DIR}/hkeychannel.cpp
 
 
 set(HEADER
+${PROJECT_SOURCE_DIR}/basepcbserver.h
+${PROJECT_SOURCE_DIR}/basesysteminfo.h
+${PROJECT_SOURCE_DIR}/basestatusinterface.h
 ${PROJECT_SOURCE_DIR}/zeraglobal.h
 ${PROJECT_SOURCE_DIR}/justdata.h
 ${PROJECT_SOURCE_DIR}/mt310s2dscpi.h
-${PROJECT_SOURCE_DIR}/pcbserver.h
 ${PROJECT_SOURCE_DIR}/i2csettings.h
 ${PROJECT_SOURCE_DIR}/ethsettings.h
 ${PROJECT_SOURCE_DIR}/fpgasettings.h
