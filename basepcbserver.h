@@ -1,11 +1,11 @@
 /*****************************************************************************/
 /**
- * @file pcbserver.h
- * @brief pcbserver.h holds all necessary declarations for the pcb server class
+ * @file basepcbserver.h
+ * @brief basepcbserver.h holds all necessary declarations for the pcb server class
  * @author Peter Lohmer p.lohmer@zera.de
 ******************************************************************************/
-#ifndef PCBSERVER_H
-#define PCBSERVER_H
+#ifndef BASEPCBSERVER_H
+#define BASEPCBSERVER_H
 
 #include <QObject>
 #include <QList>
@@ -53,17 +53,9 @@ class QTcpSocket;
 class XiQNetPeer;
 class cSCPI;
 class cStatusInterface;  // forward
+class cSystemInterface;
 class cDebugSettings;
-class cFPGASettings;
-class cCtrlSettings;
-class cI2CSettings;
 class cETHSettings;
-class cFRQInputSettings;
-class cSCHeadSettings;
-class cHKeySettings;
-class cSenseSettings;
-class cSamplingSettings;
-class cSourceSettings;
 
 /**
   @mainpage base class for pcb servers
@@ -104,16 +96,8 @@ public:
     QString& getVersion();
 
     cDebugSettings* m_pDebugSettings;
-    cFPGASettings* m_pFPGASettings;
-    cCtrlSettings* m_pCtrlSettings;
-    cI2CSettings* m_pI2CSettings;
     cETHSettings* m_pETHSettings;
-    cSenseSettings* m_pSenseSettings;
-    cSamplingSettings* m_pSamplingSettings;
-    cSourceSettings* m_pSourceSettings;
-    cFRQInputSettings* m_pFRQInputSettings;
-    cSCHeadSettings* m_pSCHeadSettings;
-    cHKeySettings* m_pHKeySettings;
+    cSystemInterface* m_pSystemInterface;
     cStatusInterface* m_pStatusInterface;
 
 signals:
@@ -167,4 +151,4 @@ private slots:
     virtual void peerConnectionClosed();
 };
 
-#endif // PCBSERVER_H
+#endif // BASEPCBSERVER_H

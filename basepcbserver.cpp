@@ -17,7 +17,7 @@
 #include "protonetcommand.h"
 #include "resource.h"
 #include "scpiconnection.h"
-#include "pcbserver.h"
+#include "basepcbserver.h"
 #include "ethsettings.h"
 #include "mt310s2dglobal.h"
 
