@@ -11,9 +11,8 @@
 #include "protonetcommand.h"
 
 cSystemInterface::cSystemInterface(cMT310S2dServer *server)
-    :m_pMyServer(server)
+    :cBaseSystemInterface(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 
@@ -24,22 +23,13 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes)
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"SERVER", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionServer);
-    m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"DEVICE", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionDevice);
-    m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdVersionPCB);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "CTRL", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionCTRL);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "FPGA", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionFPGA);
-    m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, SystemSystem::cmdSerialNumber);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "BOOTLOADER", SCPI::isCmd, m_pSCPIInterface, SystemSystem::cmdUpdateControlerBootloader);
@@ -72,33 +62,23 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "CHKSUM", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdAdjFlashChksum);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdInterfaceRead);
-    m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
 void cSystemInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
+    bool done = true;
+
     switch (cmdCode)
     {
-    case SystemSystem::cmdVersionServer:
-        protoCmd->m_sOutput = m_ReadServerVersion(protoCmd->m_sInput);
-        break;
     case SystemSystem::cmdVersionDevice:
         protoCmd->m_sOutput = m_ReadDeviceVersion(protoCmd->m_sInput);
-        break;
-    case SystemSystem::cmdVersionPCB:
-        protoCmd->m_sOutput = m_ReadWritePCBVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdVersionCTRL:
         protoCmd->m_sOutput = m_ReadCTRLVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdVersionFPGA:
         protoCmd->m_sOutput = m_ReadFPGAVersion(protoCmd->m_sInput);
-        break;
-    case SystemSystem::cmdSerialNumber:
-        protoCmd->m_sOutput = m_ReadWriteSerialNumber(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdUpdateControlerBootloader:
         protoCmd->m_sOutput = m_StartControlerBootloader(protoCmd->m_sInput);
@@ -130,29 +110,17 @@ void cSystemInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case SystemSystem::cmdAdjFlashChksum:
         protoCmd->m_sOutput = m_AdjFlashChksum(protoCmd->m_sInput);
         break;
-    case SystemSystem::cmdInterfaceRead:
-        protoCmd->m_sOutput = m_InterfaceRead(protoCmd->m_sInput);
-        break;
+    default:
+        done = false;
     }
 
-    if (protoCmd->m_bwithOutput)
-        emit cmdExecutionDone(protoCmd);
-}
-
-
-QString cSystemInterface::m_ReadServerVersion(QString &sInput)
-{
-    QString s;
-    cSCPICommand cmd = sInput;
-
-    if ( cmd.isQuery() )
+    if (done)
     {
-        s = m_pMyServer->getVersion();
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
     }
     else
-        s = SCPI::scpiAnswer[SCPI::nak];
-
-    return s;
+        cBaseSystemInterface::executeCommand(cmdCode, protoCmd);
 }
 
 
@@ -162,61 +130,22 @@ QString cSystemInterface::m_ReadDeviceVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return m_pMyServer->m_pSystemInfo->getDeviceVersion();
+        return ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion();
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
-}
-
-
-QString cSystemInterface::m_ReadDeviceName(QString& sInput)
-{
-    QString s;
-    cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        return m_pMyServer->m_pSystemInfo->getDeviceName();
-    }
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
-}
-
-
-QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
-{
-    QString s;
-    int ret = ZeraMcontrollerBase::cmdfault;
-    cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        s = m_pMyServer->m_pSystemInfo->getPCBVersion();
-    }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
-            QString Version = cmd.getParam(0);
-            ret = pAtmel->writePCBVersion(Version);
-            m_pMyServer->m_pSystemInfo->getSystemInfo(); // read back info
-        }
-
-        m_genAnswer(ret, s);
-    }
-
-    return s;
 }
 
 
 QString cSystemInterface::m_ReadCTRLVersion(QString &sInput)
 {
+    QString s;
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
     {
-        return m_pMyServer->m_pSystemInfo->getSysCTRLVersion() + QStringLiteral(" / ") +
-               m_pMyServer->m_pSystemInfo->getCTRLVersion();
+        return ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getSysCTRLVersion() + QStringLiteral(" / ") +
+                    ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getCTRLVersion();
     }
 
     else
@@ -229,40 +158,9 @@ QString cSystemInterface::m_ReadFPGAVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-    {
-        return m_pMyServer->m_pSystemInfo->getLCAVersion();
-    }
-
+        return ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getLCAVersion();
     else
         return SCPI::scpiAnswer[SCPI::nak];
-}
-
-
-QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
-{
-    ZeraMcontrollerBase::atmelRM ret = ZeraMcontrollerBase::cmdfault;
-    QString s;
-    cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        {
-            s = m_pMyServer->m_pSystemInfo->getSerialNumber();
-        }
-    }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
-            QString Serial = cmd.getParam(0);
-            ret = pAtmel->writeSerialNumber(Serial);
-            m_pMyServer->m_pSystemInfo->getSystemInfo(); // read back info
-        }
-
-        m_genAnswer(ret, s);
-    }
-
-    return s;
 }
 
 
@@ -482,36 +380,7 @@ QString cSystemInterface::m_AdjFlashChksum(QString &sInput)
 }
 
 
-QString cSystemInterface::m_InterfaceRead(QString &sInput)
-{
-    cSCPICommand cmd = sInput;
 
-    if (cmd.isQuery())
-    {
-        QString s;
-        m_pMyServer->getSCPIInterface()->exportSCPIModelXML(s);
-        return s;
-    }
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
-}
-
-
-void cSystemInterface::m_genAnswer(int select, QString &answer)
-{
-    switch (select)
-    {
-    case ZeraMcontrollerBase::cmddone:
-        answer = SCPI::scpiAnswer[SCPI::ack];
-        break;
-    case ZeraMcontrollerBase::cmdfault:
-        answer = SCPI::scpiAnswer[SCPI::nak];
-        break;
-    case ZeraMcontrollerBase::cmdexecfault:
-        answer = SCPI::scpiAnswer[SCPI::errexec];
-        break;
-    }
-}
 
 
 
