@@ -58,7 +58,6 @@ public:
     cFRQInputInterface* m_pFRQInputInterface;
     cSCHeadInterface* m_pSCHeadInterface;
     cHKeyInterface* m_pHKeyInterface;
-    cSystemInfo* m_pSystemInfo;
     cAdjustment* m_pAdjHandler;
     cRMConnection* m_pRMConnection;
     cClampInterface* m_pClampInterface;
