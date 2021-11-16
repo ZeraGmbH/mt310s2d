@@ -14,6 +14,7 @@
 #include "scpiconnection.h"
 #include "notificationstring.h"
 #include "notificationdata.h"
+#include "basesysteminfo.h"
 
 class QTcpSocket;
 class QByteArray;
@@ -95,10 +96,11 @@ public:
     QString& getName();
     QString& getVersion();
 
-    cDebugSettings* m_pDebugSettings;
-    cETHSettings* m_pETHSettings;
-    cSystemInterface* m_pSystemInterface;
-    cStatusInterface* m_pStatusInterface;
+    cDebugSettings* m_pDebugSettings; // a pcb server allways has its debug settings
+    cETHSettings* m_pETHSettings; // its ethernet settings
+    cSystemInterface* m_pSystemInterface; // a system interface
+    cStatusInterface* m_pStatusInterface; // a statusinterface
+    cBaseSystemInfo* m_pSystemInfo;
 
 signals:
     void sendAnswer(QByteArray answer);
