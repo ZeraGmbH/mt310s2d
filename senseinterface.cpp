@@ -352,7 +352,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     bool enable = false;
     pAtmel->getEEPROMAccessEnable(enable);
 
-    QString sDV = m_pMyServer->m_pSystemInfo->getDeviceVersion();
+    QString sDV = ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion();
     if (qs != sDV) {
         // test ob sich nur die hinteren nummern der lca bzw. ctrl version geändert haben
         // indem die hinteren stellen der nummern aus sDeviceVersion nach s übertragen werden
@@ -361,14 +361,14 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         QString ss, sd, ss2, sd2;
         ss = qs.section(';',2,2); // LCA: x.xx
         ss2 = '.' +ss.section('.',1,1); // .xx
-        sd = m_pMyServer->m_pSystemInfo->getDeviceVersion().section(';',2,2); // LCA: x.yy
+        sd = ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion().section(';',2,2); // LCA: x.yy
         sd2 = '.' +sd.section('.',1,1); // .yy
         ss.replace(ss2,sd2); // tausch .xx durch .yy
         qs.replace(qs.section(';',2,2), ss); // LCA: x.yy -> s
 
         ss = qs.section(';',3,3); // CTRL: x.xx
         ss2 = '.' +ss.section('.',1,1); // .xx
-        sd = m_pMyServer->m_pSystemInfo->getDeviceVersion().section(';',3,3); // CTRL: x.yy
+        sd = ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion().section(';',3,3); // CTRL: x.yy
         sd2 = '.' +sd.section('.',1,1); // .yy
         ss.replace(ss2,sd2); // tausch .xx durch .yy
         qs.replace(qs.section(';',3,3), ss); // CTRL: x.yy -> s
@@ -460,7 +460,7 @@ void cSenseInterface::exportAdjData(QDataStream &stream)
     stream << ServerVersion;
 
     stream << m_pMyServer->m_pSystemInfo->getDeviceName().toStdString().c_str(); // leiterkarten name aus atmel gelesen
-    stream << m_pMyServer->m_pSystemInfo->getDeviceVersion().toStdString().c_str(); // geräte name versionsnummern ...
+    stream << ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion().toStdString().c_str(); // geräte name versionsnummern ...
     stream << m_pMyServer->m_pSystemInfo->getSerialNumber().toStdString().c_str(); // seriennummer
     stream << DateTime.currentDateTime().toString(Qt::TextDate).toStdString().c_str(); // datum,uhrzeit
 
@@ -503,7 +503,7 @@ QString cSenseInterface::exportXMLString(int indent)
 
     tag = justqdom.createElement( "VersionNumber" );
     pcbtag.appendChild( tag );
-    t = justqdom.createTextNode(m_pMyServer->m_pSystemInfo->getDeviceVersion() );
+    t = justqdom.createTextNode(((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion() );
     tag.appendChild( t );
 
     tag = justqdom.createElement( "SerialNumber" );
@@ -687,7 +687,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
 
         if (tName == "VersionNumber")
         {
-           if ( ! ( VersionNrOK= (qdElem.text() == m_pMyServer->m_pSystemInfo->getDeviceVersion()) ) )
+           if ( ! ( VersionNrOK= (qdElem.text() == ((cSystemInfo*)(m_pMyServer->m_pSystemInfo))->getDeviceVersion()) ) )
            {
                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong versionnumber in xml file\n");
                return false;
