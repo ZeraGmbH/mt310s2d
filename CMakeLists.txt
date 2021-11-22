@@ -46,6 +46,7 @@ endif()
 set(SOURCES
 ${PROJECT_SOURCE_DIR}/basepcbserver.cpp
 ${PROJECT_SOURCE_DIR}/basesysteminfo.cpp
+${PROJECT_SOURCE_DIR}/basesysteminterface.cpp
 ${PROJECT_SOURCE_DIR}/main.cpp
 ${PROJECT_SOURCE_DIR}/justdata.cpp
 ${PROJECT_SOURCE_DIR}/i2csettings.cpp
@@ -100,6 +101,7 @@ set(HEADER
 ${PROJECT_SOURCE_DIR}/basepcbserver.h
 ${PROJECT_SOURCE_DIR}/basesysteminfo.h
 ${PROJECT_SOURCE_DIR}/basestatusinterface.h
+${PROJECT_SOURCE_DIR}/basesysteminterface.h
 ${PROJECT_SOURCE_DIR}/zeraglobal.h
 ${PROJECT_SOURCE_DIR}/justdata.h
 ${PROJECT_SOURCE_DIR}/mt310s2dscpi.h
