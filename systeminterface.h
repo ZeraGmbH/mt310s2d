@@ -45,7 +45,6 @@ protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
-    cMT310S2dServer* m_pMyServer;
     QString m_ReadDeviceVersion(QString& sInput);
     QString m_ReadCTRLVersion(QString& sInput);
     QString m_ReadFPGAVersion(QString& sInput);
