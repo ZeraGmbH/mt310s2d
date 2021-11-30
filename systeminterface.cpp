@@ -21,6 +21,8 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
+    cBaseSystemInterface::initSCPIConnection(leadingNodes);
+
     if (leadingNodes != "")
         leadingNodes += ":";
 
