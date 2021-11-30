@@ -7,7 +7,7 @@
 
 #include "scpiconnection.h"
 
-namespace SystemSystem
+namespace BaseSystemSystem
 {
 
 enum BaseSystemCommands

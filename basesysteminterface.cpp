@@ -25,16 +25,16 @@ void cBaseSystemInterface::initSCPIConnection(QString leadingNodes)
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"SERVER", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionServer);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"SERVER", SCPI::isQuery, m_pSCPIInterface, BaseSystemSystem::cmdVersionServer);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdVersionPCB);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, BaseSystemSystem::cmdVersionPCB);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, SystemSystem::cmdSerialNumber);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, BaseSystemSystem::cmdSerialNumber);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdInterfaceRead);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, m_pSCPIInterface, BaseSystemSystem::cmdInterfaceRead);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
@@ -46,16 +46,16 @@ void cBaseSystemInterface::executeCommand(int cmdCode, cProtonetCommand *protoCm
 
     switch (cmdCode)
     {
-    case SystemSystem::cmdVersionServer:
+    case BaseSystemSystem::cmdVersionServer:
         protoCmd->m_sOutput = m_ReadServerVersion(protoCmd->m_sInput);
         break;
-    case SystemSystem::cmdVersionPCB:
+    case BaseSystemSystem::cmdVersionPCB:
         protoCmd->m_sOutput = m_ReadWritePCBVersion(protoCmd->m_sInput);
         break;
-    case SystemSystem::cmdSerialNumber:
+    case BaseSystemSystem::cmdSerialNumber:
         protoCmd->m_sOutput = m_ReadWriteSerialNumber(protoCmd->m_sInput);
         break;
-    case SystemSystem::cmdInterfaceRead:
+    case BaseSystemSystem::cmdInterfaceRead:
         protoCmd->m_sOutput = m_InterfaceRead(protoCmd->m_sInput);
         break;
     default:
