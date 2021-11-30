@@ -1,3 +1,4 @@
+#include <QObject>
 #include <scpi.h>
 #include <scpicommand.h>
 
@@ -249,7 +250,7 @@ QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
         {
             if (enable)
             {
-                if (m_pMyServer->m_pSenseInterface->exportAdjFlash())
+                if (((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->exportAdjFlash())
                     return SCPI::scpiAnswer[SCPI::ack];
                 else
                     return SCPI::scpiAnswer[SCPI::errexec];
@@ -271,7 +272,7 @@ QString cSystemInterface::m_AdjFlashRead(QString &sInput)
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
-        if (m_pMyServer->m_pSenseInterface->importAdjFlash())
+        if (((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->importAdjFlash())
             return SCPI::scpiAnswer[SCPI::ack];
         else
             return SCPI::scpiAnswer[SCPI::errexec];
@@ -288,7 +289,7 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
 
     if (cmd.isQuery())
     {
-        s = m_pMyServer->m_pSenseInterface->exportXMLString(-1);
+        s = ((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->exportXMLString(-1);
         s.replace("\n","");
     }
     else
@@ -299,12 +300,12 @@ QString cSystemInterface::m_AdjXmlImportExport(QString &sInput)
             if (enable)
             {
                 QString XML = cmd.getParam();
-                if (!m_pMyServer->m_pSenseInterface->importAdjXMLString(XML))
+                if (!((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->importAdjXMLString(XML))
                     s = SCPI::errxml;
                 else
                 {
-                    m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
-                    if (!m_pMyServer->m_pSenseInterface->exportAdjFlash())
+                    ((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->m_ComputeSenseAdjData();
+                    if (!((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->exportAdjFlash())
                         s = SCPI::scpiAnswer[SCPI::errexec];
                     else
                         s = SCPI::scpiAnswer[SCPI::ack];
@@ -328,7 +329,7 @@ QString cSystemInterface::m_AdjXMLWrite(QString &sInput)
     if (cmd.isCommand(1))
     {
         QString filename = cmd.getParam(0);
-        if (m_pMyServer->m_pSenseInterface->exportAdjXML(filename))
+        if (((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->exportAdjXML(filename))
             return SCPI::scpiAnswer[SCPI::ack];
         else
             return SCPI::scpiAnswer[SCPI::errexec];
@@ -350,7 +351,7 @@ QString cSystemInterface::m_AdjXMLRead(QString &sInput)
             if (enable)
             {
                 QString filename = cmd.getParam(0);
-                if (m_pMyServer->m_pSenseInterface->importAdjXML(filename))
+                if (((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->importAdjXML(filename))
                     return SCPI::scpiAnswer[SCPI::ack];
                 else
                     return SCPI::scpiAnswer[SCPI::errexec];
@@ -372,7 +373,7 @@ QString cSystemInterface::m_AdjFlashChksum(QString &sInput)
 
     if (cmd.isQuery())
     {
-        QString s = QString("0x%1").arg(m_pMyServer->m_pSenseInterface->getChecksum()); // hex output
+        QString s = QString("0x%1").arg(((cMT310S2dServer*)m_pMyServer)->m_pSenseInterface->getChecksum()); // hex output
         return s;
     }
     else
