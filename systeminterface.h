@@ -12,7 +12,10 @@ namespace SystemSystem
 {
 
 enum SystemCommands
-{
+{   cmdVersionServer,
+    cmdVersionPCB,
+    cmdSerialNumber,
+    cmdInterfaceRead,
     cmdVersionCTRL,
     cmdVersionFPGA,
     cmdVersionDevice,
