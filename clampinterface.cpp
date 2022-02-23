@@ -49,23 +49,22 @@ void cClampInterface::actualizeClampStatus()
             quint16 bmask;
             bmask = 1 << i;
             if ((clChange & bmask) > 0) {
-                QString channnelName;
+                QString channnelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
                 if ((m_nClampStatus & bmask) == 0) {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    channnelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
-                    clampHash[i] = new cClamp(m_pMyServer, channnelName, i+1);
+                    clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1);
                     qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i);
                     addChannel(channnelName);
                 }
                 else
                 {
                     // a clamp is not connected
-                    if (clampHash.contains(i)) {
+                    if (clampHash.contains(channnelName)) {
                         // if we already have a clamp on this place it was actually disconnected
                         m_nClampStatus &= (~bmask);
                         cClamp* clamp;
-                        clamp = clampHash.take(i);
+                        clamp = clampHash.take(channnelName);
                         channnelName = clamp->getChannelName();
                         qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i);
                         removeChannel(channnelName);
@@ -154,7 +153,7 @@ QString cClampInterface::m_WriteAllClamps(QString &sInput)
                 if (enable)
                 {
                     bool done;
-                    QList<int> keylist;
+                    QList<QString> keylist;
 
                     keylist = clampHash.keys();
                     done = true;
@@ -195,7 +194,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
 
         if (n > 0)
         {
-            QList<int> keylist;
+            QList<QString> keylist;
             cClamp* pClamp;
 
             keylist = clampHash.keys();
@@ -272,7 +271,7 @@ QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
 
                         if (tmpClamp.importXMLDocument(&justqdom,true))
                         {
-                            QList<int> keylist;
+                            QList<QString> keylist;
                             cClamp *pClamp, *pClamp4Use;
                             int anzClamps;
                             int anzSNR;
