@@ -47,7 +47,7 @@ private:
     cNotificationString notifierClampChannelList;
 
     quint16 m_nClampStatus;
-    QHash<QString, cClamp*> clampHash;
+    QHash<QString, cClamp*> m_clampHash;
 
     QString m_ReadClampChannelCatalog(QString& sInput);
     QString m_WriteAllClamps(QString& sInput);
