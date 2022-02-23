@@ -6,6 +6,7 @@
 #include "senseinterface.h"
 #include "protonetcommand.h"
 #include <QDomDocument>
+#include <QStringList>
 
 cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler)
     :m_pMyServer(server), m_pControler(controler)
@@ -77,13 +78,13 @@ void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     switch (cmdCode)
     {
     case ClampSystem::cmdClampChannelCat:
-        protoCmd->m_sOutput = m_ReadClampChannelCatalog(protoCmd->m_sInput);
+        protoCmd->m_sOutput = readClampChannelCatalog(protoCmd->m_sInput);
         break;
     case ClampSystem::cmdClampWrite:
-        protoCmd->m_sOutput = m_WriteAllClamps(protoCmd->m_sInput);
+        protoCmd->m_sOutput = writeAllClamps(protoCmd->m_sInput);
         break;
     case ClampSystem::cmdClampImportExport:
-        protoCmd->m_sOutput = m_ImportExportAllClamps(protoCmd->m_sInput);
+        protoCmd->m_sOutput = importExportAllClamps(protoCmd->m_sInput);
         break;
     }
     if (protoCmd->m_bwithOutput) {
@@ -97,7 +98,7 @@ void cClampInterface::generateAndNotifyClampChannelList()
     m_notifierClampChannelList = clampList.join(";") + ";";
 }
 
-QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
+QString cClampInterface::readClampChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
     if (cmd.isQuery())
@@ -111,7 +112,7 @@ QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
     }
 }
 
-QString cClampInterface::m_WriteAllClamps(QString &sInput)
+QString cClampInterface::writeAllClamps(QString &sInput)
 {
     cSCPICommand cmd = sInput;
     if (cmd.isCommand(1) && (cmd.getParam(0) == "")) {
@@ -142,7 +143,7 @@ QString cClampInterface::m_WriteAllClamps(QString &sInput)
     }
 }
 
-QString cClampInterface::m_ImportExportAllClamps(QString &sInput)
+QString cClampInterface::importExportAllClamps(QString &sInput)
 {
     cSCPICommand cmd = sInput;
     if (cmd.isQuery()) {
