@@ -40,27 +40,27 @@ public:
     cClamp(){m_pMyServer = 0;}
     cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel);
     virtual ~cClamp();
-    virtual quint8 getAdjustmentStatus();
-    virtual void initSCPIConnection(QString);
+    virtual quint8 getAdjustmentStatus() override;
+    virtual void initSCPIConnection(QString) override;
     QString getChannelName();
     QString getSerial();
-    virtual QString exportXMLString(int indent = 1);
-    virtual bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
+    virtual QString exportXMLString(int indent = 1) override;
+    bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
 
 protected slots:
-    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd) override;
 
 protected:
     QList<cSenseRange*> m_RangeList;
 
-    virtual void exportAdjData(QDataStream& stream);
-    virtual bool importAdjData(QDataStream& stream);
-    virtual bool importXMLDocument(QDomDocument* qdomdoc);
+    virtual void exportAdjData(QDataStream& stream) override;
+    virtual bool importAdjData(QDataStream& stream) override;
+    virtual bool importXMLDocument(QDomDocument* qdomdoc) override;
 
-    virtual void setI2CMux();
-    virtual quint8 readClampType();
-    virtual void initClamp(quint8 type);
-    virtual QString getClampName(quint8 type);
+    virtual void setI2CMux() override;
+    quint8 readClampType();
+    void initClamp(quint8 type);
+    QString getClampName(quint8 type);
     void addSense();
     void addSenseInterface();
     void addSystAdjInterface();
@@ -77,6 +77,7 @@ private:
     QDateTime mDateTime;
     bool m_bSet;
 
+    void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
 
     QString handleScpiReadWriteSerial(QString &scpiCmdStr);
