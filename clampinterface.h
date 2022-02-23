@@ -33,8 +33,6 @@ public:
     cClampInterface(cMT310S2dServer *server, cATMEL* controler);
     virtual void initSCPIConnection(QString leadingNodes);
     void actualizeClampStatus();
-    void addChannel(QString channel);
-    void removeChannel(QString channel);
     void generateAndNotifyClampChannelList();
 
 protected slots:
@@ -43,8 +41,7 @@ protected slots:
 private:
     cMT310S2dServer *m_pMyServer;
     cATMEL *m_pControler;
-    QStringList m_ClampChannelList;
-    cNotificationString notifierClampChannelList;
+    cNotificationString m_notifierClampChannelList;
 
     quint16 m_nClampStatus;
     QHash<QString, cClamp*> m_clampHash;
