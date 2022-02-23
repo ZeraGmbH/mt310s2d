@@ -508,16 +508,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 
 void cClamp::setI2CMux()
 {
-    ushort I2CAdress;
-    uchar outpBuf[1]; // 1 adr byte, 1 byte data = mux code
-
-    I2CAdress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux);
-    outpBuf[0] = (m_nCtrlChannel - 4) | 8; // .... hardware ????
-
-    struct i2c_msg Msgs = {addr: I2CAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
-    struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
-
-    I2CTransfer(m_sDeviceNode, I2CAdress, m_pMyServer->m_pDebugSettings->getDebugLevel(), &MuxData);
+    setI2CMuxClamp();
 }
 
 
@@ -545,7 +536,7 @@ quint8 cClamp::getAdjustmentStatus()
 quint8 cClamp::readClampType()
 {
     QByteArray ba;
-    setI2CMux();
+    setI2CMuxClamp();
     if (readFlash(ba)) // flash data could be read with correct chksum
     {
         quint8 type;
@@ -744,6 +735,20 @@ void cClamp::addSystAdjInterface()
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
+}
+
+void cClamp::setI2CMuxClamp()
+{
+    ushort I2CAdress;
+    uchar outpBuf[1]; // 1 adr byte, 1 byte data = mux code
+
+    I2CAdress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux);
+    outpBuf[0] = (m_nCtrlChannel - 4) | 8; // .... hardware ????
+
+    struct i2c_msg Msgs = {addr: I2CAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
+    struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
+
+    I2CTransfer(m_sDeviceNode, I2CAdress, m_pMyServer->m_pDebugSettings->getDebugLevel(), &MuxData);
 }
 
 
