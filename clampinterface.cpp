@@ -38,8 +38,7 @@ void cClampInterface::actualizeClampStatus()
         qInfo("Clamp status read: 0x%02X", clStat);
         quint16 clChange = clStat ^ m_nClampStatus; // now we know which clamps changed
         for (int i = 0; i < 16; i++) {
-            quint16 bmask;
-            bmask = 1 << i;
+            quint16 bmask = 1 << i;
             if ((clChange & bmask) > 0) {
                 QString channnelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
                 if ((m_nClampStatus & bmask) == 0) {
@@ -149,8 +148,7 @@ QString cClampInterface::importExportAllClamps(QString &sInput)
     if (cmd.isQuery()) {
         QString xmlTotal;
         for(auto clamp : m_clampHash) {
-            QString xmlClamp;
-            xmlClamp = clamp->exportXMLString(-1);
+            QString xmlClamp = clamp->exportXMLString(-1);
             xmlClamp.replace("\n","");
             xmlTotal.append(xmlClamp);
         }
@@ -182,7 +180,6 @@ QString cClampInterface::importExportAllClamps(QString &sInput)
                 if (!err) {
                     for (int i = 0; (i < anzXML) && (anzClampTemp > 0); i++) {
                         QString XML;
-                        cClamp tmpClamp;
                         QDomDocument justqdom( "TheDocument" );
                         XML = sep + sl.at(i);
                         if ( !justqdom.setContent(XML) ) {
@@ -190,6 +187,7 @@ QString cClampInterface::importExportAllClamps(QString &sInput)
                             answer = SCPI::scpiAnswer[SCPI::errxml];
                             break;
                         }
+                        cClamp tmpClamp;
                         if (tmpClamp.importXMLDocument(&justqdom,true)) {
                             cClamp *pClamp, *pClamp4Use;
                             int anzSNR = 0;
