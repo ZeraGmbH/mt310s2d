@@ -95,34 +95,34 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     switch (cmdCode)
     {
     case clamp::cmdSerial:
-        protoCmd->m_sOutput = m_ReadWriteSerial(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadWriteSerial(protoCmd->m_sInput);
         break;
     case clamp::cmdVersion:
-        protoCmd->m_sOutput = m_ReadWriteVersion(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadWriteVersion(protoCmd->m_sInput);
         break;
     case clamp::cmdType:
-        protoCmd->m_sOutput = m_ReadWriteType(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadWriteType(protoCmd->m_sInput);
         break;
     case clamp::cmdName:
-        protoCmd->m_sOutput = m_ReadWriteName(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadWriteName(protoCmd->m_sInput);
         break;
     case clamp::cmdFlashWrite:
-        protoCmd->m_sOutput = m_WriteFlash(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiWriteFlash(protoCmd->m_sInput);
         break;
     case clamp::cmdFlashRead:
-        protoCmd->m_sOutput = m_ReadFlash(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadFlash(protoCmd->m_sInput);
         break;
     case clamp::cmdChksum:
-        protoCmd->m_sOutput = m_ReadChksum(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadChksum(protoCmd->m_sInput);
         break;
     case clamp::cmdXMLWrite:
-        protoCmd->m_sOutput = m_WriteXML(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiWriteXML(protoCmd->m_sInput);
         break;
     case clamp::cmdXMLRead:
-        protoCmd->m_sOutput = m_ReadXML(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadXML(protoCmd->m_sInput);
         break;
     case clamp::cmdStatAdjustment:
-        protoCmd->m_sOutput = m_ReadAdjStatus(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadAdjStatus(protoCmd->m_sInput);
         break;
     }
 
@@ -762,10 +762,10 @@ cSenseRange* cClamp::getRange(QString name)
 }
 
 
-QString cClamp::m_ReadWriteSerial(QString& sInput)
+QString cClamp::handleScpiReadWriteSerial(QString& scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd =sInput;
+    cSCPICommand cmd =scpiCmdStr;
 
     if (cmd.isQuery())
     {
@@ -792,10 +792,10 @@ QString cClamp::m_ReadWriteSerial(QString& sInput)
 }
 
 
-QString cClamp::m_ReadWriteVersion(QString &sInput)
+QString cClamp::handleScpiReadWriteVersion(QString &scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd =sInput;
+    cSCPICommand cmd =scpiCmdStr;
 
     if (cmd.isQuery())
     {
@@ -822,10 +822,10 @@ QString cClamp::m_ReadWriteVersion(QString &sInput)
 }
 
 
-QString cClamp::m_ReadWriteType(QString& sInput)
+QString cClamp::handleScpiReadWriteType(QString& scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd =sInput;
+    cSCPICommand cmd =scpiCmdStr;
 
     if (cmd.isQuery())
     {
@@ -873,10 +873,10 @@ QString cClamp::m_ReadWriteType(QString& sInput)
 }
 
 
-QString cClamp::m_ReadWriteName(QString& sInput)
+QString cClamp::handleScpiReadWriteName(QString& scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd =sInput;
+    cSCPICommand cmd =scpiCmdStr;
 
     if (cmd.isQuery())
     {
@@ -903,10 +903,10 @@ QString cClamp::m_ReadWriteName(QString& sInput)
 }
 
 
-QString cClamp::m_WriteFlash(QString& sInput)
+QString cClamp::handleScpiWriteFlash(QString& scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = scpiCmdStr;
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
@@ -923,10 +923,10 @@ QString cClamp::m_WriteFlash(QString& sInput)
 }
 
 
-QString cClamp::m_ReadFlash(QString& sInput)
+QString cClamp::handleScpiReadFlash(QString& scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = scpiCmdStr;
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
@@ -946,10 +946,10 @@ QString cClamp::m_ReadFlash(QString& sInput)
 }
 
 
-QString cClamp::m_ReadChksum(QString& sInput)
+QString cClamp::handleScpiReadChksum(QString& scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = scpiCmdStr;
 
     if (cmd.isQuery())
     {
@@ -964,10 +964,10 @@ QString cClamp::m_ReadChksum(QString& sInput)
 }
 
 
-QString cClamp::m_WriteXML(QString &sInput)
+QString cClamp::handleScpiWriteXML(QString &scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = scpiCmdStr;
 
     if (cmd.isCommand(1))
     {
@@ -985,10 +985,10 @@ QString cClamp::m_WriteXML(QString &sInput)
 }
 
 
-QString cClamp::m_ReadXML(QString &sInput)
+QString cClamp::handleScpiReadXML(QString &scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = scpiCmdStr;
 
     if (cmd.isCommand(1))
     {
@@ -1006,10 +1006,10 @@ QString cClamp::m_ReadXML(QString &sInput)
 }
 
 
-QString cClamp::m_ReadAdjStatus(QString &sInput)
+QString cClamp::handleScpiReadAdjStatus(QString &scpiCmdStr)
 {
     QString answer;
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = scpiCmdStr;
 
     if (cmd.isQuery())
     {

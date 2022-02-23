@@ -105,7 +105,7 @@ private:
     QString m_ReadSenseGroupCatalog(QString& sInput);
     QString m_InitSenseAdjData(QString& sInput);
     QString m_ComputeSenseAdjData(QString& sInput);
-    QString m_ReadAdjStatus(QString& sInput);
+    QString handleScpiReadAdjStatus(QString& sInput);
 
     cNotificationString notifierSenseMMode;
     cNotificationString notifierSenseChannelCat;

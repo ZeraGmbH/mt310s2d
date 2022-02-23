@@ -79,16 +79,16 @@ private:
 
     cSenseRange* getRange(QString name);
 
-    QString m_ReadWriteSerial(QString &sInput);
-    QString m_ReadWriteVersion(QString &sInput);
-    QString m_ReadWriteType(QString &sInput);
-    QString m_ReadWriteName(QString &sInput);
-    QString m_WriteFlash(QString &sInput);
-    QString m_ReadFlash(QString &sInput);
-    QString m_ReadChksum(QString &sInput);
-    QString m_WriteXML(QString &sInput);
-    QString m_ReadXML(QString &sInput);
-    QString m_ReadAdjStatus(QString &sInput);
+    QString handleScpiReadWriteSerial(QString &scpiCmdStr);
+    QString handleScpiReadWriteVersion(QString &scpiCmdStr);
+    QString handleScpiReadWriteType(QString &scpiCmdStr);
+    QString handleScpiReadWriteName(QString &scpiCmdStr);
+    QString handleScpiWriteFlash(QString &scpiCmdStr);
+    QString handleScpiReadFlash(QString &scpiCmdStr);
+    QString handleScpiReadChksum(QString &scpiCmdStr);
+    QString handleScpiWriteXML(QString &scpiCmdStr);
+    QString handleScpiReadXML(QString &scpiCmdStr);
+    QString handleScpiReadAdjStatus(QString &scpiCmdStr);
 
 };
 
