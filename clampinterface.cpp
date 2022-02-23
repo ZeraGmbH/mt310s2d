@@ -46,7 +46,7 @@ void cClampInterface::actualizeClampStatus()
                     m_nClampStatus |= bmask;
                     m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1);
                     qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i);
-                    addChannel(channnelName);
+                    generateAndNotifyClampChannelList();
                 }
                 else {
                     // a clamp is not connected
@@ -57,7 +57,7 @@ void cClampInterface::actualizeClampStatus()
                         clamp = m_clampHash.take(channnelName);
                         channnelName = clamp->getChannelName();
                         qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i);
-                        removeChannel(channnelName);
+                        generateAndNotifyClampChannelList();
                         delete clamp;
                     }
                     else {
@@ -70,18 +70,6 @@ void cClampInterface::actualizeClampStatus()
     else {
         qWarning("cClampInterface::actualizeClampStatus: readClampStatus failed");
     }
-}
-
-void cClampInterface::addChannel(QString channel)
-{
-    m_ClampChannelList.append(channel);
-    generateAndNotifyClampChannelList();
-}
-
-void cClampInterface::removeChannel(QString channel)
-{
-    m_ClampChannelList.removeAll(channel);
-    generateAndNotifyClampChannelList();
 }
 
 void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
@@ -105,8 +93,8 @@ void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 
 void cClampInterface::generateAndNotifyClampChannelList()
 {
-    QString newClampList = m_ClampChannelList.join(";") + ";";
-    notifierClampChannelList = newClampList;
+    QStringList clampList = m_clampHash.keys();
+    m_notifierClampChannelList = clampList.join(";") + ";";
 }
 
 QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
@@ -114,9 +102,9 @@ QString cClampInterface::m_ReadClampChannelCatalog(QString &sInput)
     cSCPICommand cmd = sInput;
     if (cmd.isQuery())
     {
-        emit notifier(&notifierClampChannelList); // enable async notification on clamp catalog change
+        emit notifier(&m_notifierClampChannelList); // enable async notification on clamp catalog change
         generateAndNotifyClampChannelList();
-        return notifierClampChannelList.getString();
+        return m_notifierClampChannelList.getString();
     }
     else {
         return SCPI::scpiAnswer[SCPI::nak];
