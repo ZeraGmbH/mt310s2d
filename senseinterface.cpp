@@ -308,7 +308,7 @@ void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
             emit cmdExecutionDone(protoCmd);
         break;
     case SenseSystem::cmdStatAdjustment:
-        protoCmd->m_sOutput = m_ReadAdjStatus(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadAdjStatus(protoCmd->m_sInput);
         if (protoCmd->m_bwithOutput)
             emit cmdExecutionDone(protoCmd);
         break;
@@ -1010,7 +1010,7 @@ QString cSenseInterface::m_ComputeSenseAdjData(QString& sInput)
 }
 
 
-QString cSenseInterface::m_ReadAdjStatus(QString &sInput)
+QString cSenseInterface::handleScpiReadAdjStatus(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
