@@ -24,7 +24,6 @@ namespace clamp
         cmdXMLRead,
         cmdStatAdjustment
     };
-
 }
 
 enum clamps
@@ -59,34 +58,22 @@ protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd) override;
 
 protected:
-    QList<cSenseRange*> m_RangeList;
-
     virtual void exportAdjData(QDataStream& stream) override;
     virtual bool importAdjData(QDataStream& stream) override;
     virtual bool importXMLDocument(QDomDocument* qdomdoc) override;
 
     virtual void setI2CMux() override;
-    quint8 readClampType();
+
+private:
     void initClamp(quint8 type);
-    QString getClampName(quint8 type);
     void addSense();
     void addSenseInterface();
     void addSystAdjInterface();
-
-private:
-    cMT310S2dServer* m_pMyServer;
-    QString m_sChannelName;
-    quint8 m_nCtrlChannel;
-    QString m_sName;
-    QString m_sSerial;
-    QString m_sVersion;
-    quint8 m_nType; // 0 is undefined type
-    quint32 m_nFlags; // for future purpose
-    QDateTime mDateTime;
-    bool m_bSet;
-
+    QString getClampName(quint8 type);
     void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
+    quint8 readClampType();
+    void removeAllRanges();
 
     QString handleScpiReadWriteSerial(QString &scpiCmdStr);
     QString handleScpiReadWriteVersion(QString &scpiCmdStr);
@@ -99,6 +86,16 @@ private:
     QString handleScpiReadXML(QString &scpiCmdStr);
     QString handleScpiReadAdjStatus(QString &scpiCmdStr);
 
+    cMT310S2dServer* m_pMyServer;
+    QList<cSenseRange*> m_RangeList;
+    QString m_sChannelName;
+    quint8 m_nCtrlChannel;
+    QString m_sClampTypeName;
+    QString m_sSerial;
+    QString m_sVersion;
+    quint8 m_nType; // 0 is undefined type
+    quint32 m_nFlags; // for future purpose
+    QDateTime mDateTime;
 };
 
 #endif // CLAMP_H
