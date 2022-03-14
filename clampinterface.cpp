@@ -200,11 +200,9 @@ QString cClampInterface::importExportAllClamps(QString &sInput)
                                     anzSNR++;
                                 }
                             }
-                            // From what René told me it seems that 'formatting' clamp's type is possible
-                            // only if just one clamp is plugged - see comment above (still - what's going on here
-                            // is not clear...)
+                            // see huge comment above
                             if ( (anzSNR == 1) || ( (anzSNR == 0) && (anzXML == 1) && (anzClamps == 1)) ) {
-                                // we have 1 matching serial number
+                                // we have 1 matching serial number or one document/clamp
                                 anzClampTemp--;
                                 if (anzSNR == 0) {
                                     pClamp4Use = pClamp;
