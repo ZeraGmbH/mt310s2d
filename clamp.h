@@ -4,6 +4,8 @@
 #include <QList>
 #include <QDataStream>
 #include <QDateTime>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include "adjflash.h"
 #include "adjxml.h"
@@ -31,8 +33,9 @@ enum clamps
     undefined,
     CL120A,
     CL300A,
-    CL1000A ,
+    CL1000A,
     EMOB32,
+    EMOBDcDualTest,
 
     anzCL
 };
@@ -51,6 +54,7 @@ public:
     virtual void initSCPIConnection(QString) override;
     QString getChannelName();
     QString getSerial();
+    bool addSecondaryRanges(QString secondaryChannelName);
     virtual QString exportXMLString(int indent = 1) override;
     bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
 
@@ -69,11 +73,13 @@ private:
     void addSense();
     void addSenseInterface();
     void addSystAdjInterface();
+    void addSystAdjInterfaceChannel(QString channelName);
     QString getClampName(quint8 type);
     void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
     quint8 readClampType();
     void removeAllRanges();
+    void exportRangeXml(QDomDocument &justqdom, QDomElement &typeTag, cSenseRange *range);
 
     QString handleScpiReadWriteSerial(QString &scpiCmdStr);
     QString handleScpiReadWriteVersion(QString &scpiCmdStr);
@@ -87,8 +93,12 @@ private:
     QString handleScpiReadAdjStatus(QString &scpiCmdStr);
 
     cMT310S2dServer* m_pMyServer;
+
     QList<cSenseRange*> m_RangeList;
     QString m_sChannelName;
+    QList<cSenseRange*> m_RangeListSecondary;
+    QString m_sChannelNameSecondary;
+
     quint8 m_nCtrlChannel;
     QString m_sClampTypeName;
     QString m_sSerial;
