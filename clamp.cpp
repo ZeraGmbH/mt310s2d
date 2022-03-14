@@ -30,41 +30,27 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
 {
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
-    m_bSet = false;
     m_sSerial = "1234567890"; // our default serial number
-    m_sName = "unknown";
+    m_sClampTypeName = "unknown";
     m_sVersion = "unknown";
     m_nFlags = 0;
     m_nType = undefined;
 
     addSystAdjInterface(); // we have an interface at once after clamp was connected
+    connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
 
     quint8 type;
     if ((type = readClampType()) != undefined) { // we try to read the clamp's type
-        m_nType = type;
-        initClamp(m_nType); // and if it's a well known type we init the clamp
+        initClamp(type); // and if it's a well known type we init the clamp
         importAdjFlash();
         addSense();
         addSenseInterface();
-        m_bSet = true;
     }
 }
 
 cClamp::~cClamp()
 {
-    if (m_pMyServer != 0) {
-        // first we remove the ranges from the sense interface
-        m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
-        // then we delete all our ranges including their scpi interface
-        if (m_RangeList.count() > 0) {
-            for (int i = 0; i < m_RangeList.count(); i++) {
-                cSenseRange* ptr;
-                ptr = m_RangeList.at(i);
-                delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
-            }
-        }
-        disconnect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
-    }
+    removeAllRanges();
 }
 
 void cClamp::initSCPIConnection(QString)
@@ -127,14 +113,14 @@ void cClamp::exportAdjData(QDataStream &stream)
 
     stream << m_nType;
     stream << m_nFlags;
-    stream << m_sName; // the clamp's name
+    stream << m_sClampTypeName; // the clamp's name
     stream << m_sVersion; // version
     stream << m_sSerial; //  serial
     stream << mDateTime.toString(Qt::TextDate); // date, time
-    for (int i = 0; i < m_RangeList.count(); i++) {
-        QString spec = QString("%1").arg(m_RangeList.at(i)->getName());
+    for(auto *range : m_RangeList) {
+        QString spec = QString("%1").arg(range->getName());
         stream << spec;
-        m_RangeList.at(i)->getJustData()->Serialize(stream);
+        range->getJustData()->Serialize(stream);
     }
 }
 
@@ -143,7 +129,7 @@ bool cClamp::importAdjData(QDataStream &stream)
     stream.skipRawData(6);
     stream >> m_nType;
     stream >> m_nFlags;
-    stream >> m_sName;
+    stream >> m_sClampTypeName;
     stream >> m_sVersion;
     stream >> m_sSerial;
     QString dts;
@@ -215,69 +201,67 @@ QString cClamp::exportXMLString(int indent)
     QDomElement typeTag = justqdom.createElement( "Sense");
     adjtag.appendChild(typeTag);
 
-    for (int j = 0; j < m_RangeList.count(); j++) {
-        cSenseRange* rng = m_RangeList.at(j);
-
+    for(auto *range : m_RangeList) {
         QDomElement rtag = justqdom.createElement( "Range" );
         typeTag.appendChild( rtag );
 
         QDomElement nametag = justqdom.createElement( "Name" );
         rtag.appendChild(nametag);
 
-        t = justqdom.createTextNode(rng->getName());
+        t = justqdom.createTextNode(range->getName());
         nametag.appendChild( t );
 
         QDomElement gpotag = justqdom.createElement( "Gain" );
         rtag.appendChild(gpotag);
         QDomElement tag = justqdom.createElement( "Status" );
-        QString jdata = rng->getJustData()->m_pGainCorrection->SerializeStatus();
+        QString jdata = range->getJustData()->m_pGainCorrection->SerializeStatus();
         t = justqdom.createTextNode(jdata);
         gpotag.appendChild(tag);
         tag.appendChild(t);
         tag = justqdom.createElement( "Coefficients" );
         gpotag.appendChild(tag);
-        jdata = rng->getJustData()->m_pGainCorrection->SerializeCoefficients();
+        jdata = range->getJustData()->m_pGainCorrection->SerializeCoefficients();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
         tag = justqdom.createElement( "Nodes" );
         gpotag.appendChild(tag);
-        jdata = rng->getJustData()->m_pGainCorrection->SerializeNodes();
+        jdata = range->getJustData()->m_pGainCorrection->SerializeNodes();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
 
         gpotag = justqdom.createElement( "Phase" );
         rtag.appendChild(gpotag);
         tag = justqdom.createElement( "Status" );
-        jdata = rng->getJustData()->m_pPhaseCorrection->SerializeStatus();
+        jdata = range->getJustData()->m_pPhaseCorrection->SerializeStatus();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
         gpotag.appendChild(tag);
         tag = justqdom.createElement( "Coefficients" );
         gpotag.appendChild(tag);
-        jdata = rng->getJustData()->m_pPhaseCorrection->SerializeCoefficients();
+        jdata = range->getJustData()->m_pPhaseCorrection->SerializeCoefficients();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
         tag = justqdom.createElement( "Nodes" );
         gpotag.appendChild(tag);
-        jdata = rng->getJustData()->m_pPhaseCorrection->SerializeNodes();
+        jdata = range->getJustData()->m_pPhaseCorrection->SerializeNodes();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
 
         gpotag = justqdom.createElement( "Offset" );
         rtag.appendChild(gpotag);
         tag = justqdom.createElement( "Status" );
-        jdata = rng->getJustData()->m_pOffsetCorrection->SerializeStatus();
+        jdata = range->getJustData()->m_pOffsetCorrection->SerializeStatus();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
         gpotag.appendChild(tag);
         tag = justqdom.createElement( "Coefficients" );
         gpotag.appendChild(tag);
-        jdata = rng->getJustData()->m_pOffsetCorrection->SerializeCoefficients();
+        jdata = range->getJustData()->m_pOffsetCorrection->SerializeCoefficients();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
         tag = justqdom.createElement( "Nodes" );
         gpotag.appendChild(tag);
-        jdata = rng->getJustData()->m_pOffsetCorrection->SerializeNodes();
+        jdata = range->getJustData()->m_pOffsetCorrection->SerializeNodes();
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
     }
@@ -445,9 +429,10 @@ quint8 cClamp::getAdjustmentStatus()
     if(m_RangeList.count() == 0) {
         return Adjustment::notAdjusted;
     }
+
     quint8 stat = 255;
-    for (int i = 0; i < m_RangeList.count(); i++) {
-        stat &= m_RangeList.at(i)->getAdjustmentStatus();
+    for(auto *range : m_RangeList) {
+        stat &= range->getAdjustmentStatus();
     }
     if ((stat & JustData::Justified)== 0) {
         return Adjustment::notAdjusted;
@@ -476,9 +461,10 @@ quint8 cClamp::readClampType()
 
 void cClamp::initClamp(quint8 type)
 {
+    m_nType = type;
     cClampJustData* clampJustData;
     m_RangeList.clear(); // we must clear our list, maybe we wanted to redefine a clamp
-    m_sName = getClampName(type);
+    m_sClampTypeName = getClampName(type);
     switch (type)
     {
     case CL120A:
@@ -595,10 +581,9 @@ void cClamp::addSense()
 
 void cClamp::addSenseInterface()
 {
-    for (int i = 0; i < m_RangeList.count(); i++) {
-        cSenseRange* p_Range = m_RangeList.at(i);
-        p_Range->initSCPIConnection(QString("SENSE:%1").arg(m_sChannelName));
-        connect(p_Range, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
+    for(cSenseRange *range : m_RangeList) {
+        range->initSCPIConnection(QString("SENSE:%1").arg(m_sChannelName));
+        connect(range, &cSenseRange::cmdExecutionDone, this, &cClamp::cmdExecutionDone);
     }
 }
 
@@ -644,8 +629,6 @@ void cClamp::addSystAdjInterface()
     delegate = new cSCPIDelegate(cmdParent, "ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, clamp::cmdStatAdjustment);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-
-    connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
 }
 
 void cClamp::setI2CMuxClamp()
@@ -664,14 +647,22 @@ void cClamp::setI2CMuxClamp()
 
 cSenseRange* cClamp::getRange(QString name)
 {
-    cSenseRange* rng = 0;
-    for (int i = 0; i < m_RangeList.count(); i++) {
-        if (m_RangeList.at(i)->getName() == name) {
-            rng = m_RangeList.at(i);
+    cSenseRange* rangeFound = nullptr;
+    for(auto *range : m_RangeList) {
+        if (range->getName() == name) {
+            rangeFound = range;
             break;
         }
     }
-    return rng;
+    return rangeFound;
+}
+
+void cClamp::removeAllRanges()
+{
+    for(auto* range : m_RangeList) {
+        delete range; // the cSenseRange objects will also remove their interfaces including that for adjustment data
+    }
+    m_RangeList.empty();
 }
 
 QString cClamp::handleScpiReadWriteSerial(QString& scpiCmdStr)
@@ -738,14 +729,7 @@ QString cClamp::handleScpiReadWriteType(QString& scpiCmdStr)
             quint8 type;
             type = cmd.getParam(0).toInt();
             if ( (type > undefined) && (type < anzCL)) {
-                if (m_bSet) {
-                    // first we remove the already set ranges
-                    m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
-                    // then we delete them what automatically destroys their interfaces
-                    for (int i = 0; i < m_RangeList.count(); i++)
-                        delete m_RangeList.at(i);
-                }
-                m_nType = type;
+                removeAllRanges();
                 initClamp(type);
                 if (exportAdjFlash()) {
                     addSense();
@@ -772,13 +756,13 @@ QString cClamp::handleScpiReadWriteName(QString& scpiCmdStr)
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
     if (cmd.isQuery()) {
-        answer = m_sName;
+        answer = m_sClampTypeName;
     }
     else {
         if (cmd.isCommand(1)) {
             QString name = cmd.getParam(0);
             if (name.length() < 21) {
-                m_sName = name;
+                m_sClampTypeName = name;
                 answer = SCPI::scpiAnswer[SCPI::ack];
             }
             else {
