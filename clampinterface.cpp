@@ -42,11 +42,16 @@ void cClampInterface::actualizeClampStatus()
             quint16 bmask = 1 << i;
             if ((clChange & bmask) > 0) {
                 QString channnelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
+                int voltageCtlChannel = i+1-4;
+                QString voltageChannelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(voltageCtlChannel);
                 if ((m_nClampStatus & bmask) == 0) {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
                     m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1);
-                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i);
+                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
+                    if(m_clampHash[channnelName]->addSecondaryRanges(voltageChannelName)) {
+                        qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(voltageChannelName), voltageCtlChannel);
+                    }
                     generateAndNotifyClampChannelList();
                 }
                 else {
