@@ -40,8 +40,7 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
     addSystAdjInterface(); // we have an interface at once after clamp was connected
 
     quint8 type;
-    if ((type = readClampType()) != undefined) // we try to read the clamp's type
-    {
+    if ((type = readClampType()) != undefined) { // we try to read the clamp's type
         m_nType = type;
         initClamp(m_nType); // and if it's a well known type we init the clamp
         importAdjFlash();
@@ -51,49 +50,40 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
     }
 }
 
-
 cClamp::~cClamp()
 {
-    if (m_pMyServer != 0)
-    {
+    if (m_pMyServer != 0) {
         // first we remove the ranges from the sense interface
         m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
-
         // then we delete all our ranges including their scpi interface
-        if (m_RangeList.count() > 0)
-            for (int i = 0; i < m_RangeList.count(); i++)
-            {
+        if (m_RangeList.count() > 0) {
+            for (int i = 0; i < m_RangeList.count(); i++) {
                 cSenseRange* ptr;
                 ptr = m_RangeList.at(i);
                 delete ptr; // the cSenseRange objects will also remove their interfaces including that for adjustment data
             }
-
+        }
         disconnect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
     }
 }
 
-
 void cClamp::initSCPIConnection(QString)
 {
 }
-
 
 QString cClamp::getChannelName()
 {
     return m_sChannelName;
 }
 
-
 QString cClamp::getSerial()
 {
     return m_sSerial;
 }
 
-
 void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
-    switch (cmdCode)
-    {
+    switch (cmdCode) {
     case clamp::cmdSerial:
         protoCmd->m_sOutput = handleScpiReadWriteSerial(protoCmd->m_sInput);
         break;
@@ -125,16 +115,14 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = handleScpiReadAdjStatus(protoCmd->m_sInput);
         break;
     }
-
-    if (protoCmd->m_bwithOutput)
+    if (protoCmd->m_bwithOutput) {
         emit cmdExecutionDone(protoCmd);
+    }
 }
-
 
 void cClamp::exportAdjData(QDataStream &stream)
 {
     QDateTime DateTime;
-
     mDateTime = DateTime.currentDateTime();
 
     stream << m_nType;
@@ -143,63 +131,47 @@ void cClamp::exportAdjData(QDataStream &stream)
     stream << m_sVersion; // version
     stream << m_sSerial; //  serial
     stream << mDateTime.toString(Qt::TextDate); // date, time
-
-    for (int i = 0; i < m_RangeList.count(); i++)
-    {
-        QString spec;
-
-        spec = QString("%1").arg(m_RangeList.at(i)->getName());
+    for (int i = 0; i < m_RangeList.count(); i++) {
+        QString spec = QString("%1").arg(m_RangeList.at(i)->getName());
         stream << spec;
         m_RangeList.at(i)->getJustData()->Serialize(stream);
     }
 }
 
-
 bool cClamp::importAdjData(QDataStream &stream)
 {
-    int n;
-    QString dts;
-
-    n = 0;
-
     stream.skipRawData(6);
     stream >> m_nType;
     stream >> m_nFlags;
     stream >> m_sName;
     stream >> m_sVersion;
     stream >> m_sSerial;
+    QString dts;
     stream >> dts;
 
+    int n = 0;
     mDateTime = QDateTime::fromString(dts);
-
-    while (!stream.atEnd())
-    {
+    while (!stream.atEnd()) {
         QString rngName;
         stream >> rngName;
         cSenseRange* range = getRange(rngName);
-        if (range != 0)
-        {
+        if (range != 0) {
             n++;
             range->getJustData()->Deserialize(stream);
         }
-        else
-        {
+        else {
             cMT310S2JustData *dummy = new cMT310S2JustData(m_pSCPIInterface); // if we did not find this range....something has changed
             dummy->Deserialize(stream); // we read the data from stream to keep it in flow
             delete dummy;
         }
     }
-
     return (n == m_RangeList.count()); // it's ok if we found data for all ranges in our list
 }
 
 
 QString cClamp::exportXMLString(int indent)
 {
-    QDateTime DateTime;
-
-    QString s = QString("ClampAdjustmentData");
-    QDomDocument justqdom (s);
+    QDomDocument justqdom (QString("ClampAdjustmentData"));
 
     QDomElement pcbtag = justqdom.createElement( "CLAMP" );
     justqdom.appendChild( pcbtag );
@@ -221,6 +193,7 @@ QString cClamp::exportXMLString(int indent)
 
     tag = justqdom.createElement( "Date" );
     pcbtag.appendChild( tag );
+    QDateTime DateTime;
     QDate d=DateTime.currentDateTime().date();
     t = justqdom.createTextNode(d.toString(Qt::TextDate));
     tag.appendChild( t );
@@ -242,8 +215,7 @@ QString cClamp::exportXMLString(int indent)
     QDomElement typeTag = justqdom.createElement( "Sense");
     adjtag.appendChild(typeTag);
 
-    for (int j = 0; j < m_RangeList.count(); j++)
-    {
+    for (int j = 0; j < m_RangeList.count(); j++) {
         cSenseRange* rng = m_RangeList.at(j);
 
         QDomElement rtag = justqdom.createElement( "Range" );
@@ -309,7 +281,6 @@ QString cClamp::exportXMLString(int indent)
         t = justqdom.createTextNode(jdata);
         tag.appendChild(t);
     }
-
     return justqdom.toString(indent);
 }
 
@@ -318,103 +289,68 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
 {
     QDateTime DateTime;
     QDomDocumentType TheDocType = qdomdoc->doctype ();
-
-    if  (TheDocType.name() != QString("ClampAdjustmentData"))
-    {
+    if  (TheDocType.name() != QString("ClampAdjustmentData")) {
         if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
     }
 
     QDomElement rootElem = qdomdoc->documentElement();
     QDomNodeList nl = rootElem.childNodes();
-
     bool TypeOK = false;
     bool VersionNrOK = false;
     bool SerialNrOK = false;
     bool DateOK = false;
     bool TimeOK = false;
 
-    for (int i = 0; i < nl.length() ; i++)
-    {
+    for (int i = 0; i < nl.length() ; i++) {
         QDomNode qdNode = nl.item(i);
         QDomElement qdElem = qdNode.toElement();
-        if ( qdElem.isNull() )
-        {
+        if ( qdElem.isNull() ) {
             if DEBUG1 syslog(LOG_ERR,"justdata import, format error in xml file\n");
             return false;
         }
-
         QString tName = qdElem.tagName();
-
-        if (tName == "Type")
-        {
-            if (ignoreType)
+        if (tName == "Type") {
+            if (ignoreType) {
                 TypeOK = true;
-            else
-            {
-                if ( !(TypeOK = (qdElem.text() == getClampName(m_nType))))
-                {
+            }
+            else {
+                if ( !(TypeOK = (qdElem.text() == getClampName(m_nType)))) {
                     if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                     return false;
                 }
             }
         }
-
-        else
-
-        if (tName == "SerialNumber")
-        {
+        else if (tName == "SerialNumber") {
             SerialNrOK = true;
             m_sSerial = qdElem.text();
         }
-
-        else
-
-        if (tName == "VersionNumber")
-        {
+        else if (tName == "VersionNumber") {
            VersionNrOK = true;
            m_sVersion = qdElem.text();
         }
-
-        else
-
-        if (tName=="Date")
-        {
+        else if (tName=="Date") {
             QDate d = QDate::fromString(qdElem.text(),Qt::TextDate);
             DateTime.setDate(d);
             DateOK = true;
         }
-
-        else
-
-        if (tName=="Time")
-        {
+        else if (tName=="Time") {
             QTime t = QTime::fromString(qdElem.text(),Qt::TextDate);
             DateTime.setTime(t);
             TimeOK = true;
         }
-
-        else
-
-        if (tName == "Adjustment")
-        {
-            if ( TypeOK && VersionNrOK && SerialNrOK && DateOK && TimeOK)
-            {
+        else if (tName == "Adjustment") {
+            if ( TypeOK && VersionNrOK && SerialNrOK && DateOK && TimeOK) {
                 bool done = false;
-
                 QDomNodeList adjChildNl = qdElem.childNodes();
-                for (qint32 j = 0; j < adjChildNl.length(); j++)
-                {
+                for (qint32 j = 0; j < adjChildNl.length(); j++) {
                     qdNode = adjChildNl.item(j);
-
                     qDebug() << qdNode.toElement().tagName();
-                    if (qdNode.toElement().tagName() == "Sense") // we look for the sense entry
-                    {
-                        done = true;
+                    if (qdNode.toElement().tagName() == "Sense") {// we look for the sense entry
 
+                        done = true;
                         QDomNodeList sensNl = qdNode.childNodes(); // we iterate over all ranges
-                        for (qint32 j = 0; j < sensNl.length(); j++)
-                        {
+                        for (qint32 j = 0; j < sensNl.length(); j++) {
                             cSenseRange* rngPtr;
                             QString Name;
 
@@ -423,55 +359,48 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                             QString tName = qdElem.tagName();
                             qDebug() << tName;
 
-                            if (tName == "Range")
-                            {
+                            if (tName == "Range") {
                                 QDomNodeList rngJustNl = RangeJustNode.childNodes();
-                                for (qint32 k = 0; k < rngJustNl.length(); k++)
-                                {
+                                for (qint32 k = 0; k < rngJustNl.length(); k++) {
                                     QDomNode RangeJustNode = rngJustNl.item(k);
 
                                     qdElem = RangeJustNode.toElement();
                                     tName = qdElem.tagName();
                                     qDebug() << tName;
 
-                                    if (tName == "Name")
-                                    {
+                                    if (tName == "Name") {
                                         Name = qdElem.text();
                                         qDebug() << Name;
                                         rngPtr = getRange(Name);
                                     }
 
                                     cJustData* pJustData = 0;
-
-                                    if (rngPtr != 0)
-                                    {
-                                        if (tName == "Gain")
+                                    if (rngPtr != 0) {
+                                        if (tName == "Gain") {
                                             pJustData = rngPtr->getJustData()->m_pGainCorrection;
-
-                                        if (tName == "Phase")
+                                        }
+                                        else if (tName == "Phase") {
                                             pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
-
-                                        if (tName == "Offset")
+                                        }
+                                        else if (tName == "Offset") {
                                             pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
+                                        }
                                     }
-
-                                    if (pJustData)
-                                    {
+                                    if (pJustData) {
                                         QDomNodeList jdataNl = RangeJustNode.childNodes();
-                                        for (qint32 k = 0; k < jdataNl.count(); k++)
-                                        {
+                                        for (qint32 k = 0; k < jdataNl.count(); k++) {
                                             QDomNode jTypeNode = jdataNl.item(k);
                                             QString jTypeName = jTypeNode.toElement().tagName();
                                             QString jdata = jTypeNode.toElement().text();
-
-                                            if (jTypeName == "Status")
+                                            if (jTypeName == "Status") {
                                                 pJustData->DeserializeStatus(jdata);
-
-                                            if (jTypeName == "Coefficients")
+                                            }
+                                            else if (jTypeName == "Coefficients") {
                                                 pJustData->DeserializeCoefficients(jdata);
-
-                                            if (jTypeName == "Nodes")
+                                            }
+                                            if (jTypeName == "Nodes") {
                                                 pJustData->DeserializeNodes(jdata);
+                                            }
                                         }
                                     }
                                 }
@@ -479,23 +408,20 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                         }
                     }
                 }
-
-                if (!done)
+                if (!done) {
                     return done;
+                }
             }
-            else
-            {
+            else {
                 if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
                 return false;
             }
         }
-        else
-        {
+        else {
             if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
             return false;
         }
     }
-
     return true;
 }
 
@@ -505,12 +431,10 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
     return importXMLDocument(qdomdoc, false);
 }
 
-
 void cClamp::setI2CMux()
 {
     setI2CMuxClamp();
 }
-
 
 quint8 cClamp::getAdjustmentStatus()
 {
@@ -521,24 +445,23 @@ quint8 cClamp::getAdjustmentStatus()
     if(m_RangeList.count() == 0) {
         return Adjustment::notAdjusted;
     }
-
     quint8 stat = 255;
-    for (int i = 0; i < m_RangeList.count(); i++)
+    for (int i = 0; i < m_RangeList.count(); i++) {
         stat &= m_RangeList.at(i)->getAdjustmentStatus();
-
-    if ((stat & JustData::Justified)== 0)
+    }
+    if ((stat & JustData::Justified)== 0) {
         return Adjustment::notAdjusted;
-    else
+    }
+    else {
         return Adjustment::adjusted;
+    }
 }
-
 
 quint8 cClamp::readClampType()
 {
     QByteArray ba;
     setI2CMuxClamp();
-    if (readFlash(ba)) // flash data could be read with correct chksum
-    {
+    if (readFlash(ba)) { // flash data could be read with correct chksum
         quint8 type;
         QDataStream stream(&ba, QIODevice::ReadWrite);
         stream.setVersion(QDataStream::Qt_5_4);
@@ -546,18 +469,16 @@ quint8 cClamp::readClampType()
         stream >> type;
         return type;
     }
-    else
+    else {
         return 0;
+    }
 }
-
 
 void cClamp::initClamp(quint8 type)
 {
     cClampJustData* clampJustData;
-
     m_RangeList.clear(); // we must clear our list, maybe we wanted to redefine a clamp
     m_sName = getClampName(type);
-
     switch (type)
     {
     case CL120A:
@@ -642,7 +563,6 @@ void cClamp::initClamp(quint8 type)
     }
 }
 
-
 QString cClamp::getClampName(quint8 type)
 {
     QString CLName;
@@ -665,27 +585,22 @@ QString cClamp::getClampName(quint8 type)
        default:
             CLName = QString("Undefined");
     }
-
     return CLName;
 }
-
 
 void cClamp::addSense()
 {
     m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->addRangeList(m_RangeList);
 }
 
-
 void cClamp::addSenseInterface()
 {
-    for (int i = 0; i < m_RangeList.count(); i++)
-    {
+    for (int i = 0; i < m_RangeList.count(); i++) {
         cSenseRange* p_Range = m_RangeList.at(i);
         p_Range->initSCPIConnection(QString("SENSE:%1").arg(m_sChannelName));
         connect(p_Range, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     }
 }
-
 
 void cClamp::addSystAdjInterface()
 {
@@ -693,7 +608,6 @@ void cClamp::addSystAdjInterface()
     cSCPIDelegate* delegate;
 
     cmdParent = QString("SYSTEM:CLAMP:%1").arg(m_sChannelName);
-
     delegate = new cSCPIDelegate(cmdParent, "SERIALNUMBER", SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, clamp::cmdSerial);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -708,7 +622,6 @@ void cClamp::addSystAdjInterface()
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     cmdParent = QString("SYSTEM:ADJUSTMENT:CLAMP:%1:FLASH").arg(m_sChannelName);
-
     delegate = new cSCPIDelegate(cmdParent,"WRITE", SCPI::isCmd, m_pSCPIInterface, clamp::cmdFlashWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -720,7 +633,6 @@ void cClamp::addSystAdjInterface()
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     cmdParent = QString("SYSTEM:ADJUSTMENT:CLAMP:%1:XML").arg(m_sChannelName);
-
     delegate = new cSCPIDelegate(cmdParent,"WRITE", SCPI::isCmd, m_pSCPIInterface, clamp::cmdXMLWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -729,7 +641,6 @@ void cClamp::addSystAdjInterface()
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     cmdParent = QString("STATUS:CLAMP:%1").arg(m_sChannelName);
-
     delegate = new cSCPIDelegate(cmdParent, "ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, clamp::cmdStatAdjustment);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -751,14 +662,11 @@ void cClamp::setI2CMuxClamp()
     I2CTransfer(m_sDeviceNode, I2CAdress, m_pMyServer->m_pDebugSettings->getDebugLevel(), &MuxData);
 }
 
-
 cSenseRange* cClamp::getRange(QString name)
 {
     cSenseRange* rng = 0;
-    for (int i = 0; i < m_RangeList.count(); i++)
-    {
-        if (m_RangeList.at(i)->getName() == name)
-        {
+    for (int i = 0; i < m_RangeList.count(); i++) {
+        if (m_RangeList.at(i)->getName() == name) {
             rng = m_RangeList.at(i);
             break;
         }
@@ -766,33 +674,28 @@ cSenseRange* cClamp::getRange(QString name)
     return rng;
 }
 
-
 QString cClamp::handleScpiReadWriteSerial(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         answer = m_sSerial;
     }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
+    else {
+        if (cmd.isCommand(1)) {
             QString serial = cmd.getParam(0);
-            if (serial.length() <= 10)
-            {
+            if (serial.length() <= 10) {
                 m_sSerial = serial;
                 answer = SCPI::scpiAnswer[SCPI::ack];
             }
-            else
+            else {
                 answer = SCPI::scpiAnswer[SCPI::errval];
+            }
         }
-        else
+        else {
             answer = SCPI::scpiAnswer[SCPI::nak];
+        }
     }
-
     return answer;
 }
 
@@ -801,28 +704,24 @@ QString cClamp::handleScpiReadWriteVersion(QString &scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         answer = m_sVersion;
     }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
+    else {
+        if (cmd.isCommand(1)) {
             QString version = cmd.getParam(0);
-            if (version.length() == 4)
-            {
+            if (version.length() == 4) {
                 m_sVersion = version;
                 answer = SCPI::scpiAnswer[SCPI::ack];
             }
-            else
+            else {
                 answer = SCPI::scpiAnswer[SCPI::errval];
+            }
         }
-        else
+        else {
             answer = SCPI::scpiAnswer[SCPI::nak];
+        }
     }
-
     return answer;
 }
 
@@ -831,205 +730,165 @@ QString cClamp::handleScpiReadWriteType(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         answer = QString("%1").arg(m_nType);
     }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
+    else {
+        if (cmd.isCommand(1)) {
             quint8 type;
             type = cmd.getParam(0).toInt();
-
-            if ( (type > undefined) && (type < anzCL))
-            {
-                if (m_bSet)
-                {
+            if ( (type > undefined) && (type < anzCL)) {
+                if (m_bSet) {
                     // first we remove the already set ranges
                     m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
                     // then we delete them what automatically destroys their interfaces
                     for (int i = 0; i < m_RangeList.count(); i++)
                         delete m_RangeList.at(i);
                 }
-
                 m_nType = type;
                 initClamp(type);
-                if (exportAdjFlash())
-                {
+                if (exportAdjFlash()) {
                     addSense();
                     addSenseInterface();
                     answer = SCPI::scpiAnswer[SCPI::ack];
                 }
-                else
+                else {
                     answer = SCPI::scpiAnswer[SCPI::errexec];
+                }
             }
-
-            else
+            else {
                 answer = SCPI::scpiAnswer[SCPI::errval];
+            }
         }
-
-        else
+        else {
             answer = SCPI::scpiAnswer[SCPI::nak];
+        }
     }
-
     return answer;
 }
-
 
 QString cClamp::handleScpiReadWriteName(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         answer = m_sName;
     }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
+    else {
+        if (cmd.isCommand(1)) {
             QString name = cmd.getParam(0);
-            if (name.length() < 21)
-            {
+            if (name.length() < 21) {
                 m_sName = name;
                 answer = SCPI::scpiAnswer[SCPI::ack];
             }
-            else
+            else {
                 answer = SCPI::scpiAnswer[SCPI::errval];
+            }
         }
-        else
+        else {
             answer = SCPI::scpiAnswer[SCPI::nak];
+        }
     }
-
     return answer;
 }
-
 
 QString cClamp::handleScpiWriteFlash(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd = scpiCmdStr;
-
-    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
-    {
-        if (exportAdjFlash())
+    if (cmd.isCommand(1) && (cmd.getParam(0) == "")) {
+        if (exportAdjFlash()) {
             answer = SCPI::scpiAnswer[SCPI::ack];
-        else
+        }
+        else {
             answer = SCPI::scpiAnswer[SCPI::errexec];
+        }
     }
-
-    else
+    else {
         answer = SCPI::scpiAnswer[SCPI::nak];
-
+    }
     return answer;
 }
-
 
 QString cClamp::handleScpiReadFlash(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd = scpiCmdStr;
-
-    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
-    {
-        if (readClampType() == m_nType) // we first look whether the type matches
-        {
+    if (cmd.isCommand(1) && (cmd.getParam(0) == "")) {
+        if (readClampType() == m_nType) { // we first look whether the type matches
             importAdjFlash();
             answer = SCPI::scpiAnswer[SCPI::ack];
         }
-        else
+        else {
             answer = SCPI::scpiAnswer[SCPI::errexec];
+        }
     }
-
-    else
+    else {
         answer = SCPI::scpiAnswer[SCPI::nak];
-
+    }
     return answer;
 }
-
 
 QString cClamp::handleScpiReadChksum(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd = scpiCmdStr;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         answer = QString("0x%1").arg(getChecksum(),0,16); // hex output
     }
-    else
-    {
+    else {
         answer = SCPI::scpiAnswer[SCPI::nak];
     }
-
     return answer;
 }
-
 
 QString cClamp::handleScpiWriteXML(QString &scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd = scpiCmdStr;
-
-    if (cmd.isCommand(1))
-    {
+    if (cmd.isCommand(1)) {
         QString filename = cmd.getParam(0);
-        if (exportAdjXML(filename))
+        if (exportAdjXML(filename)) {
             answer = SCPI::scpiAnswer[SCPI::ack];
-        else
+        }
+        else {
             answer = SCPI::scpiAnswer[SCPI::errexec];
+        }
     }
-
-    else
+    else {
         answer = SCPI::scpiAnswer[SCPI::nak];
-
+    }
     return answer;
 }
-
 
 QString cClamp::handleScpiReadXML(QString &scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd = scpiCmdStr;
-
-    if (cmd.isCommand(1))
-    {
+    if (cmd.isCommand(1)) {
         QString filename = cmd.getParam(0);
-        if (importAdjXML(filename))
+        if (importAdjXML(filename)) {
             answer = SCPI::scpiAnswer[SCPI::ack];
-        else
+        }
+        else {
             answer = SCPI::scpiAnswer[SCPI::errexec];
+        }
     }
-
-    else
+    else {
         answer = SCPI::scpiAnswer[SCPI::nak];
-
+    }
     return answer;
 }
-
 
 QString cClamp::handleScpiReadAdjStatus(QString &scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd = scpiCmdStr;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         answer = QString("%1").arg(getAdjustmentStatus()); // hex output
     }
-    else
-    {
+    else {
         answer = SCPI::scpiAnswer[SCPI::nak];
     }
-
     return answer;
 }
-
-
-
-
-
-

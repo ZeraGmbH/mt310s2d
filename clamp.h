@@ -27,8 +27,16 @@ namespace clamp
 
 }
 
+enum clamps
+{
+    undefined,
+    CL120A,
+    CL300A,
+    CL1000A ,
+    EMOB32,
 
-enum clamps { undefined, CL120A, CL300A, CL1000A , EMOB32, anzCL};
+    anzCL
+};
 
 class cMT310S2dServer;
 class cSenseRange;

@@ -17,8 +17,9 @@ cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler)
 
 void cClampInterface::initSCPIConnection(QString leadingNodes)
 {
-    if (leadingNodes != "")
+    if (leadingNodes != "") {
         leadingNodes += ":";
+    }
     cSCPIDelegate* delegate;
     delegate = new cSCPIDelegate(QString("%1SYSTEM:CLAMP:CHANNEL").arg(leadingNodes),"CATALOG",SCPI::isQuery, m_pSCPIInterface, ClampSystem::cmdClampChannelCat);
     m_DelegateList.append(delegate);
@@ -74,8 +75,7 @@ void cClampInterface::actualizeClampStatus()
 
 void cClampInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
-    switch (cmdCode)
-    {
+    switch (cmdCode) {
     case ClampSystem::cmdClampChannelCat:
         protoCmd->m_sOutput = readClampChannelCatalog(protoCmd->m_sInput);
         break;
@@ -100,8 +100,7 @@ void cClampInterface::generateAndNotifyClampChannelList()
 QString cClampInterface::readClampChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         emit notifier(&m_notifierClampChannelList); // enable async notification on clamp catalog change
         generateAndNotifyClampChannelList();
         return m_notifierClampChannelList.getString();
