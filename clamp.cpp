@@ -659,6 +659,11 @@ cSenseRange* cClamp::getRange(QString name)
 
 void cClamp::removeAllRanges()
 {
+    if(m_pMyServer) {
+        // first we remove the already set ranges
+        m_pMyServer->m_pSenseInterface->getChannel(m_sChannelName)->removeRangeList(m_RangeList);
+    }
+    // then we delete them what automatically destroys their interfaces
     for(auto* range : m_RangeList) {
         delete range; // the cSenseRange objects will also remove their interfaces including that for adjustment data
     }
