@@ -60,6 +60,11 @@ QString cClamp::getChannelName()
     return m_sChannelName;
 }
 
+QString cClamp::getChannelNameSecondary()
+{
+    return m_sChannelNameSecondary;
+}
+
 QString cClamp::getSerial()
 {
     return m_sSerial;

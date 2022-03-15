@@ -4,6 +4,7 @@
 #include "scpiconnection.h"
 #include "notificationstring.h"
 #include <QHash>
+#include <QSet>
 
 // here we hold the clamps that are hotplugged to the system
 
@@ -41,6 +42,7 @@ private:
     cNotificationString m_notifierClampChannelList;
     quint16 m_nClampStatus;
     QHash<QString, cClamp*> m_clampHash;
+    QSet<QString> m_clampSecondarySet;
 };
 
 #endif // CLAMPINTERFACE

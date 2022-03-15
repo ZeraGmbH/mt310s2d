@@ -53,6 +53,7 @@ public:
     virtual quint8 getAdjustmentStatus() override;
     virtual void initSCPIConnection(QString) override;
     QString getChannelName();
+    QString getChannelNameSecondary();
     QString getSerial();
     bool addSecondaryRanges(QString secondaryChannelName);
     virtual QString exportXMLString(int indent = 1) override;
