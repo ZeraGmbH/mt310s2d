@@ -672,11 +672,11 @@ void cClamp::removeAllRanges()
     for(auto* range : m_RangeList) {
         delete range; // the cSenseRange objects will also remove their interfaces including that for adjustment data
     }
-    m_RangeList.empty();
+    m_RangeList.clear();
     for(auto* range : m_RangeListSecondary) {
         delete range;
     }
-    m_RangeListSecondary.empty();
+    m_RangeListSecondary.clear();
 }
 
 void cClamp::exportRangeXml(QDomDocument &justqdom, QDomElement &typeTag, cSenseRange *range)
