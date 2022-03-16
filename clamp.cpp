@@ -512,9 +512,9 @@ void cClamp::initClamp(quint8 type)
         // As long as we have no physical hardware to test just let clamp act
         // as ratio on 250V range with same rejection values as 250V range
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("250V")), 2.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C500V", "C500V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C500V", "C500V", true, 500.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("250V")), 4.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         break;
     }
     }
@@ -619,7 +619,6 @@ void cClamp::addSystAdjInterfaceChannel(QString channelName)
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
-
 
 void cClamp::setI2CMuxClamp()
 {
