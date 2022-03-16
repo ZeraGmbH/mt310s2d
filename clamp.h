@@ -48,14 +48,13 @@ class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
 public:
     cClamp(){m_pMyServer = 0;}
-    cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel);
+    cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, quint8 ctrlChannelSecondary);
     virtual ~cClamp();
     virtual quint8 getAdjustmentStatus() override;
     virtual void initSCPIConnection(QString) override;
     QString getChannelName();
     QString getChannelNameSecondary();
     QString getSerial();
-    bool addSecondaryRanges(QString secondaryChannelName);
     virtual QString exportXMLString(int indent = 1) override;
     bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
 
@@ -101,6 +100,7 @@ private:
     QString m_sChannelNameSecondary;
 
     quint8 m_nCtrlChannel;
+    quint8 m_nCtrlChannelSecondary;
     QString m_sClampTypeName;
     QString m_sSerial;
     QString m_sVersion;

@@ -46,10 +46,10 @@ void cClampInterface::actualizeClampStatus()
                 if ((m_nClampStatus & bmask) == 0) {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1);
+                    m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1, ctlChannelSecondary);
                     qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
                     QString channelNameSecondary = m_pMyServer->m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
-                    if(m_clampHash[channnelName]->addSecondaryRanges(channelNameSecondary)) {
+                    if(!m_clampHash[channnelName]->getChannelNameSecondary().isEmpty()) {
                         m_clampSecondarySet.insert(channelNameSecondary);
                         qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
                     }

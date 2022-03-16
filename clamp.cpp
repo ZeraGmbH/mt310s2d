@@ -19,12 +19,13 @@
 #include "clampjustdata.h"
 #include "protonetcommand.h"
 
-cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel)
+cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, quint8 ctrlChannelSecondary)
     :cAdjFlash(server->m_pI2CSettings->getDeviceNode(),server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)),
     cAdjXML(server->m_pDebugSettings->getDebugLevel()),
     m_pMyServer(server),
     m_sChannelName(channelName),
-    m_nCtrlChannel(ctrlChannel)
+    m_nCtrlChannel(ctrlChannel),
+    m_nCtrlChannelSecondary(ctrlChannelSecondary)
 {
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
@@ -68,27 +69,6 @@ QString cClamp::getChannelNameSecondary()
 QString cClamp::getSerial()
 {
     return m_sSerial;
-}
-
-bool cClamp::addSecondaryRanges(QString secondaryChannelName)
-{
-    bool hasSecondaryRanges = false;
-    cClampJustData* clampJustData;
-    switch(m_nType) {
-    case EMOBDcDualTest:
-        hasSecondaryRanges = true;
-        m_sChannelNameSecondary = secondaryChannelName;
-        // As long as we have no physical hardware to test just let clamp act
-        // as ratio on 250V range with same rejection values as 250V range
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(secondaryChannelName, QString("250V")), 2.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C500V", "C500V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(secondaryChannelName, QString("250V")), 4.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        break;
-    default:
-        break;
-    }
-    return hasSecondaryRanges;
 }
 
 void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
@@ -521,11 +501,22 @@ void cClamp::initClamp(quint8 type)
 
         break;
     case EMOBDcDualTest:
+    {
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("2V")), 1000.0);
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C50A", "C50A", true, 50.0, 1772241.0, 2215301.0, 8388607.0, 11, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelName, QString("500mV")), 1000.0);
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C10A", "C10A", true, 10.0, 1772241.0, 2215301.0, 8388607.0, 13, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
+
+        // This clamp has a secondary channnel
+        m_sChannelNameSecondary = m_pMyServer->m_pSenseInterface->getChannelSystemName(m_nCtrlChannelSecondary);
+        // As long as we have no physical hardware to test just let clamp act
+        // as ratio on 250V range with same rejection values as 250V range
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("250V")), 2.0);
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C500V", "C500V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pMyServer->m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("250V")), 4.0);
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
         break;
+    }
     }
 }
 
