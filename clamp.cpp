@@ -397,7 +397,7 @@ quint8 cClamp::getAdjustmentStatus()
     }
 }
 
-quint8 cClamp::readClampType()
+ClampTypes cClamp::readClampType()
 {
     QByteArray ba;
     setI2CMuxClamp();
@@ -407,10 +407,10 @@ quint8 cClamp::readClampType()
         stream.setVersion(QDataStream::Qt_5_4);
         stream.skipRawData(6);
         stream >> type;
-        return type;
+        return ClampTypes(type);
     }
     else {
-        return 0;
+        return undefined;
     }
 }
 
