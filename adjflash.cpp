@@ -86,9 +86,9 @@ bool cAdjFlash::writeFlash(QByteArray &ba)
 {
     int count, written;
 
-    cF24LC256* Flash = new cF24LC256(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    cF24LC256 Flash(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
     count = ba.size();
-    written = Flash->WriteData(ba.data(),count,0);
+    written = Flash.WriteData(ba.data(),count,0);
 
     if ( (count - written) > 0)
     {
@@ -108,14 +108,13 @@ quint16 cAdjFlash::getChecksum()
 
 bool cAdjFlash::readFlash(QByteArray &ba)
 {
-    cF24LC256* Flash = new cF24LC256(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    cF24LC256 Flash(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
 
     // first we try to read 6 bytes hold length (quint32) and checksum (quint16)
     ba.resize(6);
-    if ( (6 - Flash->ReadData(ba.data(),6,0)) >0 )
+    if ( (6 - Flash.ReadData(ba.data(),6,0)) >0 )
     {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
-        delete Flash;
         return(false); // read error
     }
 
@@ -125,19 +124,17 @@ bool cAdjFlash::readFlash(QByteArray &ba)
     quint32 count;
 
     bastream >> count >> m_nChecksum;
-    if ( count > (quint32)Flash->size() )
+    if ( count > (quint32)Flash.size() )
     {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory, count > flash\n");
-        delete Flash;
         return(false); // read error
     }
 
     ba.resize(count);
 
-    if ( (count - Flash->ReadData(ba.data(),count,0)) >0 )
+    if ( (count - Flash.ReadData(ba.data(),count,0)) >0 )
     {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
-        delete Flash;
         return(false); // read error
     }
 
