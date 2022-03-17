@@ -13,6 +13,7 @@ public:
     cAdjFlash(QString devnode, quint8 dlevel, quint8 i2cadr);
     bool exportAdjFlash();
     bool importAdjFlash();
+    bool resetAdjFlash();
 
     virtual quint8 getAdjustmentStatus() = 0;
     quint16 getChecksum();

@@ -50,6 +50,13 @@ bool cAdjFlash::importAdjFlash()
         return false;
 }
 
+bool cAdjFlash::resetAdjFlash()
+{
+    setI2CMux();
+    cF24LC256 flash(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    return flash.Reset() == flash.size();
+}
+
 
 void cAdjFlash::setAdjCountChecksum(QByteArray &ba)
 {
