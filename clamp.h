@@ -21,6 +21,7 @@ namespace clamp
         cmdName,
         cmdFlashWrite,
         cmdFlashRead,
+        cmdFlashReset,
         cmdChksum,
         cmdXMLWrite,
         cmdXMLRead,
@@ -87,6 +88,7 @@ private:
     QString handleScpiReadWriteName(QString &scpiCmdStr);
     QString handleScpiWriteFlash(QString &scpiCmdStr);
     QString handleScpiReadFlash(QString &scpiCmdStr);
+    QString handleScpiResetFlash(QString &scpiCmdStr);
     QString handleScpiReadChksum(QString &scpiCmdStr);
     QString handleScpiWriteXML(QString &scpiCmdStr);
     QString handleScpiReadXML(QString &scpiCmdStr);
