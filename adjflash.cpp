@@ -39,15 +39,13 @@ bool cAdjFlash::importAdjFlash()
     QByteArray ba;
 
     setI2CMux();
-    if (readFlash(ba)) // if we could read data with correct chksum
-    {
+    if (readFlash(ba)) { // if we could read data with correct chksum
         QDataStream stream(&ba, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_4);
 
         return importAdjData(stream);
     }
-    else
-        return false;
+    return false;
 }
 
 bool cAdjFlash::resetAdjFlash()
@@ -97,13 +95,11 @@ bool cAdjFlash::writeFlash(QByteArray &ba)
     count = ba.size();
     written = Flash.WriteData(ba.data(),count,0);
 
-    if ( (count - written) > 0)
-    {
+    if ( (count - written) > 0) {
          if DEBUG1 syslog(LOG_ERR,"error writing flashmemory\n");
          return false; // fehler beim flash schreiben
     }
-    else
-        return true;
+    return true;
 }
 
 
@@ -119,8 +115,7 @@ bool cAdjFlash::readFlash(QByteArray &ba)
 
     // first we try to read 6 bytes hold length (quint32) and checksum (quint16)
     ba.resize(6);
-    if ( (6 - Flash.ReadData(ba.data(),6,0)) >0 )
-    {
+    if ( (6 - Flash.ReadData(ba.data(),6,0)) >0 ) {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
         return(false); // read error
     }
@@ -131,16 +126,14 @@ bool cAdjFlash::readFlash(QByteArray &ba)
     quint32 count;
 
     bastream >> count >> m_nChecksum;
-    if ( count > (quint32)Flash.size() )
-    {
+    if ( count > (quint32)Flash.size() ) {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory, count > flash\n");
         return(false); // read error
     }
 
     ba.resize(count);
 
-    if ( (count - Flash.ReadData(ba.data(),count,0)) >0 )
-    {
+    if ( (count - Flash.ReadData(ba.data(),count,0)) >0 ) {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
         return(false); // read error
     }
