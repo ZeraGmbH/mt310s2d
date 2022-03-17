@@ -92,6 +92,9 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case clamp::cmdFlashRead:
         protoCmd->m_sOutput = handleScpiReadFlash(protoCmd->m_sInput);
         break;
+    case clamp::cmdFlashReset:
+        protoCmd->m_sOutput = handleScpiResetFlash(protoCmd->m_sInput);
+        break;
     case clamp::cmdChksum:
         protoCmd->m_sOutput = handleScpiReadChksum(protoCmd->m_sInput);
         break;
@@ -605,6 +608,9 @@ void cClamp::addSystAdjInterfaceChannel(QString channelName)
     delegate = new cSCPIDelegate(cmdParent,"CHKSUM", SCPI::isQuery, m_pSCPIInterface, clamp::cmdChksum);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(cmdParent,"RESET", SCPI::isCmd, m_pSCPIInterface, clamp::cmdFlashReset);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     cmdParent = QString("SYSTEM:ADJUSTMENT:CLAMP:%1:XML").arg(channelName);
     delegate = new cSCPIDelegate(cmdParent,"WRITE", SCPI::isCmd, m_pSCPIInterface, clamp::cmdXMLWrite);
@@ -876,6 +882,24 @@ QString cClamp::handleScpiReadFlash(QString& scpiCmdStr)
     if (cmd.isCommand(1) && (cmd.getParam(0) == "")) {
         if (readClampType() == m_nType) { // we first look whether the type matches
             importAdjFlash();
+            answer = SCPI::scpiAnswer[SCPI::ack];
+        }
+        else {
+            answer = SCPI::scpiAnswer[SCPI::errexec];
+        }
+    }
+    else {
+        answer = SCPI::scpiAnswer[SCPI::nak];
+    }
+    return answer;
+}
+
+QString cClamp::handleScpiResetFlash(QString &scpiCmdStr)
+{
+    QString answer;
+    cSCPICommand cmd = scpiCmdStr;
+    if (cmd.isCommand(1) && (cmd.getParam(0) == "")) {
+        if (resetAdjFlash()) {
             answer = SCPI::scpiAnswer[SCPI::ack];
         }
         else {
