@@ -35,12 +35,12 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel,
     m_nFlags = 0;
     m_nType = undefined;
 
-    addSystAdjInterface(); // we have an interface at once after clamp was connected
+    quint8 type = readClampType();
+    initClamp(type);
+    // we need an adjustment interface in whatever state the clamp connected is
+    addSystAdjInterface();
     connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
-
-    quint8 type;
-    if ((type = readClampType()) != undefined) { // we try to read the clamp's type
-        initClamp(type); // and if it's a well known type we init the clamp
+    if (type != undefined) {
         importAdjFlash();
         addSense();
         addSenseInterface();
