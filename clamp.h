@@ -28,7 +28,7 @@ namespace clamp
     };
 }
 
-enum clamps
+enum ClampTypes
 {
     undefined,
     CL120A,
@@ -77,7 +77,7 @@ private:
     QString getClampName(quint8 type);
     void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
-    quint8 readClampType();
+    ClampTypes readClampType();
     void removeAllRanges();
     void exportRangeXml(QDomDocument &justqdom, QDomElement &typeTag, cSenseRange *range);
 
