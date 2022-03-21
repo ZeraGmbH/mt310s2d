@@ -95,14 +95,15 @@ private:
     QString handleScpiReadXML(QString &scpiCmdStr);
     QString handleScpiReadAdjStatus(QString &scpiCmdStr);
 
-    cMT310S2dServer* m_pMyServer;
-    cSenseInterface *m_pSenseInterface;
+    cSenseInterface *m_pSenseInterface = nullptr;
 
     QList<cSenseRange*> m_RangeList;
     QString m_sChannelName;
     QList<cSenseRange*> m_RangeListSecondary;
     QString m_sChannelNameSecondary;
 
+    ushort m_i2cMuxAdress;
+    int m_i2cMuxDebugLevel;
     quint8 m_nCtrlChannel;
     quint8 m_nCtrlChannelSecondary;
     QString m_sClampTypeName;
