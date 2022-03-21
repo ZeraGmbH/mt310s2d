@@ -19,22 +19,23 @@
 #include "clampjustdata.h"
 #include "protonetcommand.h"
 
-cClamp::cClamp() :
-    m_pMyServer(nullptr),
-    m_pSenseInterface(nullptr)
+cClamp::cClamp()
 {
 }
 
-cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, quint8 ctrlChannelSecondary)
-    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(),server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)),
+cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, quint8 ctrlChannelSecondary) :
+    cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
+              server->m_pDebugSettings->getDebugLevel(),
+              server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)),
     cAdjXML(server->m_pDebugSettings->getDebugLevel()),
-    m_pMyServer(server),
     m_pSenseInterface(server->m_pSenseInterface),
     m_sChannelName(channelName),
+    m_i2cMuxAdress(server->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux)),
+    m_i2cMuxDebugLevel(server->m_pDebugSettings->getDebugLevel()),
     m_nCtrlChannel(ctrlChannel),
     m_nCtrlChannelSecondary(ctrlChannelSecondary)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
+    m_pSCPIInterface = server->getSCPIInterface();
 
     m_sSerial = "1234567890"; // our default serial number
     m_sClampTypeName = "unknown";
@@ -46,7 +47,7 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel,
     initClamp(type);
     // we need an adjustment interface in whatever state the clamp connected is
     addSystAdjInterface();
-    connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), m_pMyServer, SLOT(sendAnswer(cProtonetCommand*)));
+    connect(this, SIGNAL(cmdExecutionDone(cProtonetCommand*)), server, SLOT(sendAnswer(cProtonetCommand*)));
     if (type != undefined) {
         importAdjFlash();
         addSense();
@@ -172,7 +173,6 @@ bool cClamp::importAdjData(QDataStream &stream)
     return (n == m_RangeList.count() + m_RangeListSecondary.count()); // it's ok if we found data for all ranges in our list
 }
 
-
 QString cClamp::exportXMLString(int indent)
 {
     QDomDocument justqdom (QString("ClampAdjustmentData"));
@@ -227,7 +227,6 @@ QString cClamp::exportXMLString(int indent)
     }
     return justqdom.toString(indent);
 }
-
 
 bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
 {
@@ -368,7 +367,6 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
     }
     return true;
 }
-
 
 bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 {
@@ -633,16 +631,14 @@ void cClamp::addSystAdjInterfaceChannel(QString channelName)
 
 void cClamp::setI2CMuxClamp()
 {
-    ushort I2CAdress;
     uchar outpBuf[1]; // 1 adr byte, 1 byte data = mux code
 
-    I2CAdress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux);
     outpBuf[0] = (m_nCtrlChannel - 4) | 8; // .... hardware ????
 
-    struct i2c_msg Msgs = {addr: I2CAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
+    struct i2c_msg Msgs = {addr: m_i2cMuxAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
     struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
 
-    I2CTransfer(m_sDeviceNode, I2CAdress, m_pMyServer->m_pDebugSettings->getDebugLevel(), &MuxData);
+    I2CTransfer(m_sDeviceNode, m_i2cMuxAdress, m_i2cMuxDebugLevel, &MuxData);
 }
 
 cSenseRange* cClamp::getRange(QString name)
