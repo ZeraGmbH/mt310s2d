@@ -110,7 +110,7 @@ private:
     QString m_sVersion;
     quint8 m_nType; // 0 is undefined type
     quint32 m_nFlags; // for future purpose
-    QDateTime mDateTime;
+    QDateTime m_AdjDateTime;
 };
 
 #endif // CLAMP_H
