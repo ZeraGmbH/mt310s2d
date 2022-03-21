@@ -132,12 +132,12 @@ void cClamp::exportAdjData(QDataStream &stream)
     stream << m_sSerial; //  serial
     stream << mDateTime.toString(Qt::TextDate); // date, time
     QString spec;
-    for(auto *range : m_RangeList) {
+    for(auto range : m_RangeList) {
         spec = range->getName();
         stream << spec;
         range->getJustData()->Serialize(stream);
     }
-    for(auto *range : m_RangeListSecondary) {
+    for(auto range : m_RangeListSecondary) {
         spec = range->getName();
         stream << spec;
         range->getJustData()->Serialize(stream);
@@ -221,10 +221,10 @@ QString cClamp::exportXMLString(int indent)
     QDomElement typeTag = justqdom.createElement( "Sense");
     adjtag.appendChild(typeTag);
 
-    for(auto *range : m_RangeList) {
+    for(auto range : m_RangeList) {
         exportRangeXml(justqdom, typeTag, range);
     }
-    for(auto *range : m_RangeListSecondary) {
+    for(auto range : m_RangeListSecondary) {
         exportRangeXml(justqdom, typeTag, range);
     }
     return justqdom.toString(indent);
@@ -393,10 +393,10 @@ quint8 cClamp::getAdjustmentStatus()
     }
 
     quint8 stat = 255;
-    for(auto *range : m_RangeList) {
+    for(auto range : m_RangeList) {
         stat &= range->getAdjustmentStatus();
     }
-    for(auto *range : m_RangeListSecondary) {
+    for(auto range : m_RangeListSecondary) {
         stat &= range->getAdjustmentStatus();
     }
     if ((stat & JustData::Justified)== 0) {
@@ -650,14 +650,14 @@ void cClamp::setI2CMuxClamp()
 cSenseRange* cClamp::getRange(QString name)
 {
     cSenseRange* rangeFound = nullptr;
-    for(auto *range : m_RangeList) {
+    for(auto range : m_RangeList) {
         if (range->getName() == name) {
             rangeFound = range;
             break;
         }
     }
     if(!rangeFound) {
-        for(auto *range : m_RangeListSecondary) {
+        for(auto range : m_RangeListSecondary) {
             if (range->getName() == name) {
                 rangeFound = range;
                 break;
