@@ -122,15 +122,13 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 
 void cClamp::exportAdjData(QDataStream &stream)
 {
-    QDateTime DateTime;
-    mDateTime = DateTime.currentDateTime();
-
+    m_AdjDateTime = QDateTime::currentDateTime();
     stream << m_nType;
     stream << m_nFlags;
     stream << m_sClampTypeName; // the clamp's name
     stream << m_sVersion; // version
     stream << m_sSerial; //  serial
-    stream << mDateTime.toString(Qt::TextDate); // date, time
+    stream << m_AdjDateTime.toString(Qt::TextDate); // date, time
     QString spec;
     for(auto range : m_RangeList) {
         spec = range->getName();
@@ -156,7 +154,7 @@ bool cClamp::importAdjData(QDataStream &stream)
     stream >> dts;
 
     int n = 0;
-    mDateTime = QDateTime::fromString(dts);
+    m_AdjDateTime = QDateTime::fromString(dts);
     while (!stream.atEnd()) {
         QString rngName;
         stream >> rngName;
@@ -199,14 +197,14 @@ QString cClamp::exportXMLString(int indent)
 
     tag = justqdom.createElement( "Date" );
     pcbtag.appendChild( tag );
-    QDateTime DateTime;
-    QDate d=DateTime.currentDateTime().date();
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    QDate d = currentDateTime.date();
     t = justqdom.createTextNode(d.toString(Qt::TextDate));
     tag.appendChild( t );
 
     tag = justqdom.createElement( "Time" );
     pcbtag.appendChild( tag );
-    QTime ti=DateTime.currentDateTime().time();
+    QTime ti = currentDateTime.time();
     t = justqdom.createTextNode(ti.toString(Qt::TextDate));
     tag.appendChild( t );
 
