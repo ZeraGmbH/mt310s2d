@@ -294,8 +294,8 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
 
                         done = true;
                         QDomNodeList sensNl = qdNode.childNodes(); // we iterate over all ranges
+                        cSenseRange* rngPtr = nullptr;
                         for (qint32 j = 0; j < sensNl.length(); j++) {
-                            cSenseRange* rngPtr;
                             QString Name;
 
                             QDomNode RangeJustNode = sensNl.item(j);
@@ -318,7 +318,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                                         rngPtr = getRange(Name);
                                     }
 
-                                    cJustData* pJustData = 0;
+                                    cJustData* pJustData = nullptr;
                                     if (rngPtr != 0) {
                                         if (tName == "Gain") {
                                             pJustData = rngPtr->getJustData()->m_pGainCorrection;
