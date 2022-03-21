@@ -32,7 +32,6 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
     cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
               server->m_pDebugSettings->getDebugLevel(),
               server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)),
-    cAdjXML(server->m_pDebugSettings->getDebugLevel()),
     m_pMyServer(server),
     m_pSystemInfo(server->m_pSystemInfo)
 {
