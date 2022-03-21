@@ -1,6 +1,13 @@
 #ifndef SENSEINTERFACE_H
 #define SENSEINTERFACE_H
 
+#include "adjflash.h"
+#include "adjxml.h"
+#include "resource.h"
+#include "scpiconnection.h"
+#include "sensechannel.h"
+#include "notificationstring.h"
+#include "systeminfo.h"
 #include <QObject>
 #include <QList>
 #include <QStateMachine>
@@ -8,12 +15,6 @@
 #include <QState>
 #include <QFinalState>
 
-#include "adjflash.h"
-#include "adjxml.h"
-#include "resource.h"
-#include "scpiconnection.h"
-#include "sensechannel.h"
-#include "notificationstring.h"
 
 namespace SenseSystem
 {
@@ -89,6 +90,7 @@ protected slots:
 
 private:
     cMT310S2dServer* m_pMyServer;
+    cSystemInfo* m_pSystemInfo;
 
     QList<cSenseChannel*> m_ChannelList;
     QString m_sVersion;

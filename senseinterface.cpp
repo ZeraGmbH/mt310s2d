@@ -29,8 +29,10 @@
 #include "protonetcommand.h"
 
 
-cSenseInterface::cSenseInterface(cMT310S2dServer *server)
-    :cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)), cAdjXML(server->m_pDebugSettings->getDebugLevel()), m_pMyServer(server)
+cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
+    cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)), cAdjXML(server->m_pDebugSettings->getDebugLevel()),
+    m_pMyServer(server),
+    m_pSystemInfo(server->m_pSystemInfo)
 {
     int i;
 
@@ -337,7 +339,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     SVersion = QString(s);
     stream >> s; // we take the device name
 
-    QString sysDevName = m_pMyServer->m_pSystemInfo->getDeviceName();
+    QString sysDevName = m_pSystemInfo->getDeviceName();
     if (QString(s) != sysDevName) {
         if(DEBUG1) {
             syslog(LOG_ERR,"flashmemory read, contains wrong pcb name: flash %s / µC %s\n",
@@ -352,7 +354,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     bool enable = false;
     pAtmel->getEEPROMAccessEnable(enable);
 
-    QString sDV = m_pMyServer->m_pSystemInfo->getDeviceVersion();
+    QString sDV = m_pSystemInfo->getDeviceVersion();
     if (qs != sDV) {
         // test ob sich nur die hinteren nummern der lca bzw. ctrl version geändert haben
         // indem die hinteren stellen der nummern aus sDeviceVersion nach s übertragen werden
@@ -361,14 +363,14 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         QString ss, sd, ss2, sd2;
         ss = qs.section(';',2,2); // LCA: x.xx
         ss2 = '.' +ss.section('.',1,1); // .xx
-        sd = m_pMyServer->m_pSystemInfo->getDeviceVersion().section(';',2,2); // LCA: x.yy
+        sd = m_pSystemInfo->getDeviceVersion().section(';',2,2); // LCA: x.yy
         sd2 = '.' +sd.section('.',1,1); // .yy
         ss.replace(ss2,sd2); // tausch .xx durch .yy
         qs.replace(qs.section(';',2,2), ss); // LCA: x.yy -> s
 
         ss = qs.section(';',3,3); // CTRL: x.xx
         ss2 = '.' +ss.section('.',1,1); // .xx
-        sd = m_pMyServer->m_pSystemInfo->getDeviceVersion().section(';',3,3); // CTRL: x.yy
+        sd = m_pSystemInfo->getDeviceVersion().section(';',3,3); // CTRL: x.yy
         sd2 = '.' +sd.section('.',1,1); // .yy
         ss.replace(ss2,sd2); // tausch .xx durch .yy
         qs.replace(qs.section(';',3,3), ss); // CTRL: x.yy -> s
@@ -392,7 +394,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     }
 
     stream >> s; // we take the serial number now
-    QString sysSerNo = m_pMyServer->m_pSystemInfo->getSerialNumber();
+    QString sysSerNo = m_pSystemInfo->getSerialNumber();
     if (QString(s) != sysSerNo) {
         if (DEBUG1) {
             syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
@@ -459,9 +461,9 @@ void cSenseInterface::exportAdjData(QDataStream &stream)
     stream << "ServerVersion";
     stream << ServerVersion;
 
-    stream << m_pMyServer->m_pSystemInfo->getDeviceName().toStdString().c_str(); // leiterkarten name aus atmel gelesen
-    stream << m_pMyServer->m_pSystemInfo->getDeviceVersion().toStdString().c_str(); // geräte name versionsnummern ...
-    stream << m_pMyServer->m_pSystemInfo->getSerialNumber().toStdString().c_str(); // seriennummer
+    stream << m_pSystemInfo->getDeviceName().toStdString().c_str(); // leiterkarten name aus atmel gelesen
+    stream << m_pSystemInfo->getDeviceVersion().toStdString().c_str(); // geräte name versionsnummern ...
+    stream << m_pSystemInfo->getSerialNumber().toStdString().c_str(); // seriennummer
     stream << DateTime.currentDateTime().toString(Qt::TextDate).toStdString().c_str(); // datum,uhrzeit
 
     for (int i = 0; i < m_ChannelList.count(); i++)
@@ -503,12 +505,12 @@ QString cSenseInterface::exportXMLString(int indent)
 
     tag = justqdom.createElement( "VersionNumber" );
     pcbtag.appendChild( tag );
-    t = justqdom.createTextNode(m_pMyServer->m_pSystemInfo->getDeviceVersion() );
+    t = justqdom.createTextNode(m_pSystemInfo->getDeviceVersion() );
     tag.appendChild( t );
 
     tag = justqdom.createElement( "SerialNumber" );
     pcbtag.appendChild( tag );
-    t = justqdom.createTextNode(m_pMyServer->m_pSystemInfo->getSerialNumber());
+    t = justqdom.createTextNode(m_pSystemInfo->getSerialNumber());
     tag.appendChild( t );
 
     tag = justqdom.createElement( "Date" );
@@ -675,7 +677,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
 
         if (tName == "SerialNumber")
         {
-            if (  !(SerialNrOK = (qdElem.text() == m_pMyServer->m_pSystemInfo->getSerialNumber() )) )
+            if (  !(SerialNrOK = (qdElem.text() == m_pSystemInfo->getSerialNumber() )) )
             {
                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong serialnumber in xml file\n");
                return false;
@@ -687,7 +689,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
 
         if (tName == "VersionNumber")
         {
-           if ( ! ( VersionNrOK= (qdElem.text() == m_pMyServer->m_pSystemInfo->getDeviceVersion()) ) )
+           if ( ! ( VersionNrOK= (qdElem.text() == m_pSystemInfo->getDeviceVersion()) ) )
            {
                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong versionnumber in xml file\n");
                return false;
