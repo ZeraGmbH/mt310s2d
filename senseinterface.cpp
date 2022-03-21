@@ -28,14 +28,14 @@
 #include "adjflash.h"
 #include "protonetcommand.h"
 
-
 cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
-    cAdjFlash(server->m_pI2CSettings->getDeviceNode(), server->m_pDebugSettings->getDebugLevel(), server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)), cAdjXML(server->m_pDebugSettings->getDebugLevel()),
+    cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
+              server->m_pDebugSettings->getDebugLevel(),
+              server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)),
+    cAdjXML(server->m_pDebugSettings->getDebugLevel()),
     m_pMyServer(server),
     m_pSystemInfo(server->m_pSystemInfo)
 {
-    int i;
-
     // Init with bad defaults so coder's bugs pop up
     m_nVersionStatus = Adjustment::wrongVERS;
     m_nSerialStatus = Adjustment::wrongSNR;
@@ -71,24 +71,17 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
 
     QList<cSenseRange*> rngList;
 
-    for (i = 0; i < 4; i++)
-    {
+    int i;
+    for (i = 0; i < 4; i++) {
         rngList.clear();
         rngList.append(new cSenseRange(m_pSCPIInterface,  "250V",   "250V", true, 250.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface,    "8V",     "8V", true,   8.0, 3355443.0, 4194304.0, 8388607.0, 1, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface, "100mV" , "100mV", true,   0.1, 4026532.0, 5033165.0, 8388607.0, 2, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
-        /*
-        rngList.append(new cSenseRange(m_pSCPIInterface,  "HF250V",   "250V", false, 250.0, 1078.0, 1294.0, 0, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface,   "HF10V",    "10V", false,   8.0,  819.0,  983.0, 1, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF100mV" , "100mV", false,   0.1,  983.0, 1126.0, 2, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        */
-
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
-    for (i = 4; i < 7; i++)
-    {
+    for (i = 4; i < 7; i++) {
         rngList.clear();
         rngList.append(new cSenseRange(m_pSCPIInterface,   "10A",   "10A", true,  10.0, 3197613.0, 3997016.0, 8388607.0,  0, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface,    "5A",    "5A", true,   5.0, 3197613.0, 3997016.0, 8388607.0,  1, SenseSystem::modeAC | SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
@@ -113,18 +106,6 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
         rngList.append(new cSenseRange(m_pSCPIInterface,   "5mV",   "5mV", false, 0.005, 3355443.0, 4194304.0, 8388607.0, 19, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
         rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", false, 0.002, 2684355.0, 3355444.0, 8388607.0, 20, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
-        /*
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF10A"  ,"10A"  , false, 10.0  , 781.0,  938.0, 0, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF5A"    ,"5A"  , false,  5.0  , 781.0,  938.0, 0, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF2.5A" ,"2.5A" , false,  2.5  , 976.0, 1172.0, 2, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF1.0A" ,"1.0A" , false,  1.0  ,1020.0, 1224.0, 3, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF500mA","500mA", false,  0.5  ,1020.0, 1224.0, 4, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF250mA","250mA", false,  0.25 ,1020.0, 1224.0, 5, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF100mA","100mA", false,  0.1  ,1020.0, 1224.0, 6, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF50mA" ,"50mA" , false,  0.05 ,1020.0, 1224.0, 7, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        rngList.append(new cSenseRange(m_pSCPIInterface, "HF25mA" ,"25mA" , false,  0.025,1020.0, 1224.0, 8, SenseSystem::modeHF | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
-        */
-
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
@@ -144,36 +125,25 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
     rngList.append(new cSenseRange(m_pSCPIInterface,   "2mV",   "2mV", false, 0.002, 2684355.0, 3355444.0, 8388607.0, 20, SenseSystem::modeADJ | SenseSystem::Direct, new cMT310S2JustData(m_pSCPIInterface)));
 
     m_ChannelList.at(7)->setRangeList(rngList);
-
     setSenseMode("AC");
-
     setNotifierSenseChannelCat(); // only prepared for !!! since we don't have hot plug for measuring channels yet
     m_sVersion = SenseSystem::Version;
 }
 
-
 cSenseInterface::~cSenseInterface()
 {
-    int i;
-    cSenseChannel* cptr;
-
-    for (i = 0; i < m_ChannelList.count(); i++)
-    {
-        cptr = m_ChannelList.at(i);
-        delete cptr;
+    for(auto channel : m_ChannelList) {
+        delete channel;
     }
+    m_ChannelList.clear();
 }
-
 
 void cSenseInterface::initSCPIConnection(QString leadingNodes)
 {
-    QString cmdParent;
-    cSCPIDelegate* delegate;
-
-    if (leadingNodes != "")
+    if (leadingNodes != "") {
         leadingNodes += ":";
-
-    delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"VERSION",SCPI::isQuery, m_pSCPIInterface, SenseSystem::cmdVersion);
+    }
+    cSCPIDelegate* delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"VERSION",SCPI::isQuery, m_pSCPIInterface, SenseSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"MMODE",SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, SenseSystem::cmdMMode);
@@ -195,9 +165,7 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes)
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
-
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    {
+    for (int i = 0; i < m_ChannelList.count(); i++) {
         // we also must connect the signals for notification and for output
         connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
         connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
@@ -205,56 +173,52 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes)
         m_ChannelList.at(i)->initSCPIConnection(QString("%1SENSE").arg(leadingNodes));
     }
 
-    cmdParent = QString("STATUS:PCB");
-
+    QString cmdParent = QString("STATUS:PCB");
     delegate = new cSCPIDelegate(cmdParent, "ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, SenseSystem::cmdStatAdjustment);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-
 }
-
 
 cSenseChannel *cSenseInterface::getChannel(QString &name)
 {
-    int i;
-
-    for (i = 0; i < m_ChannelList.count(); i++)
-        if (m_ChannelList.at(i)->getName() == name)
+    cSenseChannel *channelFound = nullptr;
+    for(auto channel : m_ChannelList) {
+        if(channel->getName() == name) {
+            channelFound = channel;
             break;
-
-    if (i < m_ChannelList.count())
-        return m_ChannelList.at(i);
-    else
-        return nullptr;
+        }
+    }
+    return channelFound;
 }
-
 
 QString cSenseInterface::getChannelSystemName(quint16 ctrlChannel)
 {
-    QString s;
-    for (int i = 0; i < m_ChannelList.count(); i++)
-        if (m_ChannelList.at(i)->getCtrlChannel() == ctrlChannel)
-        {
-            s = m_ChannelList.at(i)->getName();
+    QString nameFound;
+    for(auto channel : m_ChannelList) {
+        if(channel->getCtrlChannel() == ctrlChannel) {
+            nameFound = channel->getName();
             break;
         }
-
-    return s;
+    }
+    return nameFound;
 }
-
 
 cSenseRange* cSenseInterface::getRange(QString channelName, QString rangeName)
 {
-    return getChannel(channelName)->getRange(rangeName);
+    cSenseRange* rangeFound = nullptr;
+    cSenseChannel *channelFound = getChannel(channelName);
+    if(channelFound) {
+        rangeFound = channelFound->getRange(rangeName);
+    }
+    return rangeFound;
 }
-
 
 quint8 cSenseInterface::getAdjustmentStatus()
 {
     quint8 adjustmentStatusMask = Adjustment::adjusted;
     // Loop adjustment state for all channels
-    for (int channel = 0; channel < m_ChannelList.count(); channel++) {
-        quint8 channelFlags = m_ChannelList.at(channel)->getAdjustmentStatus();
+    for(auto channel : m_ChannelList) {
+        quint8 channelFlags = channel->getAdjustmentStatus();
         // Currently there is one flag in channel flags only
         if((channelFlags & JustData::Justified)== 0) {
             adjustmentStatusMask = Adjustment::notAdjusted;
@@ -269,7 +233,6 @@ quint8 cSenseInterface::getAdjustmentStatus()
     }
     return adjustmentStatusMask;
 }
-
 
 void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
@@ -314,15 +277,11 @@ void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         if (protoCmd->m_bwithOutput)
             emit cmdExecutionDone(protoCmd);
         break;
-
     }
 }
 
-
 bool cSenseInterface::importAdjData(QDataStream &stream)
 {
-    QDateTime DateTime;
-    QString SVersion;
     char flashdata[200];
     char* s = flashdata;
 
@@ -336,7 +295,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     }
 
     stream >> s;
-    SVersion = QString(s);
+    QString SVersion = QString(s);
     stream >> s; // we take the device name
 
     QString sysDevName = m_pSystemInfo->getDeviceName();
@@ -409,12 +368,9 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         m_nSerialStatus = 0; // ok
     }
 
-
     stream >> s;
-    DateTime.fromString(QString(s),Qt::TextDate); // datum und uhrzeit übernehmen
-
-    while (!stream.atEnd())
-    {
+    QDateTime DateTime = QDateTime::fromString(QString(s), Qt::TextDate); // datum und uhrzeit übernehmen
+    while (!stream.atEnd()) {
         bool done;
         stream >> s;
         QString  JDataSpecs = s; // Type:Channel:Range
@@ -423,77 +379,56 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         spec = JDataSpecs.split(':');
 
         done = false;
-        if (spec.at(0) == "SENSE" )
-        {
+        if (spec.at(0) == "SENSE" ) {
             cSenseChannel* chn;
             QString s = spec.at(1);
-            if ((chn = getChannel(s)) != nullptr)
-            {
-                cSenseRange* rng;
+            if ((chn = getChannel(s)) != nullptr) {
                 s = spec.at(2);
-                if ((rng = chn->getRange(s)) != nullptr)
-                {
+                cSenseRange* rng = chn->getRange(s);
+                if (rng != nullptr) {
                     rng->getJustData()->Deserialize(stream);
                     done = true;
                 }
             }
         }
-
-        if (!done)
-        {
+        if (!done) {
             cMT310S2JustData* dummy; // if we could not find the owner of that data
             dummy = new cMT310S2JustData(m_pSCPIInterface);
             dummy->Deserialize(stream); // we read the data from stream to keep it in flow
             delete dummy;
         }
     }
-
     return (true);
-
 }
-
 
 void cSenseInterface::exportAdjData(QDataStream &stream)
 {
-    QDateTime DateTime;
-
     // ab version v1.02
     stream << "ServerVersion";
     stream << ServerVersion;
-
     stream << m_pSystemInfo->getDeviceName().toStdString().c_str(); // leiterkarten name aus atmel gelesen
     stream << m_pSystemInfo->getDeviceVersion().toStdString().c_str(); // geräte name versionsnummern ...
     stream << m_pSystemInfo->getSerialNumber().toStdString().c_str(); // seriennummer
-    stream << DateTime.currentDateTime().toString(Qt::TextDate).toStdString().c_str(); // datum,uhrzeit
-
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    {
-        QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
-        QString spec;
-
-        for (int j = 0; j < list.count(); j ++)
-        {
-            if ((list.at(j)->getMMask() & SenseSystem::Direct)> 0)
+    stream << QDateTime::currentDateTime().toString(Qt::TextDate).toStdString().c_str(); // datum,uhrzeit
+    for(auto channel : m_ChannelList) {
+        for(auto range : channel->getRangeList()) {
+            if ((range->getMMask() & SenseSystem::Direct)> 0)
             {
-                spec = QString("%1:%2:%3")
+                QString spec = QString("%1:%2:%3")
                      .arg("SENSE")
-                     .arg(m_ChannelList.at(i)->getName())
-                     .arg(list.at(j)->getName());
+                     .arg(channel->getName())
+                     .arg(range->getName());
 
                 stream << spec.toLatin1();
-                list.at(j)->getJustData()->Serialize(stream);
+                range->getJustData()->Serialize(stream);
             }
         }
     }
 }
 
-
 QString cSenseInterface::exportXMLString(int indent)
 {
-    QDateTime DateTime;
-
-    QString s = QString("PCBAdjustmentData");
-    QDomDocument justqdom (s);
+    QDomDocument justqdom (QStringLiteral("PCBAdjustmentData"));
 
     QDomElement pcbtag = justqdom.createElement( "PCB" );
     justqdom.appendChild( pcbtag );
@@ -515,13 +450,14 @@ QString cSenseInterface::exportXMLString(int indent)
 
     tag = justqdom.createElement( "Date" );
     pcbtag.appendChild( tag );
-    QDate d=DateTime.currentDateTime().date();
+    QDateTime currDateTime = QDateTime::currentDateTime();
+    QDate d = currDateTime.date();
     t = justqdom.createTextNode(d.toString(Qt::TextDate));
     tag.appendChild( t );
 
     tag = justqdom.createElement( "Time" );
     pcbtag.appendChild( tag );
-    QTime ti=DateTime.currentDateTime().time();
+    QTime ti = currDateTime.time();
     t = justqdom.createTextNode(ti.toString(Qt::TextDate));
     tag.appendChild( t );
 
@@ -536,114 +472,101 @@ QString cSenseInterface::exportXMLString(int indent)
     QDomElement typeTag = justqdom.createElement( "Sense");
     adjtag.appendChild(typeTag);
 
-    for (int i = 0; i < m_ChannelList.count(); i ++)
-    {
+    for(auto channel : m_ChannelList) {
         QDomText t;
         QDomElement chtag = justqdom.createElement( "Channel" );
         typeTag.appendChild( chtag );
         QDomElement nametag = justqdom.createElement( "Name" );
         chtag.appendChild(nametag);
-        t = justqdom.createTextNode(m_ChannelList.at(i)->getName());
+        t = justqdom.createTextNode(channel->getName());
         nametag.appendChild( t );
 
-        QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
-        for (int j = 0; j < list.count(); j++)
-        {
-            if ((list.at(j)->getMMask() & SenseSystem::Direct)> 0)
-            {
-                cSenseRange* rng = list.at(j);
-
+        for(auto range : channel->getRangeList()) {
+            if ((range->getMMask() & SenseSystem::Direct)> 0) {
                 QDomElement rtag = justqdom.createElement( "Range" );
                 chtag.appendChild( rtag );
 
                 nametag = justqdom.createElement( "Name" );
                 rtag.appendChild(nametag);
 
-                t = justqdom.createTextNode(list.at(j)->getName());
+                t = justqdom.createTextNode(range->getName());
                 nametag.appendChild( t );
 
                 QDomElement gpotag = justqdom.createElement( "Gain" );
                 rtag.appendChild(gpotag);
                 QDomElement tag = justqdom.createElement( "Status" );
-                QString jdata = rng->getJustData()->m_pGainCorrection->SerializeStatus();
+                QString jdata = range->getJustData()->m_pGainCorrection->SerializeStatus();
                 t = justqdom.createTextNode(jdata);
                 gpotag.appendChild(tag);
                 tag.appendChild(t);
                 tag = justqdom.createElement( "Coefficients" );
                 gpotag.appendChild(tag);
-                jdata = rng->getJustData()->m_pGainCorrection->SerializeCoefficients();
+                jdata = range->getJustData()->m_pGainCorrection->SerializeCoefficients();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
                 tag = justqdom.createElement( "Nodes" );
                 gpotag.appendChild(tag);
-                jdata = rng->getJustData()->m_pGainCorrection->SerializeNodes();
+                jdata = range->getJustData()->m_pGainCorrection->SerializeNodes();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
 
                 gpotag = justqdom.createElement( "Phase" );
                 rtag.appendChild(gpotag);
                 tag = justqdom.createElement( "Status" );
-                jdata = rng->getJustData()->m_pPhaseCorrection->SerializeStatus();
+                jdata = range->getJustData()->m_pPhaseCorrection->SerializeStatus();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
                 gpotag.appendChild(tag);
                 tag = justqdom.createElement( "Coefficients" );
                 gpotag.appendChild(tag);
-                jdata = rng->getJustData()->m_pPhaseCorrection->SerializeCoefficients();
+                jdata = range->getJustData()->m_pPhaseCorrection->SerializeCoefficients();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
                 tag = justqdom.createElement( "Nodes" );
                 gpotag.appendChild(tag);
-                jdata = rng->getJustData()->m_pPhaseCorrection->SerializeNodes();
+                jdata = range->getJustData()->m_pPhaseCorrection->SerializeNodes();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
 
                 gpotag = justqdom.createElement( "Offset" );
                 rtag.appendChild(gpotag);
                 tag = justqdom.createElement( "Status" );
-                jdata = rng->getJustData()->m_pOffsetCorrection->SerializeStatus();
+                jdata = range->getJustData()->m_pOffsetCorrection->SerializeStatus();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
                 gpotag.appendChild(tag);
                 tag = justqdom.createElement( "Coefficients" );
                 gpotag.appendChild(tag);
-                jdata = rng->getJustData()->m_pOffsetCorrection->SerializeCoefficients();
+                jdata = range->getJustData()->m_pOffsetCorrection->SerializeCoefficients();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
                 tag = justqdom.createElement( "Nodes" );
                 gpotag.appendChild(tag);
-                jdata = rng->getJustData()->m_pOffsetCorrection->SerializeNodes();
+                jdata = range->getJustData()->m_pOffsetCorrection->SerializeNodes();
                 t = justqdom.createTextNode(jdata);
                 tag.appendChild(t);
             }
         }
     }
-
     return justqdom.toString(indent);
 }
 
-
 void cSenseInterface::m_ComputeSenseAdjData()
 {
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    m_ChannelList.at(i)->computeJustData();
+    for(auto channel : m_ChannelList) {
+        channel->computeJustData();
+    }
 }
-
 
 bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf einem element dessen tagname channel ist
 {
-    QDateTime DateTime;
     QDomDocumentType TheDocType = qdomdoc->doctype ();
-
-    if  (TheDocType.name() != QString("PCBAdjustmentData"))
-    {
+    if  (TheDocType.name() != QString("PCBAdjustmentData")) {
         if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
     }
-
     QDomElement rootElem = qdomdoc->documentElement();
     QDomNodeList nl = rootElem.childNodes();
-
     bool TypeOK = false;
     bool VersionNrOK = false;
     bool SerialNrOK = false;
@@ -651,173 +574,108 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
     bool TimeOK = false;
     bool ChksumOK = false;
     bool SenseOK = false;
-
-    for (int i = 0; i < nl.length() ; i++)
-    {
+    for (int i = 0; i < nl.length() ; i++) {
         QDomNode qdNode = nl.item(i);
         QDomElement qdElem = qdNode.toElement();
-        if ( qdElem.isNull() )
-        {
+        if ( qdElem.isNull() ) {
             if DEBUG1 syslog(LOG_ERR,"justdata import, format error in xml file\n");
             return false;
         }
-
         QString tName = qdElem.tagName();
-
-        if (tName == "Type")
-        {
-            if ( !(TypeOK = (qdElem.text() == QString(LeiterkartenName))))
-            {
+        if (tName == "Type") {
+            if ( !(TypeOK = (qdElem.text() == QString(LeiterkartenName)))) {
                 if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                 return false;
             }
         }
-
-        else
-
-        if (tName == "SerialNumber")
-        {
-            if (  !(SerialNrOK = (qdElem.text() == m_pSystemInfo->getSerialNumber() )) )
-            {
+        else if (tName == "SerialNumber") {
+            if (  !(SerialNrOK = (qdElem.text() == m_pSystemInfo->getSerialNumber() )) ) {
                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong serialnumber in xml file\n");
                return false;
             }
-
         }
-
-        else
-
-        if (tName == "VersionNumber")
-        {
-           if ( ! ( VersionNrOK= (qdElem.text() == m_pSystemInfo->getDeviceVersion()) ) )
-           {
+        else if (tName == "VersionNumber") {
+           if ( ! ( VersionNrOK= (qdElem.text() == m_pSystemInfo->getDeviceVersion()) ) ) {
                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong versionnumber in xml file\n");
                return false;
            }
-
         }
-
-        else
-
-        if (tName=="Date")
-        {
+        else if (tName=="Date") {
             QDate d = QDate::fromString(qdElem.text(),Qt::TextDate);
-            DateTime.setDate(d);
-            DateOK = true;
-
+            DateOK = d.isValid();
         }
-
-        else
-
-        if (tName=="Time")
-        {
+        else if (tName=="Time") {
             QTime t = QTime::fromString(qdElem.text(),Qt::TextDate);
-            DateTime.setTime(t);
-            TimeOK = true;
+            TimeOK = t.isValid();
         }
-
-        else
-
-        if (tName == "Adjustment")
-        {
-            if ( VersionNrOK && SerialNrOK && DateOK && TimeOK && TypeOK)
-            {
+        else if (tName == "Adjustment") {
+            if ( VersionNrOK && SerialNrOK && DateOK && TimeOK && TypeOK) {
                 QDomNodeList adjChildNl = qdElem.childNodes();
-                for (qint32 j = 0; j < adjChildNl.length(); j++)
-                {
-                    QString tagName;
-
+                for (qint32 j = 0; j < adjChildNl.length(); j++) {
                     qdNode = adjChildNl.item(j);
-
-                    tagName = qdNode.toElement().tagName();
-                    if (tagName == "Chksum")
-                    {
+                    QString tagName = qdNode.toElement().tagName();
+                    if (tagName == "Chksum") {
                         ChksumOK = true; // we don't read it actually because if something was changed outside ....
                     }
-
-                    else
-
-                    if (qdNode.toElement().tagName() == "Sense")
-                    {
+                    else if (qdNode.toElement().tagName() == "Sense") {
                         SenseOK = true;
-
                         QDomNodeList channelNl = qdNode.childNodes(); // we have a list our channels entries now
-
-                        for (qint32 i = 0; i < channelNl.length(); i++)
-                        {
+                        for (qint32 i = 0; i < channelNl.length(); i++) {
                             QDomNode chnNode = channelNl.item(i); // we iterate over all channels from xml file
-
                             QDomNodeList chnEntryNl = chnNode.childNodes();
-                            for (qint32 j = 0; j < chnEntryNl.length(); j++)
-                            {
-                                cSenseChannel* chnPtr;
-                                cSenseRange* rngPtr;
+                            cSenseChannel* chnPtr = nullptr;
+                            cSenseRange* rngPtr = nullptr;
+                            for (qint32 j = 0; j < chnEntryNl.length(); j++) {
                                 QString Name;
-
                                 QDomNode ChannelJustNode = chnEntryNl.item(j);
                                 qdElem = ChannelJustNode.toElement();
                                 QString tName = qdElem.tagName();
                                 qDebug() << tName;
-
-                                if (tName == "Name")
-                                {
+                                if (tName == "Name") {
                                     Name = qdElem.text();
                                     qDebug() << Name;
                                     chnPtr = getChannel(Name);
                                 }
-
-                                if (tName == "Range")
-                                {
-                                    if (chnPtr != nullptr) // if we know this channel
-                                    {
+                                else if (tName == "Range") {
+                                    if (chnPtr) { // if we know this channel
                                         QDomNodeList chnJustNl = ChannelJustNode.childNodes();
-
-                                        for (qint32 k = 0; k < chnJustNl.length(); k++)
-                                        {
+                                        for (qint32 k = 0; k < chnJustNl.length(); k++) {
                                             QDomNode RangeJustNode = chnJustNl.item(k);
-
                                             qdElem = RangeJustNode.toElement();
                                             tName = qdElem.tagName();
                                             qDebug() << tName;
-
-                                            if (tName == "Name")
-                                            {
+                                            if (tName == "Name") {
                                                 Name = qdElem.text();
                                                 qDebug() << Name;
                                                 rngPtr = chnPtr->getRange(Name);
                                             }
-
                                             cJustData* pJustData = nullptr;
-
-                                            if (rngPtr != nullptr)
-                                            {
-                                                if (tName == "Gain")
+                                            if (rngPtr != nullptr) {
+                                                if (tName == "Gain") {
                                                     pJustData = rngPtr->getJustData()->m_pGainCorrection;
-
-                                                if (tName == "Phase")
+                                                }
+                                                if (tName == "Phase") {
                                                     pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
-
-                                                if (tName == "Offset")
+                                                }
+                                                if (tName == "Offset") {
                                                     pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
+                                                }
                                             }
-
-                                            if (pJustData)
-                                            {
+                                            if (pJustData) {
                                                 QDomNodeList jdataNl = RangeJustNode.childNodes();
-                                                for (qint32 k = 0; k < jdataNl.count(); k++)
-                                                {
+                                                for (qint32 k = 0; k < jdataNl.count(); k++) {
                                                     QDomNode jTypeNode = jdataNl.item(k);
                                                     QString jTypeName = jTypeNode.toElement().tagName();
                                                     QString jdata = jTypeNode.toElement().text();
-
-                                                    if (jTypeName == "Status")
+                                                    if (jTypeName == "Status") {
                                                         pJustData->DeserializeStatus(jdata);
-
-                                                    if (jTypeName == "Coefficients")
+                                                    }
+                                                    if (jTypeName == "Coefficients") {
                                                         pJustData->DeserializeCoefficients(jdata);
-
-                                                    if (jTypeName == "Nodes")
+                                                    }
+                                                    if (jTypeName == "Nodes") {
                                                         pJustData->DeserializeNodes(jdata);
+                                                    }
                                                 }
                                             }
                                         }
@@ -828,42 +686,33 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
                     }
                 }
             }
-            else
-            {
+            else {
                 if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
                 return false;
             }
         }
-        else
-        {
+        else {
             if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
             return false;
         }
     }
-
     return ChksumOK && SenseOK;
 }
-
 
 void cSenseInterface::setI2CMux()
 {
     // nothing to do for the senseinterface
 }
 
-
 void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
-    cSenseChannel* pChannel;
     msgNrList.clear();
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    {
-        pChannel = m_ChannelList.at(i);
+    for(auto channel : m_ChannelList) {
         register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;%1;1;%2;%3;")
-                         .arg(pChannel->getName())
-                         .arg(pChannel->getDescription())
+                         .arg(channel->getName())
+                         .arg(channel->getDescription())
                          .arg(port));
     }
-
     // additional we register measuring mode switch as resource
     register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;MMODE;1;%1;%2;")
                       .arg(SenseSystem::sMeasuringModeDescription)
@@ -871,105 +720,81 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
 
 }
 
-
 void cSenseInterface::unregisterResource(cRMConnection *rmConnection)
 {
-    cSenseChannel* pChannel;
     msgNrList.clear();
-    for (int i = 0; i < 6; i++)
-    {
-        pChannel = m_ChannelList.at(i);
+    for(auto channel : m_ChannelList) {
         unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;%1;")
-                         .arg(pChannel->getName()));
+                         .arg(channel->getName()));
     }
 }
-
 
 QString cSenseInterface::m_ReadVersion(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
+    if (cmd.isQuery()) {
         return m_sVersion;
-    else
+    }
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
-
 
 void cSenseInterface::m_ReadWriteMMode(cProtonetCommand *protoCmd)
 {
     cSCPICommand cmd = protoCmd->m_sInput;
-
-    if (cmd.isQuery())
-    {
-        //return SenseSystem::sMMode[m_nMMode];
+    if (cmd.isQuery()) {
         emit notifier(&notifierSenseMMode);
         protoCmd->m_sOutput  = notifierSenseMMode.getString();
-        if (protoCmd->m_bwithOutput)
+        if (protoCmd->m_bwithOutput) {
             emit cmdExecutionDone(protoCmd);
-    }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
-            QString mode = cmd.getParam(0);
-
-            if (setSenseMode(mode))
-                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
-            else
-                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
         }
-
-        else
+    }
+    else {
+        if (cmd.isCommand(1)) {
+            QString mode = cmd.getParam(0);
+            if (setSenseMode(mode)) {
+                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
+            }
+            else {
+                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+            }
+        }
+        else {
             protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
-
-        if (protoCmd->m_bwithOutput)
+        }
+        if (protoCmd->m_bwithOutput) {
             emit cmdExecutionDone(protoCmd);
-
+        }
     }
 }
-
 
 QString cSenseInterface::m_ReadMModeCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        int i;
-        QString s;
-        QList<QString> keylist;
-        keylist = m_MModeHash.keys();
-
-        for (i = 0; i < keylist.count()-1; i++ )
-            s += (keylist.at(i) + ";");
-        s += keylist.at(i);
-        return s;
+    if (cmd.isQuery()) {
+        return m_MModeHash.keys().join(";");
     }
-    else
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
-
 
 QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-
+    if (cmd.isQuery()) {
         emit notifier(&notifierSenseChannelCat);
         return notifierSenseChannelCat.getString();
     }
-    else
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
-
 
 QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
     if (cmd.isQuery()) {
         QString s = ";"; // this server has no grouping constraints
         return s;
@@ -979,99 +804,75 @@ QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
     }
 }
 
-
 QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == "")))
     // cmd.isCommand(0) is not correct but we leave it for compatibility
-    {
-        for (int i = 0; i < m_ChannelList.count(); i++)
-            m_ChannelList.at(i)->initJustData();
-
+    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == ""))) {
+        for(auto channel : m_ChannelList) {
+            channel->initJustData();
+        }
         return SCPI::scpiAnswer[SCPI::ack];
     }
-    else
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
-
 
 QString cSenseInterface::m_ComputeSenseAdjData(QString& sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == "")))
     // cmd.isCommand(0) is not correct but we leave it for compatibility
-    {
+    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == ""))) {
         m_ComputeSenseAdjData();
         return SCPI::scpiAnswer[SCPI::ack];
     }
-    else
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
-
 
 QString cSenseInterface::handleScpiReadAdjStatus(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        QString s;
-
-        s = QString("%1").arg(getAdjustmentStatus());
-        return s;
+    if (cmd.isQuery()) {
+        return  QString("%1").arg(getAdjustmentStatus());
     }
-    else
+    else {
         return SCPI::scpiAnswer[SCPI::nak];
+    }
 }
-
 
 void cSenseInterface::setNotifierSenseMMode()
 {
     notifierSenseMMode = m_sMMode;
 }
 
-
 void cSenseInterface::setNotifierSenseChannelCat()
 {
     // only prepared for !!! since we don't have hot plug for measuring channels yet
     int i;
     QString s;
-    for (i = 0; i < m_ChannelList.count()-1; i++ )
+    for (i = 0; i < m_ChannelList.count()-1; i++ ) {
         s += m_ChannelList.at(i)->getName() + ";";
+    }
     s += m_ChannelList.at(i)->getName();
     notifierSenseChannelCat = s;
 }
 
-
 bool cSenseInterface::setSenseMode(QString sMode)
 {
-    bool ret;
-    ret = false;
-
-    if (m_MModeHash.contains(sMode))
-    {
+    bool ret = false;
+    if (m_MModeHash.contains(sMode)) {
         quint8 mode;
         mode = m_MModeHash[sMode];
         pAtmel->setMeasMode((mode >> 1) & 1); // set the atmels mode here...atmel only knows ac and hf
-        for (int i = 0; i < m_ChannelList.count(); i++)
-        {
+        for (int i = 0; i < m_ChannelList.count(); i++) {
             m_ChannelList.at(i)->setMMode(mode);
         }
-
         m_sMMode = sMode;
         setNotifierSenseMMode();
         ret = true;
-
     }
-
     return ret;
 }
-
-
-
-
-
-
