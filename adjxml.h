@@ -8,8 +8,7 @@ class QDomDocument;
 class cAdjXML
 {
 public:
-    cAdjXML(){}
-    cAdjXML(quint8 dlevel);
+    cAdjXML();
 
     virtual bool exportAdjXML(QString file);
     virtual bool importAdjXML(QString file);
@@ -18,9 +17,6 @@ public:
 protected:
     virtual QString exportXMLString(int indent = 1) = 0; // adjustment data xml export to string
     virtual bool importXMLDocument(QDomDocument* qdomdoc) = 0;
-
-private:
-    quint8 DebugLevel;
 };
 
 #endif // ADJXML_H
