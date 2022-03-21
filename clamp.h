@@ -1,15 +1,16 @@
 #ifndef CLAMP_H
 #define CLAMP_H
 
+#include "adjflash.h"
+#include "adjxml.h"
+#include "scpiconnection.h"
+#include "senseinterface.h"
 #include <QList>
 #include <QDataStream>
 #include <QDateTime>
 #include <QDomDocument>
 #include <QDomElement>
 
-#include "adjflash.h"
-#include "adjxml.h"
-#include "scpiconnection.h"
 
 namespace clamp
 {
@@ -48,7 +49,7 @@ class QDomDocument;
 class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
 public:
-    cClamp(){m_pMyServer = 0;}
+    cClamp();
     cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, quint8 ctrlChannelSecondary);
     virtual ~cClamp();
     virtual quint8 getAdjustmentStatus() override;
@@ -95,6 +96,7 @@ private:
     QString handleScpiReadAdjStatus(QString &scpiCmdStr);
 
     cMT310S2dServer* m_pMyServer;
+    cSenseInterface *m_pSenseInterface;
 
     QList<cSenseRange*> m_RangeList;
     QString m_sChannelName;
