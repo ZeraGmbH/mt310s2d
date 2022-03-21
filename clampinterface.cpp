@@ -8,8 +8,10 @@
 #include <QDomDocument>
 #include <QStringList>
 
-cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler)
-    :m_pMyServer(server), m_pControler(controler)
+cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler) :
+    m_pMyServer(server),
+    m_pSenseInterface(server->m_pSenseInterface),
+    m_pControler(controler)
 {
     m_nClampStatus = 0;
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();
@@ -42,13 +44,13 @@ void cClampInterface::actualizeClampStatus()
             quint16 bmask = 1 << i;
             int ctlChannelSecondary = i+1-4;
             if ((clChange & bmask) > 0) {
-                QString channnelName = m_pMyServer->m_pSenseInterface->getChannelSystemName(i+1);
+                QString channnelName = m_pSenseInterface->getChannelSystemName(i+1);
                 if ((m_nClampStatus & bmask) == 0) {
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
                     m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1, ctlChannelSecondary);
                     qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
-                    QString channelNameSecondary = m_pMyServer->m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
+                    QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
                     if(!m_clampHash[channnelName]->getChannelNameSecondary().isEmpty()) {
                         m_clampSecondarySet.insert(channelNameSecondary);
                         qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
@@ -220,7 +222,7 @@ QString cClampInterface::importExportAllClamps(QString &sInput)
                                 else {
                                     pClamp4Use->importXMLDocument(&justqdom, false); // otherwise clamp type cannot be changed
                                 }
-                                m_pMyServer->m_pSenseInterface->m_ComputeSenseAdjData();
+                                m_pSenseInterface->m_ComputeSenseAdjData();
                                 // then we let it compute its new adjustment coefficients... we simply call senseinterface's compute
                                 // command. we compute a little bit to much but this doesn't matter at all
                                 if (!pClamp4Use->exportAdjFlash()) {// and then we program the clamp

@@ -3,6 +3,7 @@
 
 #include "scpiconnection.h"
 #include "notificationstring.h"
+#include "senseinterface.h"
 #include <QHash>
 #include <QSet>
 
@@ -38,6 +39,7 @@ private:
     QString importExportAllClamps(QString& sInput);
 
     cMT310S2dServer *m_pMyServer;
+    cSenseInterface *m_pSenseInterface;
     cATMEL *m_pControler;
     cNotificationString m_notifierClampChannelList;
     quint16 m_nClampStatus;
