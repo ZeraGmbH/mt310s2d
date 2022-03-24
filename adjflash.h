@@ -10,7 +10,7 @@ class cAdjFlash
 {
 public:
     cAdjFlash(){}
-    cAdjFlash(QString devnode, quint8 dlevel, quint8 i2cadr);
+    cAdjFlash(QString devnode, quint8 i2cadr);
     bool exportAdjFlash();
     bool importAdjFlash();
     bool resetAdjFlash();
@@ -21,7 +21,6 @@ public:
 protected:
     QString m_sDeviceNode;
     quint8 m_nI2CAdr;
-    quint8 m_nDebugLevel;
     quint16 m_nChecksum;
     virtual void exportAdjData(QDataStream& stream) = 0; // the derived class exports adjdata to qdatastream
     virtual bool importAdjData(QDataStream& stream) = 0; // same for import

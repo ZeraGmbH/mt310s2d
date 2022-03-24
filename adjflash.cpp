@@ -7,8 +7,8 @@
 #include "adjflash.h"
 
 
-cAdjFlash::cAdjFlash(QString devnode, quint8 dlevel, quint8 i2cadr)
-    :m_sDeviceNode(devnode), m_nDebugLevel(dlevel), m_nI2CAdr(i2cadr)
+cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr)
+    :m_sDeviceNode(devnode), m_nI2CAdr(i2cadr)
 {
 }
 
@@ -51,7 +51,7 @@ bool cAdjFlash::importAdjFlash()
 bool cAdjFlash::resetAdjFlash()
 {
     setI2CMux();
-    cF24LC256 flash(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    cF24LC256 flash(m_sDeviceNode, m_nI2CAdr);
     return flash.Reset() == flash.size();
 }
 
@@ -91,12 +91,12 @@ bool cAdjFlash::writeFlash(QByteArray &ba)
 {
     int count, written;
 
-    cF24LC256 Flash(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    cF24LC256 Flash(m_sDeviceNode, m_nI2CAdr);
     count = ba.size();
     written = Flash.WriteData(ba.data(),count,0);
 
     if ( (count - written) > 0) {
-         if DEBUG1 syslog(LOG_ERR,"error writing flashmemory\n");
+         syslog(LOG_ERR,"error writing flashmemory\n");
          return false; // fehler beim flash schreiben
     }
     return true;
@@ -111,12 +111,12 @@ quint16 cAdjFlash::getChecksum()
 
 bool cAdjFlash::readFlash(QByteArray &ba)
 {
-    cF24LC256 Flash(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
+    cF24LC256 Flash(m_sDeviceNode, m_nI2CAdr);
 
     // first we try to read 6 bytes hold length (quint32) and checksum (quint16)
     ba.resize(6);
     if ( (6 - Flash.ReadData(ba.data(),6,0)) >0 ) {
-        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
+        syslog(LOG_ERR,"error reading flashmemory\n");
         return(false); // read error
     }
 
@@ -127,14 +127,14 @@ bool cAdjFlash::readFlash(QByteArray &ba)
 
     bastream >> count >> m_nChecksum;
     if ( count > (quint32)Flash.size() ) {
-        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory, count > flash\n");
+        syslog(LOG_ERR,"error reading flashmemory, count > flash\n");
         return(false); // read error
     }
 
     ba.resize(count);
 
     if ( (count - Flash.ReadData(ba.data(),count,0)) >0 ) {
-        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
+        syslog(LOG_ERR,"error reading flashmemory\n");
         return(false); // read error
     }
 
