@@ -103,7 +103,6 @@ private:
     QString m_sChannelNameSecondary;
 
     ushort m_i2cMuxAdress;
-    int m_i2cMuxDebugLevel;
     quint8 m_nCtrlChannel;
     quint8 m_nCtrlChannelSecondary;
     QString m_sClampTypeName;
