@@ -25,7 +25,6 @@ cClamp::cClamp()
 
 cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, quint8 ctrlChannelSecondary) :
     cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
-              server->m_pDebugSettings->getDebugLevel(),
               server->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash)),
     m_pSenseInterface(server->m_pSenseInterface),
     m_sChannelName(channelName),
@@ -231,7 +230,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
     QDateTime DateTime;
     QDomDocumentType TheDocType = qdomdoc->doctype ();
     if  (TheDocType.name() != QString("ClampAdjustmentData")) {
-        if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
+        syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
     }
 
@@ -247,7 +246,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
         QDomNode qdNode = nl.item(i);
         QDomElement qdElem = qdNode.toElement();
         if ( qdElem.isNull() ) {
-            if DEBUG1 syslog(LOG_ERR,"justdata import, format error in xml file\n");
+            syslog(LOG_ERR,"justdata import, format error in xml file\n");
             return false;
         }
         QString tName = qdElem.tagName();
@@ -257,7 +256,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
             }
             else {
                 if ( !(TypeOK = (qdElem.text() == getClampName(m_nType)))) {
-                    if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
+                    syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                     return false;
                 }
             }
@@ -354,12 +353,12 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                 }
             }
             else {
-                if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
+                syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
                 return false;
             }
         }
         else {
-            if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
+            syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
             return false;
         }
     }

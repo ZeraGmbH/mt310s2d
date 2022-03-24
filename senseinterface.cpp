@@ -30,7 +30,6 @@
 
 cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
     cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
-              server->m_pDebugSettings->getDebugLevel(),
               server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)),
     m_pMyServer(server),
     m_pSystemInfo(server->m_pSystemInfo)
@@ -287,9 +286,7 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     stream.skipRawData(6); // we don't need count and chksum
     stream >> s;
     if (QString(s) != "ServerVersion") {
-        if(DEBUG1) {
-            syslog(LOG_ERR,"flashmemory read, ServerVersion not found\n");
-        }
+        syslog(LOG_ERR,"flashmemory read, ServerVersion not found\n");
         return false; // unexpected data
     }
 
@@ -299,10 +296,8 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
 
     QString sysDevName = m_pSystemInfo->getDeviceName();
     if (QString(s) != sysDevName) {
-        if(DEBUG1) {
-            syslog(LOG_ERR,"flashmemory read, contains wrong pcb name: flash %s / µC %s\n",
-                   s, qPrintable(sysDevName));
-        }
+        syslog(LOG_ERR,"flashmemory read, contains wrong pcb name: flash %s / µC %s\n",
+               s, qPrintable(sysDevName));
         return false; // wrong pcb name
     }
 
@@ -334,10 +329,8 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
         qs.replace(qs.section(';',3,3), ss); // CTRL: x.yy -> s
 
         if (qs != sDV) {
-            if(DEBUG1) {
-                syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber: flash %s / µC %s\n",
-                       qPrintable(qs), qPrintable(sDV));
-            }
+            syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber: flash %s / µC %s\n",
+                   qPrintable(qs), qPrintable(sDV));
             m_nVersionStatus |= Adjustment::wrongVERS;
             if (!enable) {
                 return false; // wrong version number
@@ -354,10 +347,8 @@ bool cSenseInterface::importAdjData(QDataStream &stream)
     stream >> s; // we take the serial number now
     QString sysSerNo = m_pSystemInfo->getSerialNumber();
     if (QString(s) != sysSerNo) {
-        if (DEBUG1) {
-            syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
-                   s, qPrintable(sysSerNo));
-        }
+        syslog(LOG_ERR, "flashmemory read, contains wrong serialnumber flash: %s / µC: %s\n",
+               s, qPrintable(sysSerNo));
         m_nSerialStatus |= Adjustment::wrongSNR;
         if (!enable) {
             return false; // wrong serial number
@@ -561,7 +552,7 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
 {
     QDomDocumentType TheDocType = qdomdoc->doctype ();
     if  (TheDocType.name() != QString("PCBAdjustmentData")) {
-        if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
+        syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
     }
     QDomElement rootElem = qdomdoc->documentElement();
@@ -577,25 +568,25 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
         QDomNode qdNode = nl.item(i);
         QDomElement qdElem = qdNode.toElement();
         if ( qdElem.isNull() ) {
-            if DEBUG1 syslog(LOG_ERR,"justdata import, format error in xml file\n");
+            syslog(LOG_ERR,"justdata import, format error in xml file\n");
             return false;
         }
         QString tName = qdElem.tagName();
         if (tName == "Type") {
             if ( !(TypeOK = (qdElem.text() == QString(LeiterkartenName)))) {
-                if DEBUG1 syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
+                syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                 return false;
             }
         }
         else if (tName == "SerialNumber") {
             if (  !(SerialNrOK = (qdElem.text() == m_pSystemInfo->getSerialNumber() )) ) {
-               if DEBUG1 syslog(LOG_ERR,"justdata import, wrong serialnumber in xml file\n");
+               syslog(LOG_ERR,"justdata import, wrong serialnumber in xml file\n");
                return false;
             }
         }
         else if (tName == "VersionNumber") {
            if ( ! ( VersionNrOK= (qdElem.text() == m_pSystemInfo->getDeviceVersion()) ) ) {
-               if DEBUG1 syslog(LOG_ERR,"justdata import, wrong versionnumber in xml file\n");
+               syslog(LOG_ERR,"justdata import, wrong versionnumber in xml file\n");
                return false;
            }
         }
@@ -686,12 +677,12 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
                 }
             }
             else {
-                if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
+                syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
                 return false;
             }
         }
         else {
-            if DEBUG1 syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
+            syslog(LOG_ERR,"justdata import, xml file contains strange data\n");
             return false;
         }
     }
