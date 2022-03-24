@@ -30,7 +30,6 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel,
     m_pSenseInterface(server->m_pSenseInterface),
     m_sChannelName(channelName),
     m_i2cMuxAdress(server->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux)),
-    m_i2cMuxDebugLevel(server->m_pDebugSettings->getDebugLevel()),
     m_nCtrlChannel(ctrlChannel),
     m_nCtrlChannelSecondary(ctrlChannelSecondary)
 {
@@ -637,7 +636,7 @@ void cClamp::setI2CMuxClamp()
     struct i2c_msg Msgs = {addr: m_i2cMuxAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
     struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
 
-    I2CTransfer(m_sDeviceNode, m_i2cMuxAdress, m_i2cMuxDebugLevel, &MuxData);
+    I2CTransfer(m_sDeviceNode, m_i2cMuxAdress, &MuxData);
 }
 
 cSenseRange* cClamp::getRange(QString name)
