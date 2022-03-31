@@ -76,7 +76,7 @@ private:
     void addSenseInterface();
     void addSystAdjInterface();
     void addSystAdjInterfaceChannel(QString channelName);
-    static QString getClampTypeName(quint8 type);
+    QString getClampTypeName(quint8 type);
     void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
     ClampTypes readClampType();
