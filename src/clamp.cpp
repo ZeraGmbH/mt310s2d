@@ -247,7 +247,8 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                 TypeOK = true;
             }
             else {
-                if ( !(TypeOK = (qdElem.text() == getClampTypeName(m_nType)))) {
+                TypeOK = qdElem.text() == getClampTypeName(m_nType);
+                if (!TypeOK) {
                     syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                     return false;
                 }
