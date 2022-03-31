@@ -27,7 +27,6 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel,
     m_pSCPIInterface = server->getSCPIInterface();
 
     m_sSerial = "1234567890"; // our default serial number
-    m_sClampTypeName = "unknown";
     m_sVersion = "unknown";
     m_nFlags = 0;
     m_nType = undefined;
@@ -115,7 +114,7 @@ void cClamp::exportAdjData(QDataStream &stream)
     m_AdjDateTime = QDateTime::currentDateTime();
     stream << m_nType;
     stream << m_nFlags;
-    stream << m_sClampTypeName; // the clamp's name
+    stream << getClampTypeName(m_nType); // for sake of compatibilty
     stream << m_sVersion; // version
     stream << m_sSerial; //  serial
     stream << m_AdjDateTime.toString(Qt::TextDate); // date, time
@@ -137,7 +136,8 @@ bool cClamp::importAdjData(QDataStream &stream)
     stream.skipRawData(6);
     stream >> m_nType;
     stream >> m_nFlags;
-    stream >> m_sClampTypeName;
+    QString clampTypeNameDummy;
+    stream >> clampTypeNameDummy; // for sake of compatibility
     stream >> m_sVersion;
     stream >> m_sSerial;
     QString dts;
@@ -408,7 +408,6 @@ void cClamp::initClamp(quint8 type)
 {
     m_nType = type;
     cClampJustData* clampJustData;
-    m_sClampTypeName = getClampTypeName(type);
     switch (type)
     {
     case CL120A:
@@ -814,7 +813,7 @@ QString cClamp::handleScpiReadName(QString& scpiCmdStr)
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
     if (cmd.isQuery()) {
-        answer = m_sClampTypeName;
+        answer = getClampTypeName(m_nType);
     }
     else {
         answer = SCPI::scpiAnswer[SCPI::nak];
