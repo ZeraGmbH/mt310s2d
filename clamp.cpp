@@ -35,6 +35,7 @@ cClamp::cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel,
     m_pSCPIInterface = server->getSCPIInterface();
 
     m_sSerial = "1234567890"; // our default serial number
+    m_sClampTypeName = "unknown";
     m_sVersion = "unknown";
     m_nFlags = 0;
     m_nType = undefined;
@@ -88,7 +89,7 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = handleScpiReadWriteType(protoCmd->m_sInput);
         break;
     case clamp::cmdName:
-        protoCmd->m_sOutput = handleScpiReadTypeName(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadWriteName(protoCmd->m_sInput);
         break;
     case clamp::cmdFlashWrite:
         protoCmd->m_sOutput = handleScpiWriteFlash(protoCmd->m_sInput);
@@ -122,7 +123,7 @@ void cClamp::exportAdjData(QDataStream &stream)
     m_AdjDateTime = QDateTime::currentDateTime();
     stream << m_nType;
     stream << m_nFlags;
-    stream << getClampTypeName(m_nType);
+    stream << m_sClampTypeName; // the clamp's name
     stream << m_sVersion; // version
     stream << m_sSerial; //  serial
     stream << m_AdjDateTime.toString(Qt::TextDate); // date, time
@@ -144,13 +145,7 @@ bool cClamp::importAdjData(QDataStream &stream)
     stream.skipRawData(6);
     stream >> m_nType;
     stream >> m_nFlags;
-    QString clampTypeName;
-    stream >> clampTypeName;
-    if(m_nType != undefined && clampTypeName != getClampTypeName(m_nType)) {
-        qWarning("Stored clamp name %s does not match expected name %s",
-                 qPrintable(clampTypeName),
-                 qPrintable(getClampTypeName(m_nType)));
-    }
+    stream >> m_sClampTypeName;
     stream >> m_sVersion;
     stream >> m_sSerial;
     QString dts;
@@ -184,7 +179,7 @@ QString cClamp::exportXMLString(int indent)
 
     QDomElement tag = justqdom.createElement( "Type" );
     pcbtag.appendChild( tag );
-    QDomText t = justqdom.createTextNode(getClampTypeName(m_nType));
+    QDomText t = justqdom.createTextNode(getClampName(m_nType));
     tag.appendChild( t );
 
     tag = justqdom.createElement( "VersionNumber" );
@@ -260,8 +255,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                 TypeOK = true;
             }
             else {
-                TypeOK = qdElem.text() == getClampTypeName(m_nType);
-                if (!TypeOK) {
+                if ( !(TypeOK = (qdElem.text() == getClampName(m_nType)))) {
                     syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                     return false;
                 }
@@ -427,6 +421,7 @@ void cClamp::initClamp(quint8 type)
 {
     m_nType = type;
     cClampJustData* clampJustData;
+    m_sClampTypeName = getClampName(type);
     switch (type)
     {
     case CL120A:
@@ -528,7 +523,7 @@ void cClamp::initClamp(quint8 type)
     }
 }
 
-QString cClamp::getClampTypeName(quint8 type)
+QString cClamp::getClampName(quint8 type)
 {
     QString CLName;
 
@@ -599,7 +594,7 @@ void cClamp::addSystAdjInterfaceChannel(QString channelName)
     delegate = new cSCPIDelegate(cmdParent, "TYPE",SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, clamp::cmdType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(cmdParent, "NAME",SCPI::isQuery, m_pSCPIInterface, clamp::cmdName );
+    delegate = new cSCPIDelegate(cmdParent, "NAME",SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, clamp::cmdName );
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -835,15 +830,27 @@ QString cClamp::handleScpiReadWriteType(QString& scpiCmdStr)
     return answer;
 }
 
-QString cClamp::handleScpiReadTypeName(QString& scpiCmdStr)
+QString cClamp::handleScpiReadWriteName(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
     if (cmd.isQuery()) {
-        answer = getClampTypeName(m_nType);
+        answer = m_sClampTypeName;
     }
     else {
-        answer = SCPI::scpiAnswer[SCPI::nak];
+        if (cmd.isCommand(1)) {
+            QString name = cmd.getParam(0);
+            if (name.length() < 21) {
+                m_sClampTypeName = name;
+                answer = SCPI::scpiAnswer[SCPI::ack];
+            }
+            else {
+                answer = SCPI::scpiAnswer[SCPI::errval];
+            }
+        }
+        else {
+            answer = SCPI::scpiAnswer[SCPI::nak];
+        }
     }
     return answer;
 }

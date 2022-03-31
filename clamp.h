@@ -76,7 +76,7 @@ private:
     void addSenseInterface();
     void addSystAdjInterface();
     void addSystAdjInterfaceChannel(QString channelName);
-    QString getClampTypeName(quint8 type);
+    QString getClampName(quint8 type);
     void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
     ClampTypes readClampType();
@@ -86,7 +86,7 @@ private:
     QString handleScpiReadWriteSerial(QString &scpiCmdStr);
     QString handleScpiReadWriteVersion(QString &scpiCmdStr);
     QString handleScpiReadWriteType(QString &scpiCmdStr);
-    QString handleScpiReadTypeName(QString &scpiCmdStr);
+    QString handleScpiReadWriteName(QString &scpiCmdStr);
     QString handleScpiWriteFlash(QString &scpiCmdStr);
     QString handleScpiReadFlash(QString &scpiCmdStr);
     QString handleScpiResetFlash(QString &scpiCmdStr);
@@ -105,6 +105,7 @@ private:
     ushort m_i2cMuxAdress;
     quint8 m_nCtrlChannel;
     quint8 m_nCtrlChannelSecondary;
+    QString m_sClampTypeName;
     QString m_sSerial;
     QString m_sVersion;
     quint8 m_nType; // 0 is undefined type
