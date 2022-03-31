@@ -81,7 +81,7 @@ void cClamp::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = handleScpiReadWriteType(protoCmd->m_sInput);
         break;
     case clamp::cmdName:
-        protoCmd->m_sOutput = handleScpiReadWriteName(protoCmd->m_sInput);
+        protoCmd->m_sOutput = handleScpiReadName(protoCmd->m_sInput);
         break;
     case clamp::cmdFlashWrite:
         protoCmd->m_sOutput = handleScpiWriteFlash(protoCmd->m_sInput);
@@ -585,7 +585,7 @@ void cClamp::addSystAdjInterfaceChannel(QString channelName)
     delegate = new cSCPIDelegate(cmdParent, "TYPE",SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, clamp::cmdType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(cmdParent, "NAME",SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, clamp::cmdName );
+    delegate = new cSCPIDelegate(cmdParent, "NAME",SCPI::isQuery, m_pSCPIInterface, clamp::cmdName );
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -809,7 +809,7 @@ QString cClamp::handleScpiReadWriteType(QString& scpiCmdStr)
     return answer;
 }
 
-QString cClamp::handleScpiReadWriteName(QString& scpiCmdStr)
+QString cClamp::handleScpiReadName(QString& scpiCmdStr)
 {
     QString answer;
     cSCPICommand cmd =scpiCmdStr;
@@ -817,19 +817,7 @@ QString cClamp::handleScpiReadWriteName(QString& scpiCmdStr)
         answer = m_sClampTypeName;
     }
     else {
-        if (cmd.isCommand(1)) {
-            QString name = cmd.getParam(0);
-            if (name.length() < 21) {
-                m_sClampTypeName = name;
-                answer = SCPI::scpiAnswer[SCPI::ack];
-            }
-            else {
-                answer = SCPI::scpiAnswer[SCPI::errval];
-            }
-        }
-        else {
-            answer = SCPI::scpiAnswer[SCPI::nak];
-        }
+        answer = SCPI::scpiAnswer[SCPI::nak];
     }
     return answer;
 }

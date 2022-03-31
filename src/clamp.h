@@ -75,7 +75,7 @@ private:
     QString handleScpiReadWriteSerial(QString &scpiCmdStr);
     QString handleScpiReadWriteVersion(QString &scpiCmdStr);
     QString handleScpiReadWriteType(QString &scpiCmdStr);
-    QString handleScpiReadWriteName(QString &scpiCmdStr);
+    QString handleScpiReadName(QString &scpiCmdStr);
     QString handleScpiWriteFlash(QString &scpiCmdStr);
     QString handleScpiReadFlash(QString &scpiCmdStr);
     QString handleScpiResetFlash(QString &scpiCmdStr);
