@@ -179,7 +179,7 @@ QString cClamp::exportXMLString(int indent)
 
     QDomElement tag = justqdom.createElement( "Type" );
     pcbtag.appendChild( tag );
-    QDomText t = justqdom.createTextNode(getClampName(m_nType));
+    QDomText t = justqdom.createTextNode(getClampTypeName(m_nType));
     tag.appendChild( t );
 
     tag = justqdom.createElement( "VersionNumber" );
@@ -255,7 +255,7 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
                 TypeOK = true;
             }
             else {
-                if ( !(TypeOK = (qdElem.text() == getClampName(m_nType)))) {
+                if ( !(TypeOK = (qdElem.text() == getClampTypeName(m_nType)))) {
                     syslog(LOG_ERR,"justdata import, wrong type information in xml file\n");
                     return false;
                 }
@@ -421,7 +421,7 @@ void cClamp::initClamp(quint8 type)
 {
     m_nType = type;
     cClampJustData* clampJustData;
-    m_sClampTypeName = getClampName(type);
+    m_sClampTypeName = getClampTypeName(type);
     switch (type)
     {
     case CL120A:
@@ -523,7 +523,7 @@ void cClamp::initClamp(quint8 type)
     }
 }
 
-QString cClamp::getClampName(quint8 type)
+QString cClamp::getClampTypeName(quint8 type)
 {
     QString CLName;
 
