@@ -94,7 +94,6 @@ private:
     ushort m_i2cMuxAdress;
     quint8 m_nCtrlChannel;
     quint8 m_nCtrlChannelSecondary;
-    QString m_sClampTypeName;
     QString m_sSerial;
     QString m_sVersion;
     quint8 m_nType; // 0 is undefined type
