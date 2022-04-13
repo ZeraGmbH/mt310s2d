@@ -1,5 +1,3 @@
-#include <QDataStream>
-#include <QString>
 #include <math.h>
 #include <scpi.h>
 #include <gaussmatrix.h>
