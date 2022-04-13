@@ -37,7 +37,7 @@ enum ClampTypes
     CL300A,
     CL1000A,
     EMOB32,
-    EMOBDcDualTest,
+    EMOB200DC,
 
     anzCL
 };
