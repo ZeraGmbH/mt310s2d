@@ -3,7 +3,7 @@
 #include <QDataStream>
 #include <QBuffer>
 #include <syslog.h>
-#include "i2cutils.h"
+#include <i2cutils.h>
 
 #include "clamp.h"
 #include "clampinterface.h"
