@@ -92,6 +92,7 @@ ${PROJECT_SOURCE_DIR}/mt310s2justdata.cpp
 ${PROJECT_SOURCE_DIR}/hkeysettings.cpp
 ${PROJECT_SOURCE_DIR}/hkeyinterface.cpp
 ${PROJECT_SOURCE_DIR}/hkeychannel.cpp
+${PROJECT_SOURCE_DIR}/i2cmuxer.cpp
     )
 
 
@@ -148,6 +149,7 @@ ${PROJECT_SOURCE_DIR}/mt310s2justdata.h
 ${PROJECT_SOURCE_DIR}/hkeychannel.h
 ${PROJECT_SOURCE_DIR}/hkeyinterface.h
 ${PROJECT_SOURCE_DIR}/hkeysettings.h
+${PROJECT_SOURCE_DIR}/i2cmuxer.h
     )
 
 file(GLOB RESOURCES 
