@@ -28,7 +28,7 @@ class cClampInterface: public cSCPIConnection
 public:
     cClampInterface(cMT310S2dServer *server, cATMEL* controler);
     virtual void initSCPIConnection(QString leadingNodes);
-    void actualizeClampStatus();
+    void actualizeClampStatus(quint16 devConnectedMask);
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);

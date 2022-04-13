@@ -294,8 +294,8 @@ void cMT310S2dServer::doSetupServer()
 
             initSCPIConnections();
 
-            // after init. we once poll the clampstatus because we don't get an interrupt if clamp was already connected on power up
-            m_pClampInterface->actualizeClampStatus();
+            // after init. we once poll the devices connected at power up
+            updateI2cDevicesConnected();
 
             myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
             m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
@@ -408,6 +408,18 @@ void cMT310S2dServer::enableClampInterrupt()
     }
 }
 
+void cMT310S2dServer::updateI2cDevicesConnected()
+{
+    quint16 clStat;
+    if ( pAtmel->readClampStatus(clStat) == ZeraMcontrollerBase::cmddone) {
+        qInfo("Devices connected mask read: 0x%02X", clStat);
+        m_pClampInterface->actualizeClampStatus(clStat);
+    }
+    else {
+        qWarning("Devices connected mask read failed");
+    }
+}
+
 
 void cMT310S2dServer::MTIntHandler(int)
 {// handles clamp interrupt sent by the controler
@@ -425,7 +437,7 @@ void cMT310S2dServer::MTIntHandler(int)
             // global variable for the clamp status -> so this might fail
             // with unexpected behaviour.
             pAtmel->resetCriticalStatus(stat & (1 << clampstatusInterrupt));
-            m_pClampInterface->actualizeClampStatus();
+            updateI2cDevicesConnected();
         }
         quint16 knownMaskBits = (1 << clampstatusInterrupt);
         if((stat & ~knownMaskBits) > 0) {
