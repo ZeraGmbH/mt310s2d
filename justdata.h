@@ -2,15 +2,13 @@
 #define JUSTDATA_H
 
 #include "scpiconnection.h"
-
-class QDataStream; // forward
-class QString;
+#include <QDataStream>
+#include <QString>
 
 // a cJustData object has a max. possible order
 // the order must not necessarily be used
 // setting only the first node results in a effectively 0 order
 // a new generated object is also initialized like that
-
 
 enum JustCommands
 {
@@ -24,7 +22,6 @@ enum JustCommands
     JustNode2,
     JustNode3
 };
-
 
 namespace JustData {
 
