@@ -365,11 +365,6 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
     return true;
 }
 
-QSharedPointer<I2cMuxer> cClamp::createMuxer(QString deviceNode, ushort i2cMuxAdress, quint8 ctrlChannel)
-{
-    return QSharedPointer<I2cMuxer>(new I2cMuxer(deviceNode, i2cMuxAdress, (ctrlChannel-4) | 8));
-}
-
 bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 {
     return importXMLDocument(qdomdoc, false);
