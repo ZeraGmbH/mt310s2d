@@ -8,10 +8,9 @@
 #include <QDomDocument>
 #include <QStringList>
 
-cClampInterface::cClampInterface(cMT310S2dServer *server, cATMEL *controler) :
+cClampInterface::cClampInterface(cMT310S2dServer *server) :
     m_pMyServer(server),
-    m_pSenseInterface(server->m_pSenseInterface),
-    m_pControler(controler)
+    m_pSenseInterface(server->m_pSenseInterface)
 {
     m_nClampStatus = 0;
     m_pSCPIInterface = m_pMyServer->getSCPIInterface();

@@ -10,7 +10,6 @@
 // here we hold the clamps that are hotplugged to the system
 
 class cMT310S2dServer;
-class cATMEL;
 class cClamp;
 
 namespace ClampSystem
@@ -26,7 +25,7 @@ enum ClampCommands
 class cClampInterface: public cSCPIConnection
 {
 public:
-    cClampInterface(cMT310S2dServer *server, cATMEL* controler);
+    cClampInterface(cMT310S2dServer *server);
     virtual void initSCPIConnection(QString leadingNodes);
     void actualizeClampStatus(quint16 devConnectedMask);
 
@@ -40,7 +39,6 @@ private:
 
     cMT310S2dServer *m_pMyServer;
     cSenseInterface *m_pSenseInterface;
-    cATMEL *m_pControler;
     cNotificationString m_notifierClampChannelList;
     quint16 m_nClampStatus;
     QHash<QString, cClamp*> m_clampHash;
