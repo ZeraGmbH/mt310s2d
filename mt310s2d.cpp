@@ -279,7 +279,7 @@ void cMT310S2dServer::doSetupServer()
             scpiConnectionList.append(m_pFRQInputInterface = new cFRQInputInterface(this));
             scpiConnectionList.append(m_pSCHeadInterface = new cSCHeadInterface(this));
             scpiConnectionList.append(m_pHKeyInterface = new cHKeyInterface(this));
-            scpiConnectionList.append(m_pClampInterface = new cClampInterface(this, pAtmel));
+            scpiConnectionList.append(m_pClampInterface = new cClampInterface(this));
 
             resourceList.append(m_pSenseInterface); // all our resources
             resourceList.append(m_pSamplingInterface);
