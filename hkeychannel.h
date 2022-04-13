@@ -1,9 +1,10 @@
 #ifndef HKEYCHANNEL_H
 #define HKEYCHANNEL_H
 
-#include <QObject>
-
 #include "scpiconnection.h"
+#include "hkeysettings.h"
+#include <QObject>
+#include <scpi.h>
 
 namespace HKEYChannel
 {
@@ -12,16 +13,7 @@ enum Commands
     cmdAlias,
     cmdStatus
 };
-
 }
-
-
-namespace HKeySystem
-{
-    class cChannelSettings;
-}
-
-class cSCPI;
 
 class cHKeyChannel : public cSCPIConnection
 {
