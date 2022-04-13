@@ -503,7 +503,7 @@ void cClamp::initClamp(quint8 type)
         m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C50mA", "C50mA", true, 0.05, 1677722.0, 2097152.0, 8388607.0, 20, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
 
         break;
-    case EMOBDcDualTest:
+    case EMOB200DC:
     {
         // I
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("2V")), 1000.0);
@@ -541,8 +541,8 @@ QString cClamp::getClampTypeName(quint8 type)
        case EMOB32:
             CLName = QString("EMOB32");
             break;
-       case EMOBDcDualTest:
-            CLName = QString("EMOBDcDualTest");
+       case EMOB200DC:
+            CLName = QString("EMOB200DC");
             break;
 
        default:
