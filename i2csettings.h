@@ -3,6 +3,7 @@
 
 #include "xmlsettings.h"
 #include "i2cmuxer.h"
+#include <xmlconfigreader.h>
 #include <QObject>
 #include <QString>
 
@@ -27,16 +28,6 @@ enum configstate
     SetClampFlashAdr
 };
 }
-
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
 
 class cI2CSettings : public cXMLSettings
 {
