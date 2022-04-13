@@ -5,11 +5,13 @@
 #include "adjxml.h"
 #include "scpiconnection.h"
 #include "senseinterface.h"
+#include "i2cmuxer.h"
 #include <QList>
 #include <QDataStream>
 #include <QDateTime>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QSharedPointer>
 
 
 namespace clamp
@@ -60,6 +62,8 @@ public:
     virtual QString exportXMLString(int indent = 1) override;
     bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
 
+    static QSharedPointer<I2cMuxer> createMuxer(QString deviceNode, ushort i2cMuxAdress, quint8 ctrlChannel);
+
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd) override;
 
@@ -68,8 +72,6 @@ protected:
     virtual bool importAdjData(QDataStream& stream) override;
     virtual bool importXMLDocument(QDomDocument* qdomdoc) override;
 
-    virtual void setI2CMux() override;
-
 private:
     void initClamp(quint8 type);
     void addSense();
@@ -77,7 +79,6 @@ private:
     void addSystAdjInterface();
     void addSystAdjInterfaceChannel(QString channelName);
     QString getClampTypeName(quint8 type);
-    void setI2CMuxClamp();
     cSenseRange* getRange(QString name);
     ClampTypes readClampType();
     void removeAllRanges();

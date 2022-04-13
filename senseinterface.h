@@ -83,8 +83,6 @@ protected:
     virtual bool importAdjData(QDataStream& stream);
     virtual bool importXMLDocument(QDomDocument* qdomdoc);
 
-    virtual void setI2CMux();
-
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 

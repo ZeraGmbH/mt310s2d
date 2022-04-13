@@ -1,8 +1,10 @@
 #ifndef ADJFLASH_H
 #define ADJFLASH_H
 
+#include "i2cmuxer.h"
 #include <QByteArray>
 #include <QString>
+#include <QSharedPointer>
 
 class QDataStream;
 
@@ -11,6 +13,7 @@ class cAdjFlash
 public:
     cAdjFlash(){}
     cAdjFlash(QString devnode, quint8 i2cadr);
+    void setI2cMuxer(QSharedPointer<I2cMuxer> i2cMuxer);
     bool exportAdjFlash();
     bool importAdjFlash();
     bool resetAdjFlash();
@@ -27,10 +30,12 @@ protected:
 
     bool readFlash(QByteArray& ba);
     bool writeFlash(QByteArray& ba);
-    virtual void setI2CMux() = 0; // default we do nothing here but if necessary it can be overwritten
+    void switchI2cMux();
 
 private:
     void setAdjCountChecksum(QByteArray& ba);
+
+    QSharedPointer<I2cMuxer> m_i2cMuxer;
 };
 
 #endif // ADJFLASH_H
