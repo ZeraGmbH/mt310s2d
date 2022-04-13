@@ -25,7 +25,6 @@ enum Commands
 };
 }
 
-class cMT310TouchdServer;
 class cFRQInputSettings;
 
 

@@ -20,10 +20,6 @@ enum StatusCommands
 };
 }
 
-
-class cMT310TouchdServer;
-
-
 class cStatusInterface: public cSCPIConnection
 {
     Q_OBJECT
