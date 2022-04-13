@@ -1,6 +1,11 @@
 #ifndef ADJUSTMENT_H
 #define ADJUSTMENT_H
 
+#include "mt310s2d.h"
+#include "adjflash.h"
+#include <QList>
+#include <QString>
+
 namespace Adjustment
 {
 enum jDataStatus
@@ -11,10 +16,6 @@ enum jDataStatus
     wrongSNR = 4
 };
 }
-
-class QString;
-class cMT310S2dServer;
-class cAdjFlash;
 
 class cAdjustment
 {
