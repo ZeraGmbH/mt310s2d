@@ -1,8 +1,4 @@
-#include <QDataStream>
-#include <QString>
-
 #include "justnode.h"
-
 
 cJustNode::cJustNode(double corr, double arg)
     :m_fCorrection(corr),m_fArgument(arg)
