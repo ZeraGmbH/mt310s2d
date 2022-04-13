@@ -1,8 +1,8 @@
 #ifndef JUSTNODE_H
 #define JUSTNODE_H
 
-class QDataStream; // forward
-class QString;
+#include <QDataStream>
+#include <QString>
 
 // an adjustmentnode (datapoint) consists of the data point's value and the data point's argument
 // it can serialize and deserialize itself to a qdatastream
