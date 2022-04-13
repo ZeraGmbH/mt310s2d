@@ -5,6 +5,9 @@
 #include "clamp.h"
 #include "senseinterface.h"
 #include "protonetcommand.h"
+#include "i2csettings.h"
+
+#include <i2cutils.h>
 #include <QDomDocument>
 #include <QStringList>
 
@@ -42,16 +45,23 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
         if ((clChange & bmask) > 0) {
             QString channnelName = m_pSenseInterface->getChannelSystemName(i+1);
             if ((m_nClampStatus & bmask) == 0) {
-                // a clamp is connected perhaps it was actually connected
-                m_nClampStatus |= bmask;
-                m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1, ctlChannelSecondary);
-                qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
-                QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
-                if(!m_clampHash[channnelName]->getChannelNameSecondary().isEmpty()) {
-                    m_clampSecondarySet.insert(channelNameSecondary);
-                    qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
+                QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
+                int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
+                if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
+                    // a clamp is connected perhaps it was actually connected
+                    m_nClampStatus |= bmask;
+                    m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1, ctlChannelSecondary);
+                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
+                    QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
+                    if(!m_clampHash[channnelName]->getChannelNameSecondary().isEmpty()) {
+                        m_clampSecondarySet.insert(channelNameSecondary);
+                        qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
+                    }
+                    generateAndNotifyClampChannelList();
                 }
-                generateAndNotifyClampChannelList();
+                else {
+                    qInfo("Not a clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
+                }
             }
             else {
                 // a clamp is not connected
