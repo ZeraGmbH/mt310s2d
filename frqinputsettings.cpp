@@ -1,20 +1,15 @@
 #include <QList>
 #include <QVariant>
-
 #include <xmlconfigreader.h>
-
 #include "xmlsettings.h"
 #include "frqinputsettings.h"
-
-
 
 cFRQInputSettings::cFRQInputSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
-    FRQInputSystem::cChannelSettings *settings;
     for (int i = 0; i < 4; i++)
     {
-        m_ChannelSettingsList.append(settings = new FRQInputSystem::cChannelSettings);
+        m_ChannelSettingsList.append(new FRQInputSystem::cChannelSettings);
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:frqinput:fi%1:alias").arg(i)] = FRQInputSystem::cfgFin0Alias + i;
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:frqinput:fi%1:avail").arg(i)] = FRQInputSystem::cfgFin0avail + i;
     }
