@@ -12,6 +12,11 @@ cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr)
 {
 }
 
+void cAdjFlash::setI2cMuxer(QSharedPointer<I2cMuxer> i2cMuxer)
+{
+    m_i2cMuxer = i2cMuxer;
+}
+
 
 bool cAdjFlash::exportAdjFlash()
 {
@@ -28,7 +33,7 @@ bool cAdjFlash::exportAdjFlash()
 
     exportAdjData(stream);
     setAdjCountChecksum(ba);
-    setI2CMux();
+    switchI2cMux();
     ret = writeFlash(ba);
     return ret;
 }
@@ -38,7 +43,7 @@ bool cAdjFlash::importAdjFlash()
 {
     QByteArray ba;
 
-    setI2CMux();
+    switchI2cMux();
     if (readFlash(ba)) { // if we could read data with correct chksum
         QDataStream stream(&ba, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_4);
@@ -50,7 +55,7 @@ bool cAdjFlash::importAdjFlash()
 
 bool cAdjFlash::resetAdjFlash()
 {
-    setI2CMux();
+    switchI2cMux();
     cF24LC256 flash(m_sDeviceNode, m_nI2CAdr);
     return flash.Reset() == flash.size();
 }
@@ -100,6 +105,13 @@ bool cAdjFlash::writeFlash(QByteArray &ba)
          return false; // fehler beim flash schreiben
     }
     return true;
+}
+
+void cAdjFlash::switchI2cMux()
+{
+    if(m_i2cMuxer) {
+        m_i2cMuxer->doMux();
+    }
 }
 
 

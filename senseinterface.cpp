@@ -689,11 +689,6 @@ bool cSenseInterface::importXMLDocument(QDomDocument* qdomdoc) // n steht auf ei
     return ChksumOK && SenseOK;
 }
 
-void cSenseInterface::setI2CMux()
-{
-    // nothing to do for the senseinterface
-}
-
 void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     msgNrList.clear();

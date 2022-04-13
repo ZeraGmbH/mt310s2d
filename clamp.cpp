@@ -365,14 +365,14 @@ bool cClamp::importXMLDocument(QDomDocument *qdomdoc, bool ignoreType)
     return true;
 }
 
+QSharedPointer<I2cMuxer> cClamp::createMuxer(QString deviceNode, ushort i2cMuxAdress, quint8 ctrlChannel)
+{
+    return QSharedPointer<I2cMuxer>(new I2cMuxer(deviceNode, i2cMuxAdress, (ctrlChannel-4) | 8));
+}
+
 bool cClamp::importXMLDocument(QDomDocument *qdomdoc)
 {
     return importXMLDocument(qdomdoc, false);
-}
-
-void cClamp::setI2CMux()
-{
-    setI2CMuxClamp();
 }
 
 quint8 cClamp::getAdjustmentStatus()
@@ -403,7 +403,7 @@ quint8 cClamp::getAdjustmentStatus()
 ClampTypes cClamp::readClampType()
 {
     QByteArray ba;
-    setI2CMuxClamp();
+    switchI2cMux();
     if (readFlash(ba)) { // flash data could be read with correct chksum
         quint8 type;
         QDataStream stream(&ba, QIODevice::ReadWrite);
@@ -624,18 +624,6 @@ void cClamp::addSystAdjInterfaceChannel(QString channelName)
     delegate = new cSCPIDelegate(cmdParent, "ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, clamp::cmdStatAdjustment);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-}
-
-void cClamp::setI2CMuxClamp()
-{
-    uchar outpBuf[1]; // 1 adr byte, 1 byte data = mux code
-
-    outpBuf[0] = (m_nCtrlChannel - 4) | 8; // .... hardware ????
-
-    struct i2c_msg Msgs = {addr: m_i2cMuxAdress, flags: 0, len: 1, buf:  outpBuf }; // 1 message
-    struct i2c_rdwr_ioctl_data MuxData = { msgs: &(Msgs), nmsgs: 1 };
-
-    I2CTransfer(m_sDeviceNode, m_i2cMuxAdress, &MuxData);
 }
 
 cSenseRange* cClamp::getRange(QString name)
