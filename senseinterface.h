@@ -1,70 +1,50 @@
 #ifndef SENSEINTERFACE_H
 #define SENSEINTERFACE_H
 
+#include "mt310s2d.h"
 #include "adjflash.h"
 #include "adjxml.h"
 #include "resource.h"
 #include "scpiconnection.h"
 #include "sensechannel.h"
-#include "notificationstring.h"
 #include "systeminfo.h"
-#include <QObject>
 #include <QList>
-#include <QStateMachine>
 #include <QHash>
-#include <QState>
-#include <QFinalState>
-
 
 namespace SenseSystem
 {
-
-const QString Version = "V1.00";
-
-enum Commands
-{
-    cmdVersion,
-    cmdMMode,
-    cmdMModeCat,
-    cmdChannelCat,
-    cmdGroupCat,
-    initAdjData,
-    computeAdjData,
-    cmdStatAdjustment
-};
-
-
-enum MMode
-{
-    modeAC = 1,
-    modeHF = 2,
-    modeDC = 4,
-    modeADJ = 8
-};
-
-
-enum SensorType
-{
-    Direct = 0x100,
-    Clamp = 0x200
-};
-
-const QString sVoltageChannelDescription = "Measuring channel 0..250V 50Hz/150kHz";
-const QString sCurrentChannelDescription = "Measuring channel 0..1000A 50Hz/150kHz";
-const QString sMeasuringModeDescription = "Measuring mode switch AC,HF,ADJ";
+    const QString Version = "V1.00";
+    enum Commands
+    {
+        cmdVersion,
+        cmdMMode,
+        cmdMModeCat,
+        cmdChannelCat,
+        cmdGroupCat,
+        initAdjData,
+        computeAdjData,
+        cmdStatAdjustment
+    };
+    enum MMode
+    {
+        modeAC = 1,
+        modeHF = 2,
+        modeDC = 4,
+        modeADJ = 8
+    };
+    enum SensorType
+    {
+        Direct = 0x100,
+        Clamp = 0x200
+    };
+    const QString sVoltageChannelDescription = "Measuring channel 0..250V 50Hz/150kHz";
+    const QString sCurrentChannelDescription = "Measuring channel 0..1000A 50Hz/150kHz";
+    const QString sMeasuringModeDescription = "Measuring mode switch AC,HF,ADJ";
 }
-
-class cMT310S2dServer;
-class cSenseSettings;
-class cI2CSettings;
-class cDebugSettings;
-class QDataStream;
-
 
 class cSenseInterface : public cResource, public cAdjFlash, public cAdjXML
 {
     Q_OBJECT
-
 public:
     cSenseInterface(cMT310S2dServer *server);
     ~cSenseInterface();
@@ -77,15 +57,12 @@ public:
     virtual void unregisterResource(cRMConnection *rmConnection);
     virtual QString exportXMLString(int indent = 1);
     void m_ComputeSenseAdjData();
-
 protected:
     virtual void exportAdjData(QDataStream& stream);
     virtual bool importAdjData(QDataStream& stream);
     virtual bool importXMLDocument(QDomDocument* qdomdoc);
-
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
-
 private:
     cMT310S2dServer* m_pMyServer;
     cSystemInfo* m_pSystemInfo;
@@ -112,7 +89,6 @@ private:
 
     void setNotifierSenseMMode();
     void setNotifierSenseChannelCat();
-
     bool setSenseMode(QString sMode);
 };
 
