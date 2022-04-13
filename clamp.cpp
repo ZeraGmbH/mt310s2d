@@ -505,19 +505,19 @@ void cClamp::initClamp(quint8 type)
         break;
     case EMOBDcDualTest:
     {
+        // I
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("2V")), 1000.0);
-        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C50A", "C50A", true, 50.0, 1772241.0, 2215301.0, 8388607.0, 11, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("500mV")), 1000.0);
-        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C10A", "C10A", true, 10.0, 1772241.0, 2215301.0, 8388607.0, 13, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
+        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C200A", "C200A", true, 200.0, 4253379.0, 4253379.0 * 1.25, 8388607.0, 0x0B, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("200mV")), 1000.0);
+        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C20A", "C20A", true, 20.0, 4026532.0, 4026532.0 * 1.25, 8388607.0, 0x0E, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("20mV")), 1000.0);
+        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C2A", "C2A", true, 2.0, 4026532.0, 4026532.0 * 1.25, 8388607.0, 0x11, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
 
-        // This clamp has a secondary channnel
+        // This clamp has a secondary channnel U
         m_sChannelNameSecondary = m_pSenseInterface->getChannelSystemName(m_nCtrlChannelSecondary);
-        // As long as we have no physical hardware to test just let clamp act
-        // as ratio on 250V range with same rejection values as 250V range
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("250V")), 2.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C500V", "C500V", true, 500.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
-        clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("250V")), 4.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4415057.0, 5518821.0, 8388607.0, 0, SenseSystem::modeAC | SenseSystem::Clamp, clampJustData));
+        clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("8V")), 2.0);
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4332959.0, 4332959.0 * 1.25, 8388607.0, 0, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+
         break;
     }
     }
