@@ -48,10 +48,9 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                 continue;
             }
             if ((m_nClampStatus & bmask) == 0) {
-                QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
-                int i2cAddressMux = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::flashmux);
-                QSharedPointer<I2cMuxer> i2cMuxer = cClamp::createMuxer(i2cDevNode, i2cAddressMux, i+1);
+                I2cMuxer::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createMuxer(i+1);
                 i2cMuxer->doMux();
+                QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
                 int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
                 if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
                     // a clamp is connected perhaps it was actually connected

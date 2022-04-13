@@ -151,7 +151,6 @@ cMT310S2dServer::~cMT310S2dServer()
     if (m_pRMConnection) delete m_pRMConnection;
 }
 
-
 void cMT310S2dServer::doConfiguration()
 {
     QStringList args;

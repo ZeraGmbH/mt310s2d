@@ -1,11 +1,10 @@
 #ifndef I2CSETTINGS_H
 #define I2CSETTINGS_H
 
+#include "xmlsettings.h"
+#include "i2cmuxer.h"
 #include <QObject>
 #include <QString>
-
-#include "xmlsettings.h"
-
 
 namespace i2cSettings
 {
@@ -47,6 +46,7 @@ public:
     cI2CSettings(Zera::XMLConfig::cReader *xmlread);
     quint8 getI2CAdress(i2cSettings::member member);
     QString& getDeviceNode();
+    I2cMuxer::Ptr createMuxer(quint8 ctrlChannel);
 
 public slots:
     virtual void configXMLInfo(QString key);

@@ -5,13 +5,11 @@
 #include "adjxml.h"
 #include "scpiconnection.h"
 #include "senseinterface.h"
-#include "i2cmuxer.h"
 #include <QList>
 #include <QDataStream>
 #include <QDateTime>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QSharedPointer>
 
 
 namespace clamp
@@ -61,8 +59,6 @@ public:
     QString getSerial();
     virtual QString exportXMLString(int indent = 1) override;
     bool importXMLDocument(QDomDocument *qdomdoc, bool ignoreType);
-
-    static QSharedPointer<I2cMuxer> createMuxer(QString deviceNode, ushort i2cMuxAdress, quint8 ctrlChannel);
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd) override;
