@@ -44,9 +44,13 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
         int ctlChannelSecondary = i+1-4;
         if ((clChange & bmask) > 0) {
             QString channelName = m_pSenseInterface->getChannelSystemName(i+1);
+            if(channelName.isEmpty()) {
+                continue;
+            }
             if ((m_nClampStatus & bmask) == 0) {
                 QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
                 int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
+
                 if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
