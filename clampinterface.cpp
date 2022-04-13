@@ -71,7 +71,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                     cClamp* clamp;
                     clamp = m_clampHash.take(channnelName);
                     channnelName = clamp->getChannelName();
-                    qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i);
+                    qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
                     if(!clamp->getChannelNameSecondary().isEmpty()) {
                         QString channelNameSecondary = clamp->getChannelNameSecondary();
                         m_clampSecondarySet.remove(channelNameSecondary);
@@ -80,7 +80,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                     delete clamp;
                 }
                 else {
-                    qWarning("Clamp %i to remove not found!", i);
+                    qWarning("Clamp \"%s\"/%i to remove not found!", qPrintable(channnelName), i+1);
                 }
             }
         }
