@@ -34,54 +34,47 @@ void cClampInterface::initSCPIConnection(QString leadingNodes)
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
-void cClampInterface::actualizeClampStatus()
+void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
 {
-    quint16 clStat;
-    if ( m_pControler->readClampStatus(clStat) == ZeraMcontrollerBase::cmddone) {
-        qInfo("Clamp status read: 0x%02X", clStat);
-        quint16 clChange = clStat ^ m_nClampStatus; // now we know which clamps changed
-        for (int i = 0; i < 16; i++) {
-            quint16 bmask = 1 << i;
-            int ctlChannelSecondary = i+1-4;
-            if ((clChange & bmask) > 0) {
-                QString channnelName = m_pSenseInterface->getChannelSystemName(i+1);
-                if ((m_nClampStatus & bmask) == 0) {
-                    // a clamp is connected perhaps it was actually connected
-                    m_nClampStatus |= bmask;
-                    m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1, ctlChannelSecondary);
-                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
-                    QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
-                    if(!m_clampHash[channnelName]->getChannelNameSecondary().isEmpty()) {
-                        m_clampSecondarySet.insert(channelNameSecondary);
-                        qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
+    quint16 clChange = devConnectedMask ^ m_nClampStatus; // now we know which clamps changed
+    for (int i = 0; i < 16; i++) {
+        quint16 bmask = 1 << i;
+        int ctlChannelSecondary = i+1-4;
+        if ((clChange & bmask) > 0) {
+            QString channnelName = m_pSenseInterface->getChannelSystemName(i+1);
+            if ((m_nClampStatus & bmask) == 0) {
+                // a clamp is connected perhaps it was actually connected
+                m_nClampStatus |= bmask;
+                m_clampHash[channnelName] = new cClamp(m_pMyServer, channnelName, i+1, ctlChannelSecondary);
+                qInfo("Add clamp channel \"%s\"/%i", qPrintable(channnelName), i+1);
+                QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
+                if(!m_clampHash[channnelName]->getChannelNameSecondary().isEmpty()) {
+                    m_clampSecondarySet.insert(channelNameSecondary);
+                    qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
+                }
+                generateAndNotifyClampChannelList();
+            }
+            else {
+                // a clamp is not connected
+                if (m_clampHash.contains(channnelName)) {
+                    // if we already have a clamp on this place it was actually disconnected
+                    m_nClampStatus &= (~bmask);
+                    cClamp* clamp;
+                    clamp = m_clampHash.take(channnelName);
+                    channnelName = clamp->getChannelName();
+                    qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i);
+                    if(!clamp->getChannelNameSecondary().isEmpty()) {
+                        QString channelNameSecondary = clamp->getChannelNameSecondary();
+                        m_clampSecondarySet.remove(channelNameSecondary);
                     }
                     generateAndNotifyClampChannelList();
+                    delete clamp;
                 }
                 else {
-                    // a clamp is not connected
-                    if (m_clampHash.contains(channnelName)) {
-                        // if we already have a clamp on this place it was actually disconnected
-                        m_nClampStatus &= (~bmask);
-                        cClamp* clamp;
-                        clamp = m_clampHash.take(channnelName);
-                        channnelName = clamp->getChannelName();
-                        qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channnelName), i);
-                        if(!clamp->getChannelNameSecondary().isEmpty()) {
-                            QString channelNameSecondary = clamp->getChannelNameSecondary();
-                            m_clampSecondarySet.remove(channelNameSecondary);
-                        }
-                        generateAndNotifyClampChannelList();
-                        delete clamp;
-                    }
-                    else {
-                        qWarning("Clamp %i to remove not found!", i);
-                    }
+                    qWarning("Clamp %i to remove not found!", i);
                 }
             }
         }
-    }
-    else {
-        qWarning("cClampInterface::actualizeClampStatus: readClampStatus failed");
     }
 }
 

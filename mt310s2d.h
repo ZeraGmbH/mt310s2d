@@ -74,6 +74,7 @@ private:
     int MessageDevOpen();
     void SetFASync();
     void enableClampInterrupt();
+    void updateI2cDevicesConnected();
 
 private slots:
     void MTIntHandler(int);
