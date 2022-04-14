@@ -1,19 +1,12 @@
 #include "clamp.h"
-#include "clampinterface.h"
 #include "adjustment.h"
 #include "justdata.h"
 #include "mt310s2d.h"
 #include "mt310s2dglobal.h"
-#include "systeminterface.h"
-#include "senseinterface.h"
 #include "senserange.h"
 #include "clampjustdata.h"
 #include "protonetcommand.h"
 #include "settings/i2csettings.h"
-#include <QDateTime>
-#include <QByteArray>
-#include <QDataStream>
-#include <QBuffer>
 #include <syslog.h>
 #include <i2cutils.h>
 

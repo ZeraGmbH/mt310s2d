@@ -1,14 +1,12 @@
 #include "clampinterface.h"
 #include "mt310s2d.h"
 #include "atmel.h"
-#include "scpi.h"
 #include "clamp.h"
 #include "senseinterface.h"
 #include "protonetcommand.h"
 #include "settings/i2csettings.h"
+#include <scpi.h>
 #include <i2cutils.h>
-#include <QDomDocument>
-#include <QStringList>
 
 cClampInterface::cClampInterface(cMT310S2dServer *server) :
     m_pMyServer(server),

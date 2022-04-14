@@ -1,7 +1,6 @@
 #include "atmel.h"
 #include "senserange.h"
 #include "scpiconnection.h"
-#include "senseinterface.h"
 #include "sensechannel.h"
 #include "protonetcommand.h"
 #include <scpi.h>

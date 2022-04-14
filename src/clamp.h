@@ -3,14 +3,10 @@
 
 #include "adjflash.h"
 #include "adjxml.h"
-#include "scpiconnection.h"
-#include "senseinterface.h"
+#include "interfaces/senseinterface.h"
 #include <QList>
-#include <QDataStream>
 #include <QDateTime>
-#include <QDomDocument>
 #include <QDomElement>
-
 
 namespace clamp
 {
@@ -41,10 +37,6 @@ enum ClampTypes
 
     anzCL
 };
-
-class cMT310S2dServer;
-class cSenseRange;
-class QDomDocument;
 
 class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
