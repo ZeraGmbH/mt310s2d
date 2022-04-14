@@ -501,18 +501,22 @@ void cClamp::initClamp(quint8 type)
         break;
     case EMOB200DC:
     {
+        // VERY IMPORTAND:
+        // We need to understand what the implementation state of modeDC is.
+        // Without modeAC cold plug makes new EMOB200DC unavailable while hotplug works as expected!!!
+        quint16 commonMask = SenseSystem::modeDC | SenseSystem::modeAC;
         // I
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("5V")), 1000.0);
-        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C200A", "C200A", true, 200.0, 2516582.0, 2516582.0 * 1.25, 8388607.0, 0x0A, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C200A", "C200A", true, 200.0, 2516582.0, 2516582.0 * 1.25, 8388607.0, 0x0A, commonMask | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("500mV")), 1000.0);
-        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C20A", "C20A", true, 20.0, 2126689.0, 2126689.0 * 1.25, 8388607.0, 0x0D, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C20A", "C20A", true, 20.0, 2126689.0, 2126689.0 * 1.25, 8388607.0, 0x0D, commonMask | SenseSystem::Clamp, clampJustData));
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelName, QString("50mV")), 1000.0);
-        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C2A", "C2A", true, 2.0, 2013266.0, 2013266.0 * 1.25, 8388607.0, 0x10, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        m_RangeList.append(new cSenseRange(m_pSCPIInterface, "C2A", "C2A", true, 2.0, 2013266.0, 2013266.0 * 1.25, 8388607.0, 0x10, commonMask | SenseSystem::Clamp, clampJustData));
 
         // This clamp has a secondary channnel U
         m_sChannelNameSecondary = m_pSenseInterface->getChannelSystemName(m_nCtrlChannelSecondary);
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("8V")), 2.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4332959.0, 4332959.0 * 1.25, 8388607.0, 1 /*8V*/, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4332959.0, 4332959.0 * 1.25, 8388607.0, 1 /*8V*/, commonMask | SenseSystem::Clamp, clampJustData));
 
         break;
     }
