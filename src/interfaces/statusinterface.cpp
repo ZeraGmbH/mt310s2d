@@ -13,11 +13,9 @@ cStatusInterface::cStatusInterface(cMT310S2dServer* server)
 
 void cStatusInterface::initSCPIConnection(QString leadingNodes)
 {
-    cSCPIDelegate* delegate;
-
     if (leadingNodes != "")
         leadingNodes += ":";
-
+    cSCPIDelegate* delegate;
     delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"DEVICE",SCPI::isQuery, m_pSCPIInterface, StatusSystem::cmdDevice);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -33,7 +31,6 @@ void cStatusInterface::initSCPIConnection(QString leadingNodes)
 void cStatusInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     cSCPICommand cmd = protoCmd->m_sInput;
-
     if (cmd.isQuery())
     {
         switch (cmdCode)
