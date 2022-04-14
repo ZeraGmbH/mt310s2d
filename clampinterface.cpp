@@ -74,12 +74,10 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                 if (m_clampHash.contains(channelName)) {
                     // if we already have a clamp on this place it was actually disconnected
                     m_nClampStatus &= (~bmask);
-                    cClamp* clamp;
-                    clamp = m_clampHash.take(channelName);
-                    channelName = clamp->getChannelName();
+                    cClamp* clamp = m_clampHash.take(channelName);
                     qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channelName), i+1);
-                    if(!clamp->getChannelNameSecondary().isEmpty()) {
-                        QString channelNameSecondary = clamp->getChannelNameSecondary();
+                    QString channelNameSecondary = clamp->getChannelNameSecondary();
+                    if(!channelNameSecondary.isEmpty()) {
                         m_clampSecondarySet.remove(channelNameSecondary);
                     }
                     generateAndNotifyClampChannelList();
