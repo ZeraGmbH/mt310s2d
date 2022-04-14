@@ -39,25 +39,25 @@ void cClampInterface::initSCPIConnection(QString leadingNodes)
 void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
 {
     quint16 clChange = devConnectedMask ^ m_nClampStatus; // now we know which clamps changed
-    for (int i = 0; i < 16; i++) {
-        quint16 bmask = 1 << i;
-        int ctlChannelSecondary = i+1-4;
+    for (int ctrlChannel=1; ctrlChannel <= 16; ++ctrlChannel) {
+        quint16 bmask = 1 << (ctrlChannel-1);
+        int ctlChannelSecondary = ctrlChannel-4;
         if ((clChange & bmask) > 0) {
-            QString channelName = m_pSenseInterface->getChannelSystemName(i+1);
+            QString channelName = m_pSenseInterface->getChannelSystemName(ctrlChannel);
             if(channelName.isEmpty()) {
                 continue;
             }
             if ((m_nClampStatus & bmask) == 0) {
-                I2cMuxer::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createMuxer(i+1);
+                I2cMuxer::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createMuxer(ctrlChannel);
                 i2cMuxer->doMux();
                 QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
                 int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
                 if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    cClamp* clamp = new cClamp(m_pMyServer, channelName, i+1, i2cMuxer, ctlChannelSecondary);
+                    cClamp* clamp = new cClamp(m_pMyServer, channelName, ctrlChannel, i2cMuxer, ctlChannelSecondary);
                     m_clampHash[channelName] = clamp;
-                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channelName), i+1);
+                    qInfo("Add clamp channel \"%s\"/%i", qPrintable(channelName), ctrlChannel);
                     QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
                     if(!m_clampHash[channelName]->getChannelNameSecondary().isEmpty()) {
                         m_clampSecondarySet.insert(channelNameSecondary);
@@ -66,7 +66,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                     generateAndNotifyClampChannelList();
                 }
                 else {
-                    qInfo("Not a clamp channel \"%s\"/%i", qPrintable(channelName), i+1);
+                    qInfo("Not a clamp channel \"%s\"/%i", qPrintable(channelName), ctrlChannel);
                 }
             }
             else {
@@ -75,7 +75,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                     // if we already have a clamp on this place it was actually disconnected
                     m_nClampStatus &= (~bmask);
                     cClamp* clamp = m_clampHash.take(channelName);
-                    qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channelName), i+1);
+                    qInfo("Remove clamp channel \"%s\"/%i", qPrintable(channelName), ctrlChannel);
                     QString channelNameSecondary = clamp->getChannelNameSecondary();
                     if(!channelNameSecondary.isEmpty()) {
                         m_clampSecondarySet.remove(channelNameSecondary);
@@ -84,7 +84,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                     delete clamp;
                 }
                 else {
-                    qWarning("Clamp \"%s\"/%i to remove not found!", qPrintable(channelName), i+1);
+                    qWarning("Clamp \"%s\"/%i to remove not found!", qPrintable(channelName), ctrlChannel);
                 }
             }
         }
