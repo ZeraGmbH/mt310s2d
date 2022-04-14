@@ -1,7 +1,4 @@
 #include <syslog.h>
-#include <QString>
-#include <xiqnetpeer.h>
-#include <netmessages.pb.h>
 #include <QtDebug>
 
 #include "mt310s2dglobal.h"
