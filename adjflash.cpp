@@ -7,16 +7,12 @@
 #include "adjflash.h"
 
 
-cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr)
-    :m_sDeviceNode(devnode), m_nI2CAdr(i2cadr)
+cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxer::Ptr i2cMuxer) :
+    m_sDeviceNode(devnode),
+    m_nI2CAdr(i2cadr),
+    m_i2cMuxer(i2cMuxer)
 {
 }
-
-void cAdjFlash::setI2cMuxer(I2cMuxer::Ptr i2cMuxer)
-{
-    m_i2cMuxer = i2cMuxer;
-}
-
 
 bool cAdjFlash::exportAdjFlash()
 {
