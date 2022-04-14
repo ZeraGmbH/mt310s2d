@@ -55,8 +55,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                 if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
                     // a clamp is connected perhaps it was actually connected
                     m_nClampStatus |= bmask;
-                    cClamp* clamp = new cClamp(m_pMyServer, channelName, i+1, ctlChannelSecondary);
-                    clamp->setI2cMuxer(i2cMuxer);
+                    cClamp* clamp = new cClamp(m_pMyServer, channelName, i+1, i2cMuxer, ctlChannelSecondary);
                     m_clampHash[channelName] = clamp;
                     qInfo("Add clamp channel \"%s\"/%i", qPrintable(channelName), i+1);
                     QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
