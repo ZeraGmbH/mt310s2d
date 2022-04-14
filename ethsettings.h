@@ -1,10 +1,8 @@
 #ifndef ETHSETTINGS_H
 #define ETHSETTINGS_H
 
-#include <QObject>
-
 #include "xmlsettings.h"
-
+#include <xmlconfigreader.h>
 
 enum ethmember
 {
@@ -12,7 +10,6 @@ enum ethmember
     scpiserver,
     resourcemanager
 };
-
 
 enum ethconfigstate
 {
@@ -23,15 +20,6 @@ enum ethconfigstate
     setSCPIactive
 };
 
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
 class cETHSettings : public cXMLSettings
 {
     Q_OBJECT
@@ -41,16 +29,12 @@ public:
     QString getRMIPadr();
     quint16 getPort(ethmember member);
     bool isSCPIactive();
-
 public slots:
     virtual void configXMLInfo(QString key);
-
 private:
     QString m_sRMIPAdr;
     quint16 m_nProtobufServerPort, m_nSCPIServerPort, m_nRMPort;
     bool m_bSCPIactive;
 };
-
-
 
 #endif // ETHSETTINGS_H
