@@ -61,7 +61,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                     QString channelNameSecondary = m_pSenseInterface->getChannelSystemName(ctlChannelSecondary);
                     if(!m_clampHash[channelName]->getChannelNameSecondary().isEmpty()) {
                         m_clampSecondarySet.insert(channelNameSecondary);
-                        qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary+1);
+                        qInfo("Added voltage clamp channel \"%s\"/%i", qPrintable(channelNameSecondary), ctlChannelSecondary);
                     }
                     generateAndNotifyClampChannelList();
                 }
