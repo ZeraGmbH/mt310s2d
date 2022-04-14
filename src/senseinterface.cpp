@@ -159,15 +159,12 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1SENSE:CORRECTION").arg(leadingNodes),"COMPUTE", SCPI::isCmd, m_pSCPIInterface, SenseSystem::computeAdjData);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-
-    for (int i = 0; i < m_ChannelList.count(); i++) {
+    for(auto channel : m_ChannelList) {
         // we also must connect the signals for notification and for output
-        connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
-        connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
-
-        m_ChannelList.at(i)->initSCPIConnection(QString("%1SENSE").arg(leadingNodes));
+        connect(channel, SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+        connect(channel, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
+        channel->initSCPIConnection(QString("%1SENSE").arg(leadingNodes));
     }
-
     QString cmdParent = QString("STATUS:PCB");
     delegate = new cSCPIDelegate(cmdParent, "ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, SenseSystem::cmdStatAdjustment);
     m_DelegateList.append(delegate);
@@ -849,8 +846,8 @@ bool cSenseInterface::setSenseMode(QString sMode)
         quint8 mode;
         mode = m_MModeHash[sMode];
         pAtmel->setMeasMode((mode >> 1) & 1); // set the atmels mode here...atmel only knows ac and hf
-        for (int i = 0; i < m_ChannelList.count(); i++) {
-            m_ChannelList.at(i)->setMMode(mode);
+        for(auto channel : m_ChannelList) {
+            channel->setMMode(mode);
         }
         m_sMMode = sMode;
         setNotifierSenseMMode();
