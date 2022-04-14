@@ -1,12 +1,10 @@
 #ifndef SENSECHANNEL_H
 #define SENSECHANNEL_H
 
-#include <QObject>
-#include <QList>
-
 #include "senserange.h"
-#include "sensesettings.h"
 #include "notificationstring.h"
+#include "settings/sensesettings.h"
+#include <QList>
 
 namespace SenseChannel
 {

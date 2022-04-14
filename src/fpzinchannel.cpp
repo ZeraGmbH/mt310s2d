@@ -1,14 +1,10 @@
-#include <QList>
-#include <QString>
-
-#include <scpi.h>
-#include <scpicommand.h>
 #include "scpiconnection.h"
-#include "frqinputsettings.h"
 #include "mt310s2d.h"
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
-
+#include "settings/frqinputsettings.h"
+#include <scpi.h>
+#include <scpicommand.h>
 
 cFPZInChannel::cFPZInChannel(cMT310S2dServer *server, QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)
     :m_pMyServer(server), m_sDescription(description)

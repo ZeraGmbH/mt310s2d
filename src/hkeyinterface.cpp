@@ -1,15 +1,11 @@
-#include <QList>
-#include <scpi.h>
-
-#include "xmlsettings.h"
-#include "scpiconnection.h"
+#include "hkeyinterface.h"
 #include "resource.h"
 #include "mt310s2d.h"
-#include "hkeysettings.h"
-#include "hkeyinterface.h"
 #include "hkeychannel.h"
 #include "protonetcommand.h"
-
+#include "settings/hkeysettings.h"
+#include "settings/xmlsettings.h"
+#include <scpi.h>
 
 cHKeyInterface::cHKeyInterface(cMT310S2dServer *server)
     :m_pMyServer(server)
@@ -27,7 +23,6 @@ cHKeyInterface::cHKeyInterface(cMT310S2dServer *server)
     m_sVersion = HKeySystem::Version;
 }
 
-
 cHKeyInterface::~cHKeyInterface()
 {
     cHKeyChannel* cptr;
@@ -37,7 +32,6 @@ cHKeyInterface::~cHKeyInterface()
         delete cptr;
     }
 }
-
 
 void cHKeyInterface::initSCPIConnection(QString leadingNodes)
 {

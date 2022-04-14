@@ -1,9 +1,6 @@
-#include <QVariant>
-#include <xmlconfigreader.h>
-
-#include "mt310s2dglobal.h"
 #include "i2csettings.h"
-
+#include "mt310s2dglobal.h"
+#include <xmlconfigreader.h>
 
 cI2CSettings::cI2CSettings(Zera::XMLConfig::cReader *xmlread)
 {
@@ -22,11 +19,9 @@ cI2CSettings::cI2CSettings(Zera::XMLConfig::cReader *xmlread)
     m_nClampFlashAdr = defaultI2CClampFlashAdr;
 }
 
-
 quint8 cI2CSettings::getI2CAdress(i2cSettings::member member)
 {
     quint8 r;
-
     switch (member)
     {
     case i2cSettings::atmelsys:
@@ -45,7 +40,6 @@ quint8 cI2CSettings::getI2CAdress(i2cSettings::member member)
         r = m_nClampFlashAdr;
         break;
     }
-
     return r;
 }
 
@@ -61,13 +55,10 @@ I2cMuxer::Ptr cI2CSettings::createMuxer(quint8 ctrlChannel)
     return I2cMuxer::Ptr(new I2cMuxer(m_sDeviceNode, i2cAddressMux, (ctrlChannel-4) | 8));
 }
 
-
 void cI2CSettings::configXMLInfo(QString key)
 {
     bool ok;
-
-    if (m_ConfigXMLMap.contains(key))
-    {
+    if (m_ConfigXMLMap.contains(key)) {
         switch (m_ConfigXMLMap[key])
         {
         case i2cSettings::SetDevNode:

@@ -1,11 +1,9 @@
+#include "adjflash.h"
+#include "mt310s2dglobal.h"
 #include <QDataStream>
 #include <QBuffer>
 #include <syslog.h>
 #include <F24LC256.h>
-
-#include "mt310s2dglobal.h"
-#include "adjflash.h"
-
 
 cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxer::Ptr i2cMuxer) :
     m_sDeviceNode(devnode),

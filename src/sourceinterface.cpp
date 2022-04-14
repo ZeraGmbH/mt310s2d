@@ -1,15 +1,11 @@
-#include <QList>
-#include <scpi.h>
-
-#include "xmlsettings.h"
+#include "sourceinterface.h"
 #include "scpiconnection.h"
 #include "resource.h"
 #include "mt310s2d.h"
-#include "sourcesettings.h"
-#include "sourceinterface.h"
 #include "fpzchannel.h"
 #include "protonetcommand.h"
-
+#include "settings/sourcesettings.h"
+#include <scpi.h>
 
 cSourceInterface::cSourceInterface(cMT310S2dServer *server)
     :m_pMyServer(server)

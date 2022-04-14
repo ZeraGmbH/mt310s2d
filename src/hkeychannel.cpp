@@ -1,13 +1,7 @@
-#include <QList>
-#include <QString>
-
-#include <scpi.h>
-#include <scpicommand.h>
-#include "scpiconnection.h"
-#include "hkeysettings.h"
 #include "hkeychannel.h"
+#include "scpiconnection.h"
 #include "protonetcommand.h"
-
+#include <scpicommand.h>
 
 cHKeyChannel::cHKeyChannel(cSCPI *scpiiinterface, QString description, quint8 nr, HKeySystem::cChannelSettings *cSettings)
     :m_sDescription(description)
@@ -19,11 +13,9 @@ cHKeyChannel::cHKeyChannel(cSCPI *scpiiinterface, QString description, quint8 nr
     m_bAvail = cSettings->avail;
 }
 
-
 void cHKeyChannel::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
-
     if (leadingNodes != "")
         leadingNodes += ":";
 

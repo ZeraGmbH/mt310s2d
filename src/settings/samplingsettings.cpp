@@ -1,7 +1,5 @@
-#include <xmlconfigreader.h>
-#include <QVariant>
-
 #include "samplingsettings.h"
+#include <xmlconfigreader.h>
 
 cSamplingSettings::cSamplingSettings(Zera::XMLConfig::cReader *xmlread)
 {
@@ -13,24 +11,21 @@ cSamplingSettings::cSamplingSettings(Zera::XMLConfig::cReader *xmlread)
     m_ConfigXMLMap["mt310s2dconfig:resource:sample:s0:avail"] = SamplingSystem::cfgAvail;
 }
 
-
 cSamplingSettings::~cSamplingSettings()
 {
-    for (int i = 0; i < m_ChannelSettingsList.count(); i++)
-        delete m_ChannelSettingsList.at(i);
+    for(auto channel : m_ChannelSettingsList) {
+        delete channel;
+    }
 }
-
 
 QList<SamplingSystem::cChannelSettings *> &cSamplingSettings::getChannelSettings()
 {
     return m_ChannelSettingsList;
 }
 
-
 void cSamplingSettings::configXMLInfo(QString key)
 {
-    if (m_ConfigXMLMap.contains(key))
-    {
+    if (m_ConfigXMLMap.contains(key)) {
         switch (m_ConfigXMLMap[key])
         {
         case SamplingSystem::cfgAlias:
