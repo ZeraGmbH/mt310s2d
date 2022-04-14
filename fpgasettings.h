@@ -1,10 +1,9 @@
 #ifndef FPGASETTINGS_H
 #define FPGASETTINGS_H
 
-#include <QObject>
-#include <QString>
-
 #include "xmlsettings.h"
+#include <xmlconfigreader.h>
+#include <QString>
 
 namespace FPGASettings
 {
@@ -14,26 +13,14 @@ enum configstate
 };
 }
 
-namespace Zera
-{
-namespace XMLConfig
-{
-    class XMLConfigReader;
-}
-}
-
-
 class cFPGASettings : public cXMLSettings
 {
     Q_OBJECT
-
 public:
     cFPGASettings(Zera::XMLConfig::cReader *xmlread);
     QString& getDeviceNode();
-
 public slots:
     virtual void configXMLInfo(QString key);
-
 private:
     QString m_sDeviceNode;
 };
