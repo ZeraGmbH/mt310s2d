@@ -511,7 +511,7 @@ void cClamp::initClamp(quint8 type)
         // This clamp has a secondary channnel U
         m_sChannelNameSecondary = m_pSenseInterface->getChannelSystemName(m_nCtrlChannelSecondary);
         clampJustData = new cClampJustData(m_pSCPIInterface, m_pSenseInterface->getRange(m_sChannelNameSecondary, QString("8V")), 2.0);
-        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4332959.0, 4332959.0 * 1.25, 8388607.0, 0, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
+        m_RangeListSecondary.append(new cSenseRange(m_pSCPIInterface, "C1000V", "C1000V", true, 1000.0, 4332959.0, 4332959.0 * 1.25, 8388607.0, 1 /*8V*/, SenseSystem::modeDC | SenseSystem::Clamp, clampJustData));
 
         break;
     }
