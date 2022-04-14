@@ -25,11 +25,8 @@ cHKeyInterface::cHKeyInterface(cMT310S2dServer *server)
 
 cHKeyInterface::~cHKeyInterface()
 {
-    cHKeyChannel* cptr;
-    for ( int i = 0; i < m_ChannelList.count(); i++)
-    {
-        cptr = m_ChannelList.at(i);
-        delete cptr;
+    for(auto channel : m_ChannelList) {
+        delete channel;
     }
 }
 
@@ -46,37 +43,26 @@ void cHKeyInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1HKEY:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, m_pSCPIInterface, HKeySystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    {
-        connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
-        connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
-        m_ChannelList.at(i)->initSCPIConnection(QString("%1HKEY").arg(leadingNodes));
+    for(auto channel : m_ChannelList) {
+        connect(channel, SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+        connect(channel, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
+        channel->initSCPIConnection(QString("%1HKEY").arg(leadingNodes));
     }
 }
-
 
 void cHKeyInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
-    cHKeyChannel* pChannel;
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    {
-        pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("HKEY;%1;1;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
+    for(auto channel : m_ChannelList) {
+        register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("HKEY;%1;1;%2;%3;").arg(channel->getName()).arg(channel->getDescription()).arg(port));
     }
 }
-
 
 void cHKeyInterface::unregisterResource(cRMConnection *rmConnection)
 {
-    cHKeyChannel* pChannel;
-    for (int i = 0; i < m_ChannelList.count(); i++)
-    {
-        pChannel = m_ChannelList.at(i);
-        unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("HKEY;%1;").arg(pChannel->getName()));
+    for(auto channel : m_ChannelList) {
+        unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("HKEY;%1;").arg(channel->getName()));
     }
 }
-
 
 void cHKeyInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
