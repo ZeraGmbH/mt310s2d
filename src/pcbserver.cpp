@@ -1,10 +1,9 @@
-#include <QFile>
-#include <QByteArray>
-#include <QTextCodec>
-#include <QList>
-#include <QString>
-#include <QTcpSocket>
-#include <QTcpServer>
+#include "protonetcommand.h"
+#include "resource.h"
+#include "scpiconnection.h"
+#include "pcbserver.h"
+#include "mt310s2dglobal.h"
+#include "settings/ethsettings.h"
 #include <xiqnetpeer.h>
 #include <xmlconfigreader.h>
 #include <xiqnetserver.h>
@@ -13,13 +12,12 @@
 #include <unistd.h>
 #include <netmessages.pb.h>
 #include <QtDebug>
-
-#include "protonetcommand.h"
-#include "resource.h"
-#include "scpiconnection.h"
-#include "pcbserver.h"
-#include "ethsettings.h"
-#include "mt310s2dglobal.h"
+#include <QFile>
+#include <QByteArray>
+#include <QList>
+#include <QString>
+#include <QTcpSocket>
+#include <QTcpServer>
 
 cPCBServer::cPCBServer(QObject *parent)
     : cSCPIConnection(parent)

@@ -1,13 +1,8 @@
-#include <QList>
-#include <QString>
-
-#include <scpi.h>
-#include <scpicommand.h>
 #include "scpiconnection.h"
-#include "sourcesettings.h"
 #include "fpzchannel.h"
 #include "protonetcommand.h"
-
+#include "settings/sourcesettings.h"
+#include <scpi.h>
 
 cFPZChannel::cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)
     :m_sDescription(description)

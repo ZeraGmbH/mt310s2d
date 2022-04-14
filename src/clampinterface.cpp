@@ -5,8 +5,7 @@
 #include "clamp.h"
 #include "senseinterface.h"
 #include "protonetcommand.h"
-#include "i2csettings.h"
-
+#include "settings/i2csettings.h"
 #include <i2cutils.h>
 #include <QDomDocument>
 #include <QStringList>

@@ -1,3 +1,20 @@
+#include "senseinterface.h"
+#include "mt310s2dglobal.h"
+#include "mt310s2d.h"
+#include "adjustment.h"
+#include "justdata.h"
+#include "mt310s2justdata.h"
+#include "sensechannel.h"
+#include "senserange.h"
+#include "systeminfo.h"
+#include "atmel.h"
+#include "adjflash.h"
+#include "protonetcommand.h"
+#include "scpiconnection.h"
+#include "resource.h"
+#include "settings/i2csettings.h"
+#include "settings/sensesettings.h"
+#include "settings/xmlsettings.h"
 #include <QList>
 #include <QStringList>
 #include <QDomElement>
@@ -7,26 +24,6 @@
 #include <QDebug>
 #include <QFile>
 #include <syslog.h>
-#include "xmlsettings.h"
-#include "scpiconnection.h"
-#include "resource.h"
-
-#include "mt310s2dglobal.h"
-#include "mt310s2d.h"
-#include "adjustment.h"
-#include "justdata.h"
-#include "mt310s2justdata.h"
-#include "sensesettings.h"
-#include "debugsettings.h"
-#include "i2csettings.h"
-#include "ethsettings.h"
-#include "senseinterface.h"
-#include "sensechannel.h"
-#include "senserange.h"
-#include "systeminfo.h"
-#include "atmel.h"
-#include "adjflash.h"
-#include "protonetcommand.h"
 
 cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
     cAdjFlash(server->m_pI2CSettings->getDeviceNode(),

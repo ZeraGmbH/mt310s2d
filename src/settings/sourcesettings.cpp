@@ -1,19 +1,11 @@
-#include <QList>
-#include <QVariant>
-
-#include <xmlconfigreader.h>
-
-#include "xmlsettings.h"
 #include "sourcesettings.h"
-
+#include <xmlconfigreader.h>
 
 cSourceSettings::cSourceSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
-    SourceSystem::cChannelSettings *settings;
-    for (int i = 0; i < 4; i++)
-    {
-        m_ChannelSettingsList.append(settings = new SourceSystem::cChannelSettings);
+    for (int i = 0; i < 4; i++){
+        m_ChannelSettingsList.append(new SourceSystem::cChannelSettings);
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:source:fpzout:fo%1:alias").arg(i)] = SourceSystem::cfg0Alias + i;
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:source:fpzout:fo%1:dspserver").arg(i)] = SourceSystem::cfg0dspserver + i;
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:source:fpzout:fo%1:dspchannel").arg(i)] = SourceSystem::cfg0dspchannel + i;
@@ -21,26 +13,22 @@ cSourceSettings::cSourceSettings(Zera::XMLConfig::cReader *xmlread)
     }
 }
 
-
 cSourceSettings::~cSourceSettings()
 {
-    for (int i = 0; i < m_ChannelSettingsList.count(); i++)
-        delete m_ChannelSettingsList.at(i);
+    for(auto channel : m_ChannelSettingsList) {
+        delete channel;
+    }
 }
-
 
 QList<SourceSystem::cChannelSettings*> &cSourceSettings::getChannelSettings()
 {
     return m_ChannelSettingsList;
 }
 
-
 void cSourceSettings::configXMLInfo(QString key)
 {
     bool ok;
-
-    if (m_ConfigXMLMap.contains(key))
-    {
+    if (m_ConfigXMLMap.contains(key)) {
         switch (m_ConfigXMLMap[key])
         {
         case SourceSystem::cfg0Alias:
@@ -94,4 +82,3 @@ void cSourceSettings::configXMLInfo(QString key)
         }
     }
 }
-

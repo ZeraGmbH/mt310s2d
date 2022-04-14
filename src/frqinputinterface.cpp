@@ -1,13 +1,12 @@
-#include <QList>
-#include <scpi.h>
-#include "xmlsettings.h"
 #include "scpiconnection.h"
 #include "resource.h"
 #include "mt310s2d.h"
-#include "frqinputsettings.h"
 #include "frqinputinterface.h"
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
+#include "settings/frqinputsettings.h"
+#include "settings/xmlsettings.h"
+#include <scpi.h>
 
 cFRQInputInterface::cFRQInputInterface(cMT310S2dServer *server)
     :m_pMyServer(server)

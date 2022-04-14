@@ -1,9 +1,8 @@
 #ifndef HKEYSETTINGS_H
 #define HKEYSETTINGS_H
 
-#include "xmlsettings.h"
 #include <xmlconfigreader.h>
-#include <QString>
+#include "settings/xmlsettings.h"
 
 namespace HKeySystem
 {

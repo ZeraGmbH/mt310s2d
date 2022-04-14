@@ -1,14 +1,10 @@
-#include <QString>
-#include <QList>
-#include <scpi.h>
-
+#include "samplinginterface.h"
 #include "protonetcommand.h"
 #include "scpiconnection.h"
 #include "samplerange.h"
-#include "samplingsettings.h"
-#include "samplinginterface.h"
 #include "atmel.h"
 #include "mt310s2d.h"
+#include "settings/samplingsettings.h"
 
 cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
     :m_pMyServer(server)

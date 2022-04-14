@@ -1,9 +1,6 @@
-#include <QVariant>
-#include <xmlconfigreader.h>
-
-#include "mt310s2dglobal.h"
 #include "fpgasettings.h"
-
+#include "mt310s2dglobal.h"
+#include <xmlconfigreader.h>
 
 cFPGASettings::cFPGASettings(Zera::XMLConfig::cReader *xmlread)
 {
@@ -12,17 +9,14 @@ cFPGASettings::cFPGASettings(Zera::XMLConfig::cReader *xmlread)
     m_sDeviceNode = defaultFPGADeviceNode;
 }
 
-
 QString& cFPGASettings::getDeviceNode()
 {
     return m_sDeviceNode;
 }
 
-
 void cFPGASettings::configXMLInfo(QString key)
 {
-    if (m_ConfigXMLMap.contains(key))
-    {
+    if (m_ConfigXMLMap.contains(key)) {
         m_sDeviceNode = m_pXMLReader->getValue(key);
     }
 }

@@ -1,7 +1,7 @@
 #ifndef SOURCESETTINGS_H
 #define SOURCESETTINGS_H
 
-#include "xmlsettings.h"
+#include "settings/xmlsettings.h"
 #include <xmlconfigreader.h>
 #include <QString>
 #include <QList>

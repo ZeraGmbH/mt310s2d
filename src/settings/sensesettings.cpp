@@ -1,18 +1,11 @@
-#include <QList>
-#include <QVariant>
-#include <xmlconfigreader.h>
-#include <QDebug>
-#include "xmlsettings.h"
 #include "sensesettings.h"
-
+#include <xmlconfigreader.h>
 
 cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
-    SenseSystem::cChannelSettings *settings;
-    for (int i = 0; i < 8; i++)
-    {
-        m_ChannelSettingsList.append(settings = new SenseSystem::cChannelSettings);
+    for (int i = 0; i < 8; i++){
+        m_ChannelSettingsList.append(new SenseSystem::cChannelSettings);
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:sense:m%1:alias1").arg(i)] = SenseSystem::cfg0Alias1 + i;
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:sense:m%1:ctrlchannel").arg(i)] = SenseSystem::cfg0ctrlchannel + i;
         m_ConfigXMLMap[QString("mt310s2dconfig:resource:sense:m%1:dspchannel").arg(i)] = SenseSystem::cfg0dspchannel + i;
@@ -22,26 +15,22 @@ cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
     }
 }
 
-
 cSenseSettings::~cSenseSettings()
 {
-    for (int i = 0; i < m_ChannelSettingsList.count(); i++)
-        delete m_ChannelSettingsList.at(i);
+    for(auto channel : m_ChannelSettingsList) {
+        delete channel;
+    }
 }
-
 
 QList<SenseSystem::cChannelSettings*> &cSenseSettings::getChannelSettings()
 {
     return m_ChannelSettingsList;
 }
 
-
 void cSenseSettings::configXMLInfo(QString key)
 {
     bool ok;
-
-    if (m_ConfigXMLMap.contains(key))
-    {
+    if (m_ConfigXMLMap.contains(key)) {
         switch (m_ConfigXMLMap[key])
         {
         case SenseSystem::cfg0Alias1:
@@ -168,7 +157,6 @@ void cSenseSettings::configXMLInfo(QString key)
         case SenseSystem::cfg7avail:
             m_ChannelSettingsList.at(7)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
-
         }
     }
 }
