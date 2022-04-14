@@ -75,37 +75,30 @@ void cHKeyInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = m_ReadChannelCatalog(protoCmd->m_sInput);
         break;
     }
-
-    if (protoCmd->m_bwithOutput)
+    if (protoCmd->m_bwithOutput) {
         emit cmdExecutionDone(protoCmd);
+    }
 }
-
 
 QString cHKeyInterface::m_ReadVersion(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
+    if (cmd.isQuery()) {
         return m_sVersion;
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    }
+    return SCPI::scpiAnswer[SCPI::nak];
 }
-
 
 QString cHKeyInterface::m_ReadChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         int i;
         QString s;
         for (i = 0; i < m_ChannelList.count()-1; i++ )
             s += m_ChannelList.at(i)->getName() + ";";
         s += m_ChannelList.at(i)->getName();
-
         return s;
     }
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak];
 }
