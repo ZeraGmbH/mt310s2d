@@ -91,9 +91,7 @@ QString cFRQInputInterface::m_ReadVersion(QString &sInput)
     if (cmd.isQuery()) {
         return m_sVersion;
     }
-    else {
-        return SCPI::scpiAnswer[SCPI::nak];
-    }
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 QString cFRQInputInterface::m_ReadChannelCatalog(QString &sInput)
@@ -108,7 +106,5 @@ QString cFRQInputInterface::m_ReadChannelCatalog(QString &sInput)
 
         return s;
     }
-    else {
-        return SCPI::scpiAnswer[SCPI::nak];
-    }
+    return SCPI::scpiAnswer[SCPI::nak];
 }

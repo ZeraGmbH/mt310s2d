@@ -37,14 +37,11 @@ cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
     setNotifierSampleChannelRange(); // we must intialize our setting (notifier)
 }
 
-
 void cSamplingInterface::initSCPIConnection(QString leadingNodes)
 {
-    cSCPIDelegate* delegate;
-
     if (leadingNodes != "")
         leadingNodes += ":";
-
+    cSCPIDelegate* delegate;
     delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"VERSION", SCPI::isQuery, m_pSCPIInterface, SamplingSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -75,27 +72,21 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes)
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2:PLL").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, m_pSCPIInterface, SamplingSystem::cmdPLLCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-
-    for (int i = 0; i < m_SampleRangeList.count(); i++)
-    {
-        connect(m_SampleRangeList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
-        m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName));
+    for(auto range : m_SampleRangeList) {
+        connect(range, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
+        range->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName));
     }
-
 }
-
 
 void cSamplingInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SAMPLE;%1;1;%2;%3;").arg(m_sName).arg(m_sDescription).arg(port));
 }
 
-
 void cSamplingInterface::unregisterResource(cRMConnection *rmConnection)
 {
     unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SAMPLE;%1;").arg(m_sName));
 }
-
 
 void cSamplingInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
@@ -132,123 +123,102 @@ void cSamplingInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = m_ReadPLLCatalog(protoCmd->m_sInput);
         break;
     }
-
-    if (protoCmd->m_bwithOutput)
+    if (protoCmd->m_bwithOutput) {
         emit cmdExecutionDone(protoCmd);
+    }
 }
-
 
 QString cSamplingInterface::m_ReadVersion(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
+    if (cmd.isQuery()) {
         return m_sVersion;
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    }
+    return SCPI::scpiAnswer[SCPI::nak];
 }
-
 
 QString cSamplingInterface::m_ReadSampleRate(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        int i;
-        QString s;
-        s = notifierSampleChannelRange.getString(); // our actual sample channels range
-        for  (i = 0; i < m_SampleRangeList.count(); i++)
-            if (m_SampleRangeList.at(i)->getName() == s)
-                break;
-        return QString("%1").arg(m_SampleRangeList.at(i)->getSRate());
+    if (cmd.isQuery()) {
+        QString s = notifierSampleChannelRange.getString(); // our actual sample channels range
+        for(int i = 0; i < m_SampleRangeList.count(); i++) {
+            if (m_SampleRangeList.at(i)->getName() == s) {
+                return QString("%1").arg(m_SampleRangeList.at(i)->getSRate());
+            }
+        }
     }
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak];
 }
-
 
 QString cSamplingInterface::m_ReadSamplingChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
     if (cmd.isQuery())
         return m_sName; // we only have 1 channel
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak];
 }
-
 
 QString cSamplingInterface::m_ReadAlias(QString &sInput)
 {
-     cSCPICommand cmd = sInput;
-
+    cSCPICommand cmd = sInput;
     if (cmd.isQuery())
         return QString("%1").arg(m_sAlias);
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak];
 }
-
 
 QString cSamplingInterface::m_ReadType(QString &sInput)
 {
-     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
+    cSCPICommand cmd = sInput;
+    if (cmd.isQuery()) {
         return QString("%1").arg(m_nType);
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    }
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
 QString cSamplingInterface::m_ReadStatus(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        quint32 r;
-        r = (m_bAvail) ? 0 : 1 << 31;
+    if (cmd.isQuery()) {
+        quint32 r = (m_bAvail) ? 0 : 1 << 31;
         return QString("%1").arg(r);
     }
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak];
 }
-
-
 
 QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
 {
-    int i;
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         emit notifier(&notifierSampleChannelRange); // we need this in case that the client wants notification
         return notifierSampleChannelRange.getString();
     }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
+    else {
+        if (cmd.isCommand(1)) {
             QString srng = cmd.getParam(0);
-            for  (i = 0; i < m_SampleRangeList.count(); i++)
-                if (m_SampleRangeList.at(i)->getName() == srng)
+            int i;
+            for  (i = 0; i < m_SampleRangeList.count(); i++) {
+                if (m_SampleRangeList.at(i)->getName() == srng) {
                     break;
-            if (i < m_SampleRangeList.count())
-                if ( pAtmel->setSamplingRange(m_SampleRangeList.at(i)->getSelCode()) == ZeraMcontrollerBase::cmddone)
-                {
+                }
+            }
+            if (i < m_SampleRangeList.count()) {
+                if ( pAtmel->setSamplingRange(m_SampleRangeList.at(i)->getSelCode()) == ZeraMcontrollerBase::cmddone) {
                     setNotifierSampleChannelRange();
                     return SCPI::scpiAnswer[SCPI::ack];
                 }
-                else
+                else {
                     return SCPI::scpiAnswer[SCPI::errexec];
-            else
+                }
+            }
+            else {
                 return SCPI::scpiAnswer[SCPI::nak];
-
+            }
         }
-        else
+        else {
             return SCPI::scpiAnswer[SCPI::nak];
+        }
     }
 }
 
@@ -256,9 +226,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
 QString cSamplingInterface::m_ReadSamplingRangeCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
+    if (cmd.isQuery()) {
         int i, n;
         QString s;
 
