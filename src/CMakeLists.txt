@@ -1,13 +1,13 @@
 set(SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/clampinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/frqinputinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/hkeyinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/samplinginterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/scheadinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/senseinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/sourceinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/statusinterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/systeminterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/frqinputinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/hkeyinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/samplinginterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/scheadinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/senseinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/sourceinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/statusinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/systeminterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/ctrlsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/debugsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/ethsettings.cpp
@@ -51,15 +51,15 @@ set(SOURCES
     )
 
 set(HEADER
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/clampinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/frqinputinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/hkeyinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/samplinginterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/scheadinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/senseinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/sourceinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/statusinterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/systeminterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/frqinputinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/hkeyinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/samplinginterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/scheadinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/senseinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/sourceinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/statusinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/systeminterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/ctrlsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/debugsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/ethsettings.h
