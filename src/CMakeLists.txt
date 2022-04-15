@@ -19,7 +19,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/hkeysettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justnode.cpp
@@ -106,10 +106,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/i2cmuxer.h
     )
 
-file(GLOB RESOURCES 
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.qrc
-    )
-
 set(CONFIG_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/mt310s2d.xml
 )
@@ -124,23 +120,30 @@ add_custom_target(mt310s2-configs ALL
     COMMAND xmllint --noout --schema ${CONFIG_VALIDATOR} ${CONFIG_FILES}
     )
 
-#create executable
-add_executable(mt310s2d
+
+add_library(mt310s2d_lib STATIC
+    ${HEADERS}
     ${SOURCES}
-    ${HEADER}
-    ${RESOURCES}
     )
 
+# announce headers - target perspective
+target_include_directories(mt310s2d_lib
+    PUBLIC
+    $<BUILD_INTERFACE:${MY_LIBRARY_SOURCE_DIR}/include>
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
+#link dependencies
 if(${Systemd_FOUND})
-    target_link_libraries(mt310s2d
-        PRIVATE
+    target_link_libraries(mt310s2d_lib
+        PUBLIC
         systemd
     )
 endif()
 
-#link dependencies
-target_link_libraries(mt310s2d
-    PRIVATE
+target_link_libraries(mt310s2d_lib
+    PUBLIC
     Qt5::Core
     Qt5::Gui
     Qt5::Xml
@@ -156,14 +159,16 @@ target_link_libraries(mt310s2d
     VeinMeta::zeraprotobuf
     )	
 
-# announce headers - target perspective
-target_include_directories(mt310s2d
-    PUBLIC
-    $<BUILD_INTERFACE:${MY_LIBRARY_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/mt310s2d>
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+#create executable
+add_executable(mt310s2d
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     )
+
+target_link_libraries(mt310s2d
+    PUBLIC
+    mt310s2d_lib
+    )
+
 
 #install mt310s2dto bin 
 install(TARGETS mt310s2d
