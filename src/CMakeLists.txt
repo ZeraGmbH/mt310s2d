@@ -122,7 +122,7 @@ add_custom_target(mt310s2-configs ALL
 
 
 add_library(mt310s2d_lib STATIC
-    ${HEADERS}
+    ${HEADER}
     ${SOURCES}
     )
 
