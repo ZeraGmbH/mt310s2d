@@ -1,13 +1,10 @@
-// implemention cMT310S2JustData
-
-#include <qdatastream.h>
-#include <scpi.h>
-
 #include "protonetcommand.h"
-#include "atmel.h"
 #include "justdata.h"
 #include "scpidelegate.h"
 #include "mt310s2justdata.h"
+#include "micro-controller-io/atmel.h"
+#include <qdatastream.h>
+#include <scpi.h>
 
 cMT310S2JustData::cMT310S2JustData(cSCPI *scpiinterface)
 {

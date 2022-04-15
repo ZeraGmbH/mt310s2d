@@ -2,8 +2,8 @@
 #include "protonetcommand.h"
 #include "scpiconnection.h"
 #include "samplerange.h"
-#include "atmel.h"
 #include "mt310s2d.h"
+#include "micro-controller-io/atmel.h"
 #include "settings/samplingsettings.h"
 
 cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)

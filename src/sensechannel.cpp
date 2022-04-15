@@ -1,10 +1,10 @@
-#include "atmel.h"
 #include "senserange.h"
 #include "scpiconnection.h"
 #include "sensechannel.h"
 #include "protonetcommand.h"
 #include <scpi.h>
 #include <scpicommand.h>
+#include "micro-controller-io/atmel.h"
 
 cSenseChannel::cSenseChannel(cSCPI* scpiinterface, QString description, QString unit, SenseSystem::cChannelSettings *cSettings, quint8 nr) :
     m_sDescription(description),

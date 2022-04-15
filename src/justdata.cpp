@@ -2,14 +2,12 @@
 #include <scpi.h>
 #include <gaussmatrix.h>
 #include <gaussnode.h>
-
 #include "protonetcommand.h"
-#include "atmel.h"
 #include "scpiconnection.h"
 #include "scpidelegate.h"
 #include "justdata.h"
 #include "justnode.h"
-
+#include "micro-controller-io/atmel.h"
 
 cJustData::cJustData(cSCPI* scpiinterface, int order, double init)
     : m_nOrder(order)

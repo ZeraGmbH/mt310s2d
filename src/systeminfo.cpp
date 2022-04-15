@@ -1,6 +1,6 @@
-#include "atmelsysctrl.h"
-#include "atmel.h"
 #include "systeminfo.h"
+#include "micro-controller-io/atmelsysctrl.h"
+#include "micro-controller-io/atmel.h"
 
 cSystemInfo::cSystemInfo()
 {
