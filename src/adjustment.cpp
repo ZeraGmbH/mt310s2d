@@ -10,16 +10,13 @@
 #include <syslog.h>
 #include <F24LC256.h>
 
-#include "atmel.h"
 #include "mt310s2dglobal.h"
 #include "adjflash.h"
 #include "justdata.h"
 #include "adjxml.h"
 #include "systeminfo.h"
 #include "adjustment.h"
-
-
-
+#include "micro-controller-io/atmel.h"
 
 cAdjustment::cAdjustment(cMT310S2dServer *server)
     :m_pMyServer(server)

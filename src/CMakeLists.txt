@@ -1,4 +1,7 @@
 set(SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/frqinputinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/hkeyinterface.cpp
@@ -25,9 +28,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/justnode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpidelegate.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmelsysctrl.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmelwatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/senserange.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sensechannel.cpp
@@ -51,6 +51,9 @@ set(SOURCES
     )
 
 set(HEADER
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/frqinputinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/hkeyinterface.h
@@ -79,9 +82,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/justnode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpidelegate.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmelsysctrl.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmelwatcher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.h
     ${CMAKE_CURRENT_SOURCE_DIR}/senserange.h
