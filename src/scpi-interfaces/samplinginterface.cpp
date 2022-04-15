@@ -280,19 +280,10 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
 QString cSamplingInterface::m_ReadPLLCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        int i;
-        QString s;
-        for (i = 1; i < m_pllChannelList.count()-1; i++)
-            s += m_pllChannelList.at(i) + ";";
-        s += m_pllChannelList.at(i);
-
-        return s;
+    if (cmd.isQuery()) {
+        return m_pllChannelList.join(";");
     }
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
