@@ -66,7 +66,7 @@ private:
     void addSenseInterface();
     void addSystAdjInterface();
     void addSystAdjInterfaceChannel(QString channelName);
-    QString getClampTypeName(quint8 type);
+    static QString getClampTypeName(quint8 type);
     cSenseRange* getRange(QString name);
     ClampTypes readClampType();
     void removeAllRanges();
