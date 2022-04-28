@@ -10,7 +10,7 @@ class cAdjFlash
 {
 public:
     cAdjFlash(){}
-    cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxer::Ptr i2cMuxer = I2cMuxer::Ptr(nullptr));
+    cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxerInterface::Ptr i2cMuxer = I2cMuxerInterface::Ptr(nullptr));
     bool exportAdjFlash();
     bool importAdjFlash();
     bool resetAdjFlash();
@@ -32,7 +32,7 @@ protected:
 private:
     void setAdjCountChecksum(QByteArray& ba);
 
-    I2cMuxer::Ptr m_i2cMuxer;
+    I2cMuxerInterface::Ptr m_i2cMuxer;
 };
 
 #endif // ADJFLASH_H

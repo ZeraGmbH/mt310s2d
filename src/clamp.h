@@ -42,7 +42,7 @@ class cClamp: public cAdjFlash, public cAdjXML, public cSCPIConnection
 {
 public:
     cClamp();
-    cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, I2cMuxer::Ptr i2cMuxer, quint8 ctrlChannelSecondary);
+    cClamp(cMT310S2dServer *server, QString channelName, quint8 ctrlChannel, I2cMuxerInterface::Ptr i2cMuxer, quint8 ctrlChannelSecondary);
     virtual ~cClamp();
     virtual quint8 getAdjustmentStatus() override;
     virtual void initSCPIConnection(QString) override;
