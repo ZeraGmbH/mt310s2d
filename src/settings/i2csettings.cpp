@@ -52,7 +52,7 @@ QString& cI2CSettings::getDeviceNode()
 I2cMuxer::Ptr cI2CSettings::createMuxer(quint8 ctrlChannel)
 {
     int i2cAddressMux = getI2CAdress(i2cSettings::flashmux);
-    return I2cMuxer::Ptr(new I2cMuxer(m_sDeviceNode, i2cAddressMux, (ctrlChannel-4) | 8));
+    return I2cMuxer::Ptr(new I2cMuxer(m_sDeviceNode, i2cAddressMux, (ctrlChannel-4) | 8, 0));
 }
 
 void cI2CSettings::configXMLInfo(QString key)
