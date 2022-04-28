@@ -1,7 +1,7 @@
 #ifndef I2CSETTINGS_H
 #define I2CSETTINGS_H
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include "i2cmuxer.h"
 #include <xmlconfigreader.h>
 #include <QObject>
@@ -29,7 +29,7 @@ enum configstate
 };
 }
 
-class cI2CSettings : public cXMLSettings
+class cI2CSettings : public XMLSettings
 {
     Q_OBJECT
 public:

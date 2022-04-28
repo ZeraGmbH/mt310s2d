@@ -1,7 +1,7 @@
 #ifndef CTRLSETTINGS
 #define CTRLSETTINGS
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 #include <QString>
 
@@ -13,7 +13,7 @@ enum configstate
 };
 }
 
-class cCtrlSettings : public cXMLSettings
+class cCtrlSettings : public XMLSettings
 {
     Q_OBJECT
 public:

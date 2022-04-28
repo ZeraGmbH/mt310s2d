@@ -1,7 +1,7 @@
 #ifndef FPGASETTINGS_H
 #define FPGASETTINGS_H
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 #include <QString>
 
@@ -13,7 +13,7 @@ enum configstate
 };
 }
 
-class cFPGASettings : public cXMLSettings
+class cFPGASettings : public XMLSettings
 {
     Q_OBJECT
 public:

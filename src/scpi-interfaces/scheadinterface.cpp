@@ -5,7 +5,7 @@
 #include "scheadchannel.h"
 #include "protonetcommand.h"
 #include "settings/scheadsettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 #include <scpi.h>
 
 cSCHeadInterface::cSCHeadInterface(cMT310S2dServer *server)

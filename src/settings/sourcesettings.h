@@ -1,7 +1,7 @@
 #ifndef SOURCESETTINGS_H
 #define SOURCESETTINGS_H
 
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 #include <QString>
 #include <QList>
@@ -36,7 +36,7 @@ namespace SourceSystem
     };
 }
 
-class cSourceSettings : public cXMLSettings
+class cSourceSettings : public XMLSettings
 {
     Q_OBJECT
 public:

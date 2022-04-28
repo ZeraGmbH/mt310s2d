@@ -2,7 +2,7 @@
 #define SAMPLINGSETTINGS_H
 
 #include <QList>
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace SamplingSystem
 {
@@ -20,7 +20,7 @@ namespace SamplingSystem
 
 } // namespace SamplingSystem
 
-class cSamplingSettings : public cXMLSettings
+class cSamplingSettings : public XMLSettings
 {
 public:
     cSamplingSettings(Zera::XMLConfig::cReader *xmlread);
