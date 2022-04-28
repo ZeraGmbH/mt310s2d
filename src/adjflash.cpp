@@ -103,7 +103,7 @@ bool cAdjFlash::writeFlash(QByteArray &ba)
 void cAdjFlash::switchI2cMux()
 {
     if(m_i2cMuxer) {
-        m_i2cMuxer->doMux();
+        m_i2cMuxer->enableMuxChannel();
     }
 }
 

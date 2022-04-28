@@ -46,7 +46,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
             }
             if ((m_nClampStatus & bmask) == 0) {
                 I2cMuxer::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createMuxer(ctrlChannel);
-                i2cMuxer->doMux();
+                i2cMuxer->enableMuxChannel();
                 QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
                 int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
                 if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
