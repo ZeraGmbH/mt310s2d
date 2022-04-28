@@ -19,7 +19,7 @@ public:
     cDebugSettings(Zera::XMLConfig::cReader *xmlread);
     quint8 getDebugLevel();
 public slots:
-    virtual void configXMLInfo(QString key);
+    virtual void configXMLInfo(QString key) override;
 private:
     quint8 m_nDebugLevel;
 };

@@ -4,8 +4,7 @@
 #include "i2cmuxer.h"
 #include <QByteArray>
 #include <QString>
-
-class QDataStream;
+#include <QDataStream>
 
 class cAdjFlash
 {
