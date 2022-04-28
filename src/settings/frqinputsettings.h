@@ -5,7 +5,7 @@
 #include <QList>
 #include <QString>
 #include <xmlconfigreader.h>
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace FRQInputSystem
 {
@@ -28,7 +28,7 @@ struct cChannelSettings // what we want to get configured
 };
 }
 
-class cFRQInputSettings : public cXMLSettings
+class cFRQInputSettings : public XMLSettings
 {
     Q_OBJECT
 public:

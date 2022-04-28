@@ -1,7 +1,7 @@
 #ifndef SENSESETTINGS_H
 #define SENSESETTINGS_H
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 #include <QString>
 #include <QList>
@@ -65,7 +65,7 @@ namespace SenseSystem
     };
 }
 
-class cSenseSettings : public cXMLSettings
+class cSenseSettings : public XMLSettings
 {
     Q_OBJECT
 public:

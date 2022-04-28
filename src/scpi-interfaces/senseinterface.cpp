@@ -14,7 +14,7 @@
 #include "micro-controller-io/atmel.h"
 #include "settings/i2csettings.h"
 #include "settings/sensesettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 #include <QList>
 #include <QStringList>
 #include <QDomElement>

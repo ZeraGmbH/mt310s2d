@@ -1,7 +1,7 @@
 #ifndef ETHSETTINGS_H
 #define ETHSETTINGS_H
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 
 enum ethmember
@@ -20,7 +20,7 @@ enum ethconfigstate
     setSCPIactive
 };
 
-class cETHSettings : public cXMLSettings
+class cETHSettings : public XMLSettings
 {
     Q_OBJECT
 

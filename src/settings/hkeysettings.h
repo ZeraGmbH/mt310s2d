@@ -2,7 +2,7 @@
 #define HKEYSETTINGS_H
 
 #include <xmlconfigreader.h>
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace HKeySystem
 {
@@ -18,7 +18,7 @@ namespace HKeySystem
     };
 }
 
-class cHKeySettings : public cXMLSettings
+class cHKeySettings : public XMLSettings
 {
     Q_OBJECT
 public:

@@ -22,7 +22,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/hkeysettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justnode.cpp
@@ -68,13 +67,12 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/ethsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/fpgasettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/frqinputsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/hkeysettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/i2csettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/samplingsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/scheadsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/settings/hkeysettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/zeraglobal.h
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/mt310s2dscpi.h

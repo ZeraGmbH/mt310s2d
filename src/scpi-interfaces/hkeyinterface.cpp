@@ -4,7 +4,7 @@
 #include "hkeychannel.h"
 #include "protonetcommand.h"
 #include "settings/hkeysettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 #include <scpi.h>
 
 cHKeyInterface::cHKeyInterface(cMT310S2dServer *server)

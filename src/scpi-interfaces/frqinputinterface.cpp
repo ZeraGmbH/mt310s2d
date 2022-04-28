@@ -5,7 +5,7 @@
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
 #include "settings/frqinputsettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 #include <scpi.h>
 
 cFRQInputInterface::cFRQInputInterface(cMT310S2dServer *server)

@@ -1,7 +1,7 @@
 #ifndef DEBUGSETTINGS_H
 #define DEBUGSETTINGS_H
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 
 namespace DebugSettings
@@ -12,7 +12,7 @@ enum debugconfigstate
 };
 }
 
-class cDebugSettings: public cXMLSettings
+class cDebugSettings: public XMLSettings
 {
     Q_OBJECT
 public:

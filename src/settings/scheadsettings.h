@@ -1,7 +1,7 @@
 #ifndef SCHEADSETTINGS_H
 #define SCHEADSETTINGS_H
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 #include <xmlconfigreader.h>
 #include <QString>
 
@@ -19,7 +19,7 @@ namespace SCHeadSystem
     };
 }
 
-class cSCHeadSettings : public cXMLSettings
+class cSCHeadSettings : public XMLSettings
 {
     Q_OBJECT
 public:
