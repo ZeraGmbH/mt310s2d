@@ -4,7 +4,7 @@
 #include <syslog.h>
 #include <F24LC256.h>
 
-cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxer::Ptr i2cMuxer) :
+cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxerInterface::Ptr i2cMuxer) :
     m_sDeviceNode(devnode),
     m_nI2CAdr(i2cadr),
     m_i2cMuxer(i2cMuxer)

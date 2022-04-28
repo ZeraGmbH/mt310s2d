@@ -45,7 +45,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
                 continue;
             }
             if ((m_nClampStatus & bmask) == 0) {
-                I2cMuxer::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createMuxer(ctrlChannel);
+                I2cMuxerInterface::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createMuxer(ctrlChannel);
                 i2cMuxer->enableMuxChannel();
                 QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
                 int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
