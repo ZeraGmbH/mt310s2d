@@ -1,6 +1,5 @@
 #include "adjflash.h"
 #include "mt310s2dglobal.h"
-#include <QDataStream>
 #include <QBuffer>
 #include <syslog.h>
 #include <F24LC256.h>
