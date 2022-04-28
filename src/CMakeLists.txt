@@ -46,7 +46,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/mt310s2d.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mt310s2justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/hkeychannel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/i2cmuxer.cpp
     )
 
 set(HEADER
@@ -101,7 +100,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/mt310s2dglobal.h
     ${CMAKE_CURRENT_SOURCE_DIR}/mt310s2justdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/hkeychannel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/i2cmuxer.h
     )
 
 set(CONFIG_FILES
