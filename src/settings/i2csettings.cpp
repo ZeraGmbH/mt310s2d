@@ -1,6 +1,7 @@
 #include "i2csettings.h"
 #include "mt310s2dglobal.h"
 #include <xmlconfigreader.h>
+#include <i2cmuxernull.h>
 
 cI2CSettings::cI2CSettings(Zera::XMLConfig::cReader *xmlread)
 {
@@ -49,10 +50,15 @@ QString& cI2CSettings::getDeviceNode()
     return m_sDeviceNode;
 }
 
-I2cMuxerInterface::Ptr cI2CSettings::createMuxer(quint8 ctrlChannel)
+I2cMuxerInterface::Ptr cI2CSettings::createClampMuxer(quint8 ctrlChannel)
 {
     int i2cAddressMux = getI2CAdress(i2cSettings::flashmux);
     return I2cMuxerInterface::Ptr(new I2cMuxer(m_sDeviceNode, i2cAddressMux, (ctrlChannel-4) | 8, 0));
+}
+
+I2cMuxerInterface::Ptr cI2CSettings::createNullMuxer()
+{
+    return I2cMuxerInterface::Ptr(new I2cMuxerNull());
 }
 
 void cI2CSettings::configXMLInfo(QString key)

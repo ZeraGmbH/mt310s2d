@@ -10,7 +10,7 @@ class cAdjFlash
 {
 public:
     cAdjFlash(){}
-    cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxerInterface::Ptr i2cMuxer = I2cMuxerInterface::Ptr(nullptr));
+    cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxerInterface::Ptr i2cMuxer);
     bool exportAdjFlash();
     bool importAdjFlash();
     bool resetAdjFlash();
