@@ -27,7 +27,8 @@
 
 cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
     cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
-              server->m_pI2CSettings->getI2CAdress(i2cSettings::flash)),
+              server->m_pI2CSettings->getI2CAdress(i2cSettings::flash),
+              server->m_pI2CSettings->createNullMuxer()),
     m_pMyServer(server),
     m_pSystemInfo(server->m_pSystemInfo)
 {
