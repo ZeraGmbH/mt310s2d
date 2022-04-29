@@ -3,6 +3,7 @@
 #include <QBuffer>
 #include <syslog.h>
 #include <F24LC256.h>
+#include <i2cmuxerscopedonoff.h>
 
 cAdjFlash::cAdjFlash(QString devnode, quint8 i2cadr, I2cMuxerInterface::Ptr i2cMuxer) :
     m_sDeviceNode(devnode),
@@ -26,7 +27,7 @@ bool cAdjFlash::exportAdjFlash()
 
     exportAdjData(stream);
     setAdjCountChecksum(ba);
-    switchI2cMux();
+    I2cMuxerScopedOnOff i2cMuxOnOff(m_i2cMuxer);
     ret = writeFlash(ba);
     return ret;
 }
@@ -34,13 +35,11 @@ bool cAdjFlash::exportAdjFlash()
 
 bool cAdjFlash::importAdjFlash()
 {
+    I2cMuxerScopedOnOff i2cMuxOnOff(m_i2cMuxer);
     QByteArray ba;
-
-    switchI2cMux();
     if (readFlash(ba)) { // if we could read data with correct chksum
         QDataStream stream(&ba, QIODevice::ReadOnly);
         stream.setVersion(QDataStream::Qt_5_4);
-
         return importAdjData(stream);
     }
     return false;
@@ -48,7 +47,7 @@ bool cAdjFlash::importAdjFlash()
 
 bool cAdjFlash::resetAdjFlash()
 {
-    switchI2cMux();
+    I2cMuxerScopedOnOff i2cMuxOnOff(m_i2cMuxer);
     cF24LC256 flash(m_sDeviceNode, m_nI2CAdr);
     return flash.Reset() == flash.size();
 }
@@ -99,12 +98,6 @@ bool cAdjFlash::writeFlash(QByteArray &ba)
     }
     return true;
 }
-
-void cAdjFlash::switchI2cMux()
-{
-    m_i2cMuxer->enableMuxChannel();
-}
-
 
 quint16 cAdjFlash::getChecksum()
 {

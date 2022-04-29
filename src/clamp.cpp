@@ -9,6 +9,7 @@
 #include "settings/i2csettings.h"
 #include <syslog.h>
 #include <i2cutils.h>
+#include <i2cmuxerscopedonoff.h>
 
 cClamp::cClamp()
 {
@@ -390,8 +391,8 @@ quint8 cClamp::getAdjustmentStatus()
 
 ClampTypes cClamp::readClampType()
 {
+    I2cMuxerScopedOnOff i2cMuxOnOff(m_i2cMuxer);
     QByteArray ba;
-    switchI2cMux();
     if (readFlash(ba)) { // flash data could be read with correct chksum
         quint8 type;
         QDataStream stream(&ba, QIODevice::ReadWrite);
