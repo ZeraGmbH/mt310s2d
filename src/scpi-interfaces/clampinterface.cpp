@@ -7,6 +7,7 @@
 #include "settings/i2csettings.h"
 #include <scpi.h>
 #include <i2cutils.h>
+#include <i2cmuxerscopedonoff.h>
 
 cClampInterface::cClampInterface(cMT310S2dServer *server) :
     m_pMyServer(server),
@@ -46,7 +47,7 @@ void cClampInterface::actualizeClampStatus(quint16 devConnectedMask)
             }
             if ((m_nClampStatus & bmask) == 0) {
                 I2cMuxerInterface::Ptr i2cMuxer = m_pMyServer->m_pI2CSettings->createClampMuxer(ctrlChannel);
-                i2cMuxer->enableMuxChannel();
+                I2cMuxerScopedOnOff i2cMuxOnOff(i2cMuxer);
                 QString i2cDevNode = m_pMyServer->m_pI2CSettings->getDeviceNode();
                 int i2cAddress = m_pMyServer->m_pI2CSettings->getI2CAdress(i2cSettings::clampflash);
                 if(I2cPing(i2cDevNode, i2cAddress)) { // ignore other than flash
