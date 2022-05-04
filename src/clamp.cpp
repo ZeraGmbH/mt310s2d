@@ -401,9 +401,7 @@ ClampTypes cClamp::readClampType()
         stream >> type;
         return ClampTypes(type);
     }
-    else {
-        return undefined;
-    }
+    return undefined;
 }
 
 void cClamp::initClamp(quint8 type)
