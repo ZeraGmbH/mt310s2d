@@ -7,10 +7,10 @@ if(NOT CMAKE_CROSSCOMPILING)
              COMMAND mt310s2d-unittest-qt)
 
     file(GLOB QTUNITTESTS
-        tests/qtest/qt-unittest-*.cpp
-        tests/qtest/qt-unittest-*.h
-        tests/qtest/*forunittest.h
-        tests/qtest/*forunittest.cpp
+        qt-unittest-*.cpp
+        qt-unittest-*.h
+        testserver.h
+        testserver.cpp
     )
 
     add_executable(mt310s2d-unittest-qt
@@ -22,10 +22,10 @@ if(NOT CMAKE_CROSSCOMPILING)
     target_include_directories(mt310s2d-unittest-qt
         PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/src/settings
+        ${PROJECT_SOURCE_DIR}/src/scpi-interfaces
         )
-
-    #find_package(VfStorageHash REQUIRED)
 
     target_link_libraries(mt310s2d-unittest-qt
         PUBLIC
