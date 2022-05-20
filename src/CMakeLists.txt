@@ -4,6 +4,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/emobinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/frqinputinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/hkeyinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/samplinginterface.cpp
@@ -56,6 +57,7 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/emobinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/frqinputinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/hkeyinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/samplinginterface.h
