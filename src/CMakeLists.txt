@@ -49,6 +49,7 @@ set(SOURCES
     )
 
 set(HEADER
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelbaseinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.h
