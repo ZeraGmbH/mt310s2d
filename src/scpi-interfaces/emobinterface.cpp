@@ -34,6 +34,9 @@ void EmobInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = m_ReadCTRLVersion(protoCmd->m_sInput);
         break;*/
     }
+    if (protoCmd->m_bwithOutput) {
+        emit cmdExecutionDone(protoCmd);
+    }
 }
 
 QString EmobInterface::readChannelCatalog(QString scpiCmd)
