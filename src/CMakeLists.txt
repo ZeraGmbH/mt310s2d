@@ -152,6 +152,7 @@ target_link_libraries(mt310s2d_lib
     Zera::SCPI
     VeinMeta::xiqnet
     ZeraClasses::zerai2c
+    ZeraClasses::zeraproxy
     ZeraClasses::zeramisc
     ZeraClasses::zeraxmlconfig
     ZeraClasses::zeramath
