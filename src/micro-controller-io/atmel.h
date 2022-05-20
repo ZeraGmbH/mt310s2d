@@ -7,9 +7,9 @@
 #include <protocol_zera_bootloader.h>
 #include <protocol_zera_hard.h>
 #include <zera_mcontroller_base.h>
+#include "atmelbaseinterface.h"
 
-
-class cATMEL : public ZeraMcontrollerBase
+class cATMEL : public ZeraMcontrollerBase, public AtmelBaseInterface
 {
 public:
     cATMEL(QString devnode, quint8 adr, quint8 debuglevel);
@@ -19,7 +19,7 @@ public:
     atmelRM readDeviceName(QString& answer);
     atmelRM readPCBVersion(QString& answer);
     atmelRM writePCBVersion(QString& sVersion);
-    atmelRM readCTRLVersion(QString& answer);
+    atmelRM readCTRLVersion(QString& answer) override;
     atmelRM readLCAVersion(QString& answer);
     atmelRM startBootLoader();
     atmelRM readChannelStatus(quint8 channel, quint8& stat);
