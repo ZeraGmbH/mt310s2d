@@ -64,7 +64,7 @@ I2cMuxerInterface::Ptr cI2CSettings::createNullMuxer()
 void cI2CSettings::configXMLInfo(QString key)
 {
     bool ok;
-    if (m_ConfigXMLMap.contains(key)) {
+    if (m_pXMLReader && m_ConfigXMLMap.contains(key)) {
         switch (m_ConfigXMLMap[key])
         {
         case i2cSettings::SetDevNode:
