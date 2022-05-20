@@ -1,4 +1,4 @@
-#ifndef ATMELSYS_H
+#ifndef ATMELATMELSYS_H
 #define ATMELATMELSYS_H
 
 #include <QString>
