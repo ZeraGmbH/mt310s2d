@@ -20,6 +20,8 @@ option(useSystemd "Using libsystemd" ON)
 
 #Find dependecies
 find_package(Qt5 COMPONENTS Core Gui Xml Network CONFIG REQUIRED)
+find_package(Qt5Test REQUIRED)
+find_package(GTest)
 find_package(SCPI REQUIRED)
 find_package(xiqnet REQUIRED)
 find_package(zerai2c REQUIRED)
