@@ -8,7 +8,6 @@
 
 QObject* addTest(QObject* test);
 
-
-//static constexpr int shortQtEventTimeout = 5;
+static constexpr int shortQtEventTimeout = 5;
 
 #endif // MAIN_UNITTEST_H
