@@ -17,4 +17,5 @@ void EmobInterfaceTest::initialWorkingSCPIStack()
     EmobInterface emob(&i2cSettings, srv.getSCPIInterface());
     srv.addScpiInterface(&emob);
     srv.executeScpiCmd("SYSTEM:EMOB:CHANNEL:CATALOG?");
+    QTest::qWait(shortQtEventTimeout);
 }
