@@ -1,5 +1,6 @@
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelemobcontroller.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/clampinterface.cpp
@@ -50,6 +51,7 @@ set(SOURCES
 
 set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelbaseinterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelemobcontroller.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelsysctrl.h
     ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.h
