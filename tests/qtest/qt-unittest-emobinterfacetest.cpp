@@ -15,6 +15,6 @@ void EmobInterfaceTest::initialWorkingSCPIStack()
     TestServer srv;
     cI2CSettings i2cSettings(nullptr);
     EmobInterface emob(&i2cSettings, srv.getSCPIInterface());
-    emob.initSCPIConnection("");
+    srv.addScpiInterface(&emob);
     srv.executeScpiCmd("SYSTEM:EMOB:CHANNEL:CATALOG?");
 }
