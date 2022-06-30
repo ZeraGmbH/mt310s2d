@@ -491,7 +491,7 @@ void cClamp::initClamp(quint8 type)
         break;
     case EMOB200DC:
     {
-        // VERY IMPORTAND:
+        // VERY IMPORTANT:
         // We need to understand what the implementation state of modeDC is.
         // Without modeAC cold plug makes new EMOB200DC unavailable while hotplug works as expected!!!
         quint16 commonMask = SenseSystem::modeDC | SenseSystem::modeAC;
