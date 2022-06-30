@@ -34,6 +34,7 @@ enum ClampTypes
     CL1000A,
     EMOB32,
     EMOB200DC,
+    EMOB80,
 
     anzCL
 };
