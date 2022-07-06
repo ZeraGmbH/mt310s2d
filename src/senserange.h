@@ -9,12 +9,6 @@
 
 namespace SenseRange
 {
-enum Type
-{
-    Prim, // we distinguish between primary
-    Sec  // and secondary ranges
-};
-
 enum Commands
 {
     cmdType,
@@ -27,7 +21,6 @@ enum Commands
 };
 }
 
-class cATMEL;
 class cMTJustData;
 class cSCPI;
 
@@ -66,7 +59,6 @@ protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 protected:
-    cATMEL* m_pATMEL;
     QString m_sName; // the range name
     QString m_sAlias; // the range alias name
     bool m_bAvail; // range io avail or not
