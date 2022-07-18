@@ -3,7 +3,7 @@
 
 #include "senserange.h"
 #include "mt310s2justdata.h"
-#include "scpidelegate.h"
+#include <scpidelegate.h>
 #include <protonetcommand.h>
 
 
