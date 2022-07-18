@@ -2,7 +2,7 @@
 #define TESTSERVER_H
 
 #include "scpiconnection.h"
-#include "notificationstring.h"
+#include <notificationstring.h>
 
 class TestServer: public cSCPIConnection
 {

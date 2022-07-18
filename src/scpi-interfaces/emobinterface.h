@@ -3,7 +3,7 @@
 
 #include "mt310s2d.h"
 #include "scpiconnection.h"
-#include "notificationstring.h"
+#include <notificationstring.h>
 #include "protonetcommand.h"
 
 class EmobInterface: public cSCPIConnection
