@@ -1,10 +1,8 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-#include "mt310s2d.h"
-#include <scpiconnection.h>
 #include "rmconnection.h"
-#include <QString>
+#include <scpiconnection.h>
 #include <QList>
 
 // pure virtual base class for resources to register themselves anywhere
@@ -16,7 +14,6 @@ public:
     virtual ~cResource();
     virtual void registerResource(cRMConnection *rmConnection, quint16 port) = 0;
     virtual void unregisterResource(cRMConnection *rmConnection) = 0;
-    virtual void initSCPIConnection(QString leadingNodes) = 0;
 signals:
     void registerRdy(); // we emit signal when all register or unregister action is done
 protected:

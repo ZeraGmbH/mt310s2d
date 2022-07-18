@@ -25,8 +25,6 @@ enum Commands
 }
 
 class cMT310S2dServer;
-class cHKeySettings;
-
 
 class cHKeyInterface : public cResource
 {
