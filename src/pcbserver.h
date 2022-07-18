@@ -11,7 +11,7 @@
 #include <QList>
 #include <xiqnetwrapper.h>
 
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include <notificationstring.h>
 #include "notificationdata.h"
 

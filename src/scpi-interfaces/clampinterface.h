@@ -1,7 +1,7 @@
 #ifndef CLAMPINTERFACE
 #define CLAMPINTERFACE
 
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include <notificationstring.h>
 #include "senseinterface.h"
 #include <QHash>

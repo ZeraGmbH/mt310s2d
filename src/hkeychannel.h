@@ -1,7 +1,7 @@
 #ifndef HKEYCHANNEL_H
 #define HKEYCHANNEL_H
 
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "settings/hkeysettings.h"
 #include <scpi.h>
 

@@ -1,4 +1,4 @@
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "mt310s2d.h"
 #include "fpzinchannel.h"
 #include <protonetcommand.h>

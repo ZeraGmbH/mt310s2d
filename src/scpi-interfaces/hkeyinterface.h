@@ -8,7 +8,7 @@
 #include <QFinalState>
 
 #include "resource.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "hkeychannel.h"
 
 

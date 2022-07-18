@@ -1,5 +1,5 @@
 #include "senserange.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "sensechannel.h"
 #include <protonetcommand.h>
 #include <scpi.h>
