@@ -15,7 +15,7 @@ cSCPI *TestServer::getSCPIInterface()
 void TestServer::addScpiInterface(cSCPIConnection *connection)
 {
     connection->initSCPIConnection("");
-    connect(connection, &cSCPIConnection::notifier, this, &TestServer::establishNewNotifier);
+    connect(connection, &cSCPIConnection::strNotifier, this, &TestServer::establishNewNotifier);
     connect(connection, &cSCPIConnection::cmdExecutionDone, this, &TestServer::sendAnswer);
 }
 

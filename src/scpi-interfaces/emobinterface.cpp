@@ -43,7 +43,7 @@ QString EmobInterface::readChannelCatalog(QString scpiCmd)
 {
     cSCPICommand cmd = scpiCmd;
     if (cmd.isQuery()) {
-        emit notifier(&m_notifierChannelList); // enable async notification on change
+        emit strNotifier(&m_notifierChannelList); // enable async notification on change
         return m_notifierChannelList.getString();
     }
     else {
