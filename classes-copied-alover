@@ -1,6 +1,4 @@
-cNotificationString
 cNotificationData
-cProtonetCommand
 cSCPIConnection
 cSCPIDelegate
 class cRMConnection !!!

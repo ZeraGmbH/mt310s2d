@@ -1,4 +1,4 @@
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "justdata.h"
 #include "scpidelegate.h"
 #include "mt310s2justdata.h"

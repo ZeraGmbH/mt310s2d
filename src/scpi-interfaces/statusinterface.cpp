@@ -1,7 +1,7 @@
 #include "mt310s2d.h"
 #include "adjustment.h"
 #include "statusinterface.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "micro-controller-io/atmel.h"
 
 cStatusInterface::cStatusInterface(cMT310S2dServer* server)

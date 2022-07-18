@@ -2,7 +2,7 @@
 #include <scpi.h>
 
 #include "samplerange.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 
 cSampleRange::cSampleRange(cSCPI *scpiinterface, QString name, quint16 srate, quint8 selcode)
     :m_sName(name), m_nSRate(srate), m_nSelCode(selcode)

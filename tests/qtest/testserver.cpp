@@ -1,6 +1,6 @@
 #include <scpi.h>
 #include "testserver.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 
 TestServer::TestServer()
 {

@@ -3,7 +3,7 @@
 #include "resource.h"
 #include "mt310s2d.h"
 #include "scheadchannel.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "settings/scheadsettings.h"
 #include <xmlsettings.h>
 #include <scpi.h>
