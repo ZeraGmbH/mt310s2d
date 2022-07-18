@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "scpiconnection.h"
-#include "notificationstring.h"
+#include <notificationstring.h>
 
 namespace FPZChannel
 {

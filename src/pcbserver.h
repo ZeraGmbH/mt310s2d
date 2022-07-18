@@ -12,7 +12,7 @@
 #include <xiqnetwrapper.h>
 
 #include "scpiconnection.h"
-#include "notificationstring.h"
+#include <notificationstring.h>
 #include "notificationdata.h"
 
 class QTcpSocket;

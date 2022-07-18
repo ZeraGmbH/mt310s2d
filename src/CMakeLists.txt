@@ -36,7 +36,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/notificationstring.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/protonetcommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.cpp
@@ -92,7 +91,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/adjustment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.h
     ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/notificationstring.h
     ${CMAKE_CURRENT_SOURCE_DIR}/notificationdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/protonetcommand.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.h
