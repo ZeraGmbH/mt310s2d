@@ -1,5 +1,5 @@
 #include "scheadinterface.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "resource.h"
 #include "mt310s2d.h"
 #include "scheadchannel.h"

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QList>
 #include "resource.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "fpzinchannel.h"
 
 namespace FRQInputSystem

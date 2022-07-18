@@ -1,5 +1,5 @@
 #include "hkeychannel.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include <protonetcommand.h>
 #include <scpicommand.h>
 

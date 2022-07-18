@@ -4,7 +4,7 @@
 #define MT310S2JUSTDATA_H
 
 #include <QObject>
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 
 enum DirectJustCommands
 {

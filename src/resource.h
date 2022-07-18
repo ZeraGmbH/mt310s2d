@@ -2,7 +2,7 @@
 #define RESOURCE_H
 
 #include "mt310s2d.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "rmconnection.h"
 #include <QString>
 #include <QList>

@@ -5,7 +5,7 @@
 #include <QList>
 #include <scpi.h>
 
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 
 namespace SystemSystem
 {
