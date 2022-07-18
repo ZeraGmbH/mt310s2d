@@ -117,7 +117,7 @@ QString cClampInterface::readClampChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
     if (cmd.isQuery()) {
-        emit notifier(&m_notifierClampChannelList); // enable async notification on clamp catalog change
+        emit strNotifier(&m_notifierClampChannelList); // enable async notification on clamp catalog change
         generateAndNotifyClampChannelList();
         return m_notifierClampChannelList.getString();
     }

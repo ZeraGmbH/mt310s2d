@@ -48,7 +48,7 @@ void cSourceInterface::initSCPIConnection(QString leadingNodes)
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     for(auto channel : m_ChannelList) {
-        connect(channel, SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+        connect(channel, &cSCPIConnection::strNotifier, this, &cSCPIConnection::strNotifier);
         connect(channel, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
         channel->initSCPIConnection(QString("%1SOURCE").arg(leadingNodes));
     }

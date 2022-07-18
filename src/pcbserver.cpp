@@ -462,7 +462,7 @@ void cPCBServer::initSCPIConnections()
     for (int i = 0; i < scpiConnectionList.count(); i++)
     {
         scpiConnectionList.at(i)->initSCPIConnection(""); // we have our interface
-        connect(scpiConnectionList.at(i), SIGNAL(notifier(cNotificationString*)), this, SLOT(establishNewNotifier(cNotificationString*)));
+        connect(scpiConnectionList.at(i), &cSCPIConnection::strNotifier, this, &cPCBServer::establishNewNotifier);
         connect(scpiConnectionList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SLOT(sendAnswer(cProtonetCommand*)));
     }
 }

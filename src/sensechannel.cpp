@@ -308,7 +308,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
     quint8 mode;
     if ( pAtmel->readMeasMode(mode) == ZeraMcontrollerBase::cmddone ) {
         if (cmd.isQuery()) {
-            emit notifier(&notifierSenseChannelRange); // we only return the already known range name
+            emit strNotifier(&notifierSenseChannelRange); // we only return the already known range name
             return notifierSenseChannelRange.getString();
         }
         else {
@@ -355,7 +355,7 @@ QString cSenseChannel::m_ReadRangeCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
     if (cmd.isQuery()) {
-        emit notifier(&notifierSenseChannelRangeCat);
+        emit strNotifier(&notifierSenseChannelRangeCat);
         return notifierSenseChannelRangeCat.getString();
     }
     return SCPI::scpiAnswer[SCPI::nak];

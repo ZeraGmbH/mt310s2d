@@ -162,7 +162,7 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes)
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     for(auto channel : m_ChannelList) {
         // we also must connect the signals for notification and for output
-        connect(channel, SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+        connect(channel, &cSCPIConnection::strNotifier, this, &cSCPIConnection::strNotifier);
         connect(channel, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
         channel->initSCPIConnection(QString("%1SENSE").arg(leadingNodes));
     }
@@ -724,7 +724,7 @@ void cSenseInterface::m_ReadWriteMMode(cProtonetCommand *protoCmd)
 {
     cSCPICommand cmd = protoCmd->m_sInput;
     if (cmd.isQuery()) {
-        emit notifier(&notifierSenseMMode);
+        emit strNotifier(&notifierSenseMMode);
         protoCmd->m_sOutput  = notifierSenseMMode.getString();
         if (protoCmd->m_bwithOutput) {
             emit cmdExecutionDone(protoCmd);
@@ -764,7 +764,7 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
 {
     cSCPICommand cmd = sInput;
     if (cmd.isQuery()) {
-        emit notifier(&notifierSenseChannelCat);
+        emit strNotifier(&notifierSenseChannelCat);
         return notifierSenseChannelCat.getString();
     }
     else {
