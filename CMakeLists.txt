@@ -30,6 +30,7 @@ find_package(zeramisc REQUIRED)
 find_package(zeraxmlconfig REQUIRED)
 find_package(zeramath REQUIRED)
 find_package(zeradev REQUIRED)
+find_package(zerameaschannels REQUIRED)
 find_package(VfProtobuf REQUIRED)
 find_package(zeraprotobuf REQUIRED)
 
