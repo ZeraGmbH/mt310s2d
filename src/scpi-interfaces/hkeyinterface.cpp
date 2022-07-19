@@ -7,11 +7,10 @@
 #include <xmlsettings.h>
 #include <scpi.h>
 
-cHKeyInterface::cHKeyInterface(cMT310S2dServer *server)
-    :m_pMyServer(server)
+cHKeyInterface::cHKeyInterface(cMT310S2dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     QList<HKeySystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pHKeySettings->getChannelSettings();
 

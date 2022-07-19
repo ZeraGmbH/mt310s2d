@@ -9,10 +9,10 @@
 #include <justnode.h>
 #include "micro-controller-io/atmel.h"
 
-cJustData::cJustData(cSCPI* scpiinterface, int order, double init)
-    : m_nOrder(order)
+cJustData::cJustData(cSCPI* scpiinterface, int order, double init) :
+    cSCPIConnection(scpiinterface),
+    m_nOrder(order)
 {
-    m_pSCPIInterface = scpiinterface;
     m_pCoefficient = new double[order+1];  
     m_pJustNode = new cJustNode[order+1]; 
     initJustData(init);

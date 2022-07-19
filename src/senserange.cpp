@@ -8,6 +8,7 @@
 
 
 cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint16 mmask, cMT310S2JustData* justdata) :
+    cSCPIConnection(scpiinterface),
     m_sName(name),
     m_sAlias(alias),
     m_bAvail(avail),
@@ -19,7 +20,6 @@ cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool
     m_nMMask(mmask),
     m_pJustdata(justdata)
 {
-    m_pSCPIInterface = scpiinterface;
 }
 
 

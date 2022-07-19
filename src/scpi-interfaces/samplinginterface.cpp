@@ -6,11 +6,10 @@
 #include "micro-controller-io/atmel.h"
 #include "settings/samplingsettings.h"
 
-cSamplingInterface::cSamplingInterface(cMT310S2dServer* server)
-    :m_pMyServer(server)
+cSamplingInterface::cSamplingInterface(cMT310S2dServer* server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     m_pllChannelList.append("m0");
     m_pllChannelList.append("m1");
     m_pllChannelList.append("m2");

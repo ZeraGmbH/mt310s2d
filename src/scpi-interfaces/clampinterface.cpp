@@ -10,11 +10,11 @@
 #include <i2cmuxerscopedonoff.h>
 
 cClampInterface::cClampInterface(cMT310S2dServer *server) :
+    cSCPIConnection(server->getSCPIInterface()),
     m_pMyServer(server),
     m_pSenseInterface(server->m_pSenseInterface)
 {
     m_nClampStatus = 0;
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 void cClampInterface::initSCPIConnection(QString leadingNodes)

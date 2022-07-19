@@ -8,11 +8,10 @@
 #include <xmlsettings.h>
 #include <scpi.h>
 
-cSCHeadInterface::cSCHeadInterface(cMT310S2dServer *server)
-    :m_pMyServer(server)
+cSCHeadInterface::cSCHeadInterface(cMT310S2dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     QList<SCHeadSystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pSCHeadSettings->getChannelSettings();
 

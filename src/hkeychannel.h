@@ -18,7 +18,7 @@ class cHKeyChannel : public cSCPIConnection
 {
     Q_OBJECT
 public:
-    cHKeyChannel(cSCPI* scpiiinterface, QString description, quint8 nr, HKeySystem::cChannelSettings* cSettings);
+    cHKeyChannel(cSCPI* scpiinterface, QString description, quint8 nr, HKeySystem::cChannelSettings* cSettings);
     virtual void initSCPIConnection(QString leadingNodes);
     QString& getName();
     QString& getAlias();

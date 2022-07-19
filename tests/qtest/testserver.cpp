@@ -2,9 +2,9 @@
 #include "testserver.h"
 #include <protonetcommand.h>
 
-TestServer::TestServer()
+TestServer::TestServer() :
+    cSCPIConnection(new cSCPI("TestServer"))
 {
-    m_pSCPIInterface = new cSCPI("TestServer");
 }
 
 cSCPI *TestServer::getSCPIInterface()
@@ -12,7 +12,7 @@ cSCPI *TestServer::getSCPIInterface()
     return m_pSCPIInterface;
 }
 
-void TestServer::addScpiInterface(cSCPIConnection *connection)
+void TestServer::addScpiConnection(cSCPIConnection *connection)
 {
     connection->initSCPIConnection("");
     connect(connection, &cSCPIConnection::strNotifier, this, &TestServer::establishNewNotifier);

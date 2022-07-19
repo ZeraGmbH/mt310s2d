@@ -6,10 +6,9 @@
 #include <qdatastream.h>
 #include <scpi.h>
 
-cMT310S2JustData::cMT310S2JustData(cSCPI *scpiinterface)
+cMT310S2JustData::cMT310S2JustData(cSCPI *scpiinterface) :
+    cSCPIConnection(scpiinterface)
 {
-    m_pSCPIInterface = scpiinterface;
-
     m_pGainCorrection = new cJustData(m_pSCPIInterface, GainCorrOrder, 1.0);
     m_pPhaseCorrection = new cJustData(m_pSCPIInterface, PhaseCorrOrder, 0.0);
     m_pOffsetCorrection =  new cJustData(m_pSCPIInterface, OffsetCorrOrder, 0.0);

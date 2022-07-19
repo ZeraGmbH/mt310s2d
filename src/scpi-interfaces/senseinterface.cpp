@@ -26,6 +26,7 @@
 #include <syslog.h>
 
 cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
+    cResource(server->getSCPIInterface()),
     cAdjFlash(server->m_pI2CSettings->getDeviceNode(),
               server->m_pI2CSettings->getI2CAdress(i2cSettings::flash),
               server->m_pI2CSettings->createNullMuxer()),
@@ -36,7 +37,6 @@ cSenseInterface::cSenseInterface(cMT310S2dServer *server) :
     m_nVersionStatus = Adjustment::wrongVERS;
     m_nSerialStatus = Adjustment::wrongSNR;
 
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_MModeHash["AC"]   = SenseSystem::modeAC;
     m_MModeHash["HF"]   = SenseSystem::modeHF;
     m_MModeHash["ADJ"]   = SenseSystem::modeADJ;
