@@ -20,7 +20,7 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 
-cPCBServer::cPCBServer(QObject *parent)
+cPCBServer::cPCBServer()
     : cSCPIConnection(ScpiSingletonFactory::getScpiObj(ServerName))
 {
     m_nMsgNr = 0;
