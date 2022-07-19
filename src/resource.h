@@ -10,7 +10,7 @@ class cResource: public cSCPIConnection
 {
     Q_OBJECT
 public:
-    cResource(QObject* parent=0);
+    cResource(cSCPI* scpiInterface);
     virtual ~cResource();
     virtual void registerResource(cRMConnection *rmConnection, quint16 port) = 0;
     virtual void unregisterResource(cRMConnection *rmConnection) = 0;
