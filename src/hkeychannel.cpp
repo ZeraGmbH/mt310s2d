@@ -3,11 +3,10 @@
 #include <protonetcommand.h>
 #include <scpicommand.h>
 
-cHKeyChannel::cHKeyChannel(cSCPI *scpiiinterface, QString description, quint8 nr, HKeySystem::cChannelSettings *cSettings)
-    :m_sDescription(description)
+cHKeyChannel::cHKeyChannel(cSCPI *scpiinterface, QString description, quint8 nr, HKeySystem::cChannelSettings *cSettings) :
+    cSCPIConnection(scpiinterface),
+    m_sDescription(description)
 {
-    m_pSCPIInterface = scpiiinterface;
-
     m_sName = QString("hk%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_bAvail = cSettings->avail;

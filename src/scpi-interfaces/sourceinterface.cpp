@@ -7,11 +7,10 @@
 #include "settings/sourcesettings.h"
 #include <scpi.h>
 
-cSourceInterface::cSourceInterface(cMT310S2dServer *server)
-    :m_pMyServer(server)
+cSourceInterface::cSourceInterface(cMT310S2dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     QList<SourceSystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pSourceSettings->getChannelSettings();
 

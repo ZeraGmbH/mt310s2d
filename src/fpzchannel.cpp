@@ -4,11 +4,10 @@
 #include "settings/sourcesettings.h"
 #include <scpi.h>
 
-cFPZChannel::cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)
-    :m_sDescription(description)
+cFPZChannel::cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings) :
+    cSCPIConnection(scpiinterface),
+    m_sDescription(description)
 {
-    m_pSCPIInterface = scpiinterface;
-
     m_sName = QString("fo%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_nDspServer = cSettings->m_nDspServerPort;

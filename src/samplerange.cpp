@@ -4,10 +4,12 @@
 #include "samplerange.h"
 #include <protonetcommand.h>
 
-cSampleRange::cSampleRange(cSCPI *scpiinterface, QString name, quint16 srate, quint8 selcode)
-    :m_sName(name), m_nSRate(srate), m_nSelCode(selcode)
+cSampleRange::cSampleRange(cSCPI *scpiinterface, QString name, quint16 srate, quint8 selcode) :
+    cSCPIConnection(scpiinterface),
+    m_sName(name),
+    m_nSRate(srate),
+    m_nSelCode(selcode)
 {
-    m_pSCPIInterface = scpiinterface;
 }
 
 

@@ -10,7 +10,7 @@ class TestServer: public cSCPIConnection
 public:
     TestServer();
     cSCPI *getSCPIInterface();
-    void addScpiInterface(cSCPIConnection* connection);
+    void addScpiConnection(cSCPIConnection* connection);
     void executeScpiCmd(QString cmd);
 
     // mandatory overrides - not used...

@@ -30,7 +30,7 @@ class cMT310S2dServer: public cPCBServer
     Q_OBJECT
 
 public:
-    explicit cMT310S2dServer(QObject* parent=0);
+    explicit cMT310S2dServer();
     ~cMT310S2dServer();
 
     cStatusInterface* m_pStatusInterface;

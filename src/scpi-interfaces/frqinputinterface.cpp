@@ -8,11 +8,10 @@
 #include <xmlsettings.h>
 #include <scpi.h>
 
-cFRQInputInterface::cFRQInputInterface(cMT310S2dServer *server)
-    :m_pMyServer(server)
+cFRQInputInterface::cFRQInputInterface(cMT310S2dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     QList<FRQInputSystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pFRQInputSettings->getChannelSettings();
 

@@ -8,6 +8,7 @@
 #include <xmlconfigreader.h>
 #include <xiqnetserver.h>
 #include <scpi.h>
+#include <scpisingletonfactory.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <netmessages.pb.h>
@@ -20,7 +21,7 @@
 #include <QTcpServer>
 
 cPCBServer::cPCBServer(QObject *parent)
-    : cSCPIConnection(parent)
+    : cSCPIConnection(ScpiSingletonFactory::getScpiObj(ServerName))
 {
     m_nMsgNr = 0;
     m_sServerName = ServerName;
@@ -75,7 +76,6 @@ QString &cPCBServer::getVersion()
 
 void cPCBServer::setupServer()
 {
-    m_pSCPIInterface = new cSCPI(m_sServerName); // our scpi interface
     myServer = new XiQNetServer(this); // our working (talking) horse
     myServer->setDefaultWrapper(&m_ProtobufWrapper);
     connect(myServer,SIGNAL(sigClientConnected(XiQNetPeer*)),this,SLOT(establishNewConnection(XiQNetPeer*)));

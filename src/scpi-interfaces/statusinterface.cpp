@@ -4,10 +4,10 @@
 #include <protonetcommand.h>
 #include "micro-controller-io/atmel.h"
 
-cStatusInterface::cStatusInterface(cMT310S2dServer* server)
-    :m_pMyServer(server)
+cStatusInterface::cStatusInterface(cMT310S2dServer* server) :
+    cSCPIConnection(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 
