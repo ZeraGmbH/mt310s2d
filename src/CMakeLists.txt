@@ -33,7 +33,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/adjustment.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/clampjustdata.cpp
@@ -85,7 +84,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/adjxml.h
     ${CMAKE_CURRENT_SOURCE_DIR}/adjustment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/notificationdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.h
@@ -117,15 +115,11 @@ add_library(mt310s2d_lib STATIC
     ${SOURCES}
     )
 
-# announce headers - target perspective
 target_include_directories(mt310s2d_lib
-    PUBLIC
-    $<BUILD_INTERFACE:${MY_LIBRARY_SOURCE_DIR}/include>
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-#link dependencies
 if(${Systemd_FOUND})
     target_link_libraries(mt310s2d_lib
         PUBLIC
@@ -151,9 +145,8 @@ target_link_libraries(mt310s2d_lib
     ZeraClasses::zeraservercommon
     VeinMeta::VfProtobuf
     VeinMeta::zeraprotobuf
-    )	
+    )
 
-#create executable
 add_executable(mt310s2d
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     )
@@ -163,8 +156,6 @@ target_link_libraries(mt310s2d
     mt310s2d_lib
     )
 
-
-#install mt310s2dto bin 
 install(TARGETS mt310s2d
     EXPORT mt310s2dExport
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
