@@ -148,7 +148,7 @@ target_link_libraries(mt310s2d_lib
     ZeraClasses::zeraxmlconfig
     ZeraClasses::zeramath
     ZeraClasses::zeradev
-    ZeraClasses::zerameaschannels
+    ZeraClasses::zeraservercommon
     VeinMeta::VfProtobuf
     VeinMeta::zeraprotobuf
     )	
